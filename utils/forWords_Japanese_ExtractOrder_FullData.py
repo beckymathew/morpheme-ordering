@@ -37,11 +37,11 @@ TARGET_DIR = "/u/scr/mhahn/deps/memory-need-ngrams-morphology/"
 
 
 
-posUni = set() 
+posUni = set()
 
-posFine = set() 
+posFine = set()
 
-
+# TODO: update this for Korean
 def getRepresentation(lemma):
    if lemma == "させる" or lemma == "せる":
      return "CAUSATIVE"
@@ -49,9 +49,6 @@ def getRepresentation(lemma):
      return "PASSIVE_POTENTIAL"
    else:
      return lemma
-
-
-
 
 
 from math import log, exp
@@ -79,7 +76,6 @@ pairs = set()
 counter = 0
 data = []
 for sentence in corpusTrain:
-#    print(len(sentence))
     verb = []
     for line in sentence:
        if line["posUni"] == "PUNCT":
@@ -99,66 +95,133 @@ for sentence in corpusTrain:
        else:
           processVerb(verb)
           verb = []
-print(len(data))
-#quit()
-print(counter)
-#print(data)
-print(len(data))
 
-#quit()
+
+### look at all Korean words instead of just verbs ###
+# data = []
+# for sentence in corpusTrain:
+#     for line in sentence:
+#         # print(line)
+#         if not line["posUni"] == "PUNCT":
+#             data.append([line["lemma"]])
+
+
+print(len(data))
+# #quit()
+# print(counter)
+# #print(data)
+# print(len(data))
+
+from collections import Counter
+import matplotlib.pyplot as plt
+
+def bar_num_morphs(data):
+    """
+    Produces a bar chart of the number of morphemes in the word list.
+
+    Params:
+     - data: A list of lists of verbs, where each inner list item is a lemma that has morphemes delimited by "+"
+
+    Returns:
+     - nothing, creates a PNG of a bar chart of the distribution of number of morphemes
+    """
+    hist = Counter()
+    wd_len = Counter()
+    for wd_list in data:
+        for wd in wd_list:
+            morphs = wd.split("+")
+            hist[len(morphs)] += 1
+    plt.bar(hist.keys(), hist.values())
+    plt.savefig("kor_num_morphs_all.png")
+
+bar_num_morphs(data)
+
 import torch.nn as nn
 import torch
 from torch.autograd import Variable
-
-
 import numpy.random
-
-
-
 import torch.cuda
 import torch.nn.functional
 
-
 words = []
 
+### splitting verbs into lemmas -- each affix is a lemma ###
+# affixFrequencies = {}
+# for verbWithAff in data:
+#   for affix in verbWithAff[1:]: # TODO: why does this start at 1?
+#     affixLemma = getRepresentation(affix)
+#     affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0)+1
+#
+# itos = set() # set of affixes
+# for verbWithAff in data:
+#   for affix in verbWithAff[1:]:
+#     affixLemma = getRepresentation(affix)
+#     itos.add(affixLemma)
 
+### splitting lemmas into morphemes -- each affix is a morpheme ###
 affixFrequencies = {}
 for verbWithAff in data:
-  for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0)+1
+  for affix in verbWithAff[1:]: # TODO: why does this start at 1?
+    morphs = affix.split("+")
+    for morph in morphs:
+        affixFrequencies[morph] = affixFrequencies.get(morph, 0) + 1
 
-itos = set()
+itos = set() # set of affixes
 for verbWithAff in data:
   for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    itos.add(affixLemma)
-itos = sorted(list(itos))
-stoi = dict(list(zip(itos, range(len(itos)))))
+    morphs = affix.split("+")
+    for morph in morphs:
+        itos.add(morph)
+itos = sorted(list(itos)) # sorted list of verb affixes
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
-
-print(itos)
-print(stoi)
+# print(itos)
+# print(stoi)
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why??
 
-def getCorrectOrderCount(weights, coordinate, newValue):
+# def getCorrectOrderCount(weights, coordinate, newValue):
+#    correct = 0
+#    incorrect = 0
+#    for verb in data:
+#       for i in range(1, len(verb)):
+#          for j in range(1, i):
+#              if verb[i] == coordinate:
+#                  weightI = newValue
+#              else:
+#                 weightI = weights[getRepresentation(verb[i])]
+#
+#              if verb[j] == coordinate:
+#                  weightJ = newValue
+#              else:
+#                 weightJ = weights[getRepresentation(verb[j])]
+#              if weightI > weightJ:
+#                correct+=1
+#              else:
+#                incorrect+=1
+#    return correct/(correct+incorrect)
+
+def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
    incorrect = 0
    for verb in data:
-      for i in range(1, len(verb)):
-         for j in range(1, i):
-             if verb[i] == coordinate:
+      vb = [] # create a flat list of morphemes in the verb
+      for lemma in verb:
+          vb.extend(lemma.split("+"))
+
+      for i in range(len(verb[0]), len(vb)): # start after the first lemma
+         for j in range(len(verb[0]), i):
+             if vb[i] == coordinate:
                  weightI = newValue
              else:
-                weightI = weights[getRepresentation(verb[i])]
+                weightI = weights[getRepresentation(vb[i])]
 
-             if verb[j] == coordinate:
+             if vb[j] == coordinate:
                  weightJ = newValue
              else:
-                weightJ = weights[getRepresentation(verb[j])]
+                weightJ = weights[getRepresentation(vb[j])]
              if weightI > weightJ:
                correct+=1
              else:
@@ -168,16 +231,16 @@ def getCorrectOrderCount(weights, coordinate, newValue):
 lastMostCorrect = 0
 for iteration in range(200):
   coordinate = choice(itos)
-  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100:
+  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why?
      coordinate = choice(itos)
 
   mostCorrect, mostCorrectValue = 0, None
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]: # TODO: why is there -1 and +1 here?
      if random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
          continue
      weights_ = {x : y for x,y in weights.items()}
      weights_[coordinate] = newValue
-     correctCount = getCorrectOrderCount(weights_, None, None)
+     correctCount = getCorrectOrderCountPerMorpheme(weights_, None, None)
 #     print(coordinate, newValue, iteration, correctCount)
      if correctCount > mostCorrect:
         mostCorrectValue = newValue
@@ -190,6 +253,7 @@ for iteration in range(200):
   weights[coordinate] = mostCorrectValue
 #  print(getCorrectOrderCount(weights, None, None) , mostCorrect)
  # assert getCorrectOrderCount(weights, None, None) == mostCorrect
+  # TODO: shouldn't this only be done if the weights improved the correct score?
   itos_ = sorted(itos, key=lambda x:weights[x])
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   #assert getCorrectOrderCount(weights, None, None) == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
@@ -204,5 +268,3 @@ with open("output/extracted_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   #   if affixFrequencies[x] < 10:
    #    continue
      print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]), file=outFile)
-
-
