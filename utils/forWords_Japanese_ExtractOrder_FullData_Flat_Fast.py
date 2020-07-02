@@ -235,7 +235,7 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    return correct/(correct+incorrect)
 
 lastMostCorrect = 0
-for iteration in range(200):
+for iteration in range(1000):
 
   coordinate = choice(itos)
   while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
@@ -270,7 +270,7 @@ for iteration in range(200):
      print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))
 
 #  print(weights)
-with open("output/extracted_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+with open("output/extracted_"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in itos_:
   #   if affixFrequencies[x] < 10:
    #    continue

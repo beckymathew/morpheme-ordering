@@ -70,8 +70,8 @@ def processVerb(verb):
       #print(verb)
       flattened = []
       for group in verb:
-         for morpheme in group["posFine"].split("+"):
-           flattened.append(morpheme)
+         for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
+           flattened.append("_".join(morpheme))
       #print(flattened)
       data.append(flattened)
 
