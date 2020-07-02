@@ -161,7 +161,7 @@ words = []
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
 affixFrequencies = {}
 for verbWithAff in data:
-  for affix in verbWithAff[1:]: # TODO: why does this start at 1? mhahn: this is to only conider suffixes, not the stem.
+  for affix in verbWithAff[1:]: # TODO: why does this start at 1? mhahn: in Japanese, this is to only conider suffixes, not the stem. Should probably be changed for Korean.
     morphs = affix.split("+")
     for morph in morphs:
         affixFrequencies[morph] = affixFrequencies.get(morph, 0) + 1
