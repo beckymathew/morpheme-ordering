@@ -161,7 +161,7 @@ words = []
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
 affixFrequencies = {}
 for verbWithAff in data:
-  for affix in verbWithAff[1:]: # TODO: why does this start at 1?
+  for affix in verbWithAff[1:]: # TODO: why does this start at 1? mhahn: this is to only conider suffixes, not the stem.
     morphs = affix.split("+")
     for morph in morphs:
         affixFrequencies[morph] = affixFrequencies.get(morph, 0) + 1
@@ -180,7 +180,7 @@ stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why??
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
 
 # def getCorrectOrderCount(weights, coordinate, newValue):
 #    correct = 0
@@ -231,11 +231,11 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
 lastMostCorrect = 0
 for iteration in range(200):
   coordinate = choice(itos)
-  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why?
+  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
      coordinate = choice(itos)
 
   mostCorrect, mostCorrectValue = 0, None
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]: # TODO: why is there -1 and +1 here?
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]: # TODO: why is there -1 and +1 here? mhahn: this describes all ways of ordering the chosen morpheme between any two other morphemes
      if random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
          continue
      weights_ = {x : y for x,y in weights.items()}
@@ -253,7 +253,7 @@ for iteration in range(200):
   weights[coordinate] = mostCorrectValue
 #  print(getCorrectOrderCount(weights, None, None) , mostCorrect)
  # assert getCorrectOrderCount(weights, None, None) == mostCorrect
-  # TODO: shouldn't this only be done if the weights improved the correct score?
+  # TODO: shouldn't this only be done if the weights improved the correct score? mhahn: the score can never worsen, so this shouldn't be an issue.
   itos_ = sorted(itos, key=lambda x:weights[x])
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   #assert getCorrectOrderCount(weights, None, None) == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
