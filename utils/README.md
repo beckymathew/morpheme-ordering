@@ -4,3 +4,4 @@
 * `forWords_Japanese_OptimizeOrder_MorphemeGrammar_Normalized_FullData_HeldoutClip.py`: code for deriving optimized orderings in Japanese
 * `forWords_Japanese_RandomOrder_Normalized_FullData_Heldout.py`: code for calculating tradeoff curves for real, optimized, and baseline orderings in Japanese
 * `forWords_Japanese_ExtractOrder_FullData.py`: code for extracting ordering rules from observed orderings in Japanese
+* `forWords_Korean_ExtractOrder_VerbsWithAdnominals.py`: code for extracting ordering rules for Korean verbs including adnominalized forms 
