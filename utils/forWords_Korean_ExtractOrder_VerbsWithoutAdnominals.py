@@ -101,7 +101,15 @@ for sentence in corpusTrain:
             # Clear existing verb if you see a new verb
             processVerb(verb)
             verb = []
-            verb.append(line)
+            if not line["posFine"].split("+")[-1] in ["etm", "etn"]:
+                # only use the new verb if it isn't adnominalized or nominalized
+                verb.append(line)
+        elif line["posFine"].split("+")[-1] == "etm":
+            # The existing verb is in adnominal form, so we won't consider it
+            verb = []
+        elif line["posFine"].split("+")[-1] == "etn":
+            # The existing verb is nominalized, so we won't consider it
+            verb = []
         elif line["posUni"] == "AUX" and len(verb) > 0:
             # Add auxiliary to existing verb
             verb.append(line)
@@ -161,7 +169,7 @@ for sentence in corpusTrain:
 
 
 print(len(data))
-with open('labeled_verbs_with_adnominals.txt', 'w') as fout:
+with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
     for item in data:
         fout.write("%s\n" % item)
 quit()
@@ -226,6 +234,7 @@ words = []
 #     morphs = affix.split("+")
 #     for morph in morphs:
 #         itos.add(morph)
+
 import time
 ### splitting verb into morphemes excluding root -- each affix is a morpheme ###
 affixFrequencies = {}
@@ -331,12 +340,11 @@ def getCorrectOrderCountPerMorphemeExcludingRoot(weights, coordinate, newValue):
 lastMostCorrect = 0
 for iteration in range(200):
   coordinate = choice(itos)
-  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why?
+  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100:
      coordinate = choice(itos)
   mostCorrect, mostCorrectValue = 0, None
 
-  # TODO: what is happening w this loop?
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]: # TODO: why is there -1 and +1 here?
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
      if random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
          continue
 
