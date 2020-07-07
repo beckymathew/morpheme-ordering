@@ -6,3 +6,4 @@
 * `forWords_Japanese_ExtractOrder_FullData.py`: code for extracting ordering rules from observed orderings in Japanese
 * `forWords_Korean_ExtractOrder_VerbsWithAdnominals.py`: code for extracting ordering rules for Korean verbs including adnominalized forms 
 * `forWords_Korean_ExtractOrder_VerbsWithoutAdnominals.py`: code for extracting ordering rules for Korean verbs without adnominalized or nominalized forms
+* `allomorphy.py`: code for getting underlying forms of Korean allomorphs
