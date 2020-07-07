@@ -86,7 +86,8 @@ def get_underlying_morph(morph, fine_label):
         ("음", "etn"): ("ㅁ", "etn"),
     }
 
-    if morph[0] == "으":
+    if morph[0] == "으" and fine_label[0] in ["j", "e"]:
+        # epenthetic vowel is part of a suffix, remove it
         return (morph[1:], fine_label)
     elif (morph, fine_label) in allomorph_to_underlying:
         return allomorph_to_underlying[(morph, fine_label)]
