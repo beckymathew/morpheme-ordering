@@ -2,6 +2,7 @@
 
 import random
 import sys
+from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 
 objectiveName = "LM"
 
@@ -166,167 +167,10 @@ def calculateTradeoffForWeights(weights):
          for _ in range(args.cutoff+2):
            processed.append("PAD")
          processed.append("SOS")
-      
-    itos = list(set(train) | set(dev))
-      
-    # For the algorithm, we will need to reverse the corpora
-    dev = dev[::-1]
-    train = train[::-1]
 
-    # idev and itrain are suffix arrays: They contain indices to positions in the text, ordered by the alphabetical position of the suffixes starting at them.
-    idev = range(len(dev))
-    itrain = range(len(train))
-    
-    idev = sorted(idev, key=lambda i:dev[i:i+20])
-    itrain = sorted(itrain, key=lambda i:train[i:i+20])
-    
-    # The inverse map of idev/itrain: For each position in the texts, indicates its position in those lists.    
-    idevInv = [x[1] for x in sorted(zip(idev, range(len(idev))), key=lambda x:x[0])]
-    itrainInv = [x[1] for x in sorted(zip(itrain, range(len(itrain))), key=lambda x:x[0])]
-    
-    # Basic sanity check
-    assert idev[idevInv[5]] == 5
-    assert itrain[itrainInv[5]] == 5
-    
-    
-    # Helper function. For a given span length k (>= 0), computes for each position in the heldout set (`dev`), the location of the first and last entries in itrain where the same string of length k starts as after the given position in idev.
-    def getStartEnd(k):
-       start = [0 for _ in dev]
-       end = [len(train)-1 for _ in dev]
-       if k == 0:
-          return start, end
-       # Start is the FIRST train place that is >=
-       # End is the FIRST train place that is >
-       l = 0
-       l2 = 0
-       for j in range(len(dev)):
-         prefix = tuple(dev[idev[j]:idev[j]+k])
-         while l2 < len(train):
-            prefix2 = tuple(train[itrain[l2]:itrain[l2]+k])
-            if prefix <= prefix2:
-                 start[j] = l2
-                 break
-            l2 += 1
-         if l2 == len(train):
-            start[j] = l2
-         while l < len(train):
-            prefix2 = tuple(train[itrain[l]:itrain[l]+k])
-            if prefix < prefix2:
-                 end[j] = l
-                 break
-            l += 1
-         if l == len(train):
-            end[j] = l
-         start2, end2 = start[j], end[j]
-         assert start2 <= end2
-         if start2 > 0 and end2 < len(train):
-           assert prefix > tuple(train[itrain[start2-1]:itrain[start2-1]+k])
-           assert prefix <= tuple(train[itrain[start2]:itrain[start2]+k])
-           assert prefix >= tuple(train[itrain[end2-1]:itrain[end2-1]+k])
-           assert prefix < tuple(train[itrain[end2]:itrain[end2]+k])
-       return start, end
-    
-    
-    lastProbability = [None for _ in idev]
-    newProbability = [None for _ in idev]
-    
-    devSurprisalTable = []
-    for k in range(0,args.cutoff):
-#       print(k)
-       startK, endK = getStartEnd(k) # Possible speed optimization: There is some redundant computation here, could be reused from the previous iteration. But the algorithm is very fast already.
-       startK2, endK2 = getStartEnd(k+1)
-       cachedFollowingCounts = {}
-       for j in range(len(idev)):
-    #      print(dev[idev[j]])
-          if dev[idev[j]] in ["PAD", "SOS"]:
-             continue
-          start2, end2 = startK2[j], endK2[j]
-          devPref = tuple(dev[idev[j]:idev[j]+k+1])
-          if start2 > 0 and end2 < len(train):
-            assert devPref > tuple(train[itrain[start2-1]:itrain[start2-1]+k+1]), (devPref, tuple(train[itrain[start2-1]:itrain[start2-1]+k+1]))
-            assert devPref <= tuple(train[itrain[start2]:itrain[start2]+k+1]), (devPref, tuple(train[itrain[start2]:itrain[start2]+k+1]))
-            assert devPref >= tuple(train[itrain[end2-1]:itrain[end2-1]+k+1])
-            assert devPref < tuple(train[itrain[end2]:itrain[end2]+k+1])
-    
-          assert start2 <= end2
-    
-          countNgram = end2-start2
-          if k >= 1:
-             if idev[j]+1 < len(idevInv):
-               prefixIndex = idevInv[idev[j]+1]
-               assert dev[idev[prefixIndex]] == dev[idev[j]+1]
-       
-               prefixStart, prefixEnd = startK[prefixIndex], endK[prefixIndex]
-               countPrefix = prefixEnd-prefixStart
-               if countPrefix < args.gamma: # there is nothing to interpolate with, just back off
-                  assert k > 0
-                  newProbability[j] = lastProbability[j]
-               else:
-                  assert countPrefix >= countNgram, (countPrefix, countNgram)
-       
-                  following = set()
-                  if (prefixStart, prefixEnd) in cachedFollowingCounts:
-                      followingCount = cachedFollowingCounts[(prefixStart, prefixEnd)]
-                  else:
-                    for l in range(prefixStart, prefixEnd):
-                      if k < itrain[l]+1:
-                         following.add(train[itrain[l]-1])
-                         assert devPref[1:] == tuple(train[itrain[l]-1:itrain[l]+k])[1:], (k, itrain[l], l, devPref , tuple(train[itrain[l]-1:itrain[l]+k]))
-                    followingCount = len(following)
-                    cachedFollowingCounts[(prefixStart, prefixEnd)] = followingCount
-                  if followingCount == 0:
-                      newProbability[j] = lastProbability[j]
-                  else:
-                      #assert countNgram > 0 # Sanity check when using the naive estimator only.
-                      probability = log(max(countNgram - args.alpha, 0.0) + args.alpha * followingCount * exp(lastProbability[j])) -  log(countPrefix)
-                      newProbability[j] = probability
-             else:
-                newProbability[j] = lastProbability[j]
-          elif k == 0:
-                  probability = log(countNgram + args.delta) - log(len(train) + args.delta * len(itos))
-                  newProbability[j] = probability
-       lastProbability = newProbability 
-       newProbability = [None for _ in idev]
-       assert all([x is None or x <=0 for x in lastProbability])
-       try:
-           lastProbabilityFiltered = [x for x in lastProbability if x is not None]
-           surprisal = - sum([x for x in lastProbabilityFiltered])/len(lastProbabilityFiltered)
-       except ValueError:
-    #       print >> sys.stderr, "PROBLEM"
-     #      print >> sys.stderr, lastProbability
-           surprisal = 1000
-       devSurprisalTable.append(surprisal)
-     #  print("Surprisal", surprisal, len(itos))
-    #print(devSurprisalTable)
-    for k in range(len(devSurprisalTable)):
-        devSurprisalTable[k] = min(devSurprisalTable[:k+1])
-    mis = [devSurprisalTable[i] - devSurprisalTable[i+1] for i in range(len(devSurprisalTable)-1)]
-    print(mis)
-    tmis = [mis[x]*(x+1) for x in range(len(mis))]
-    #print(mis)
-    #print(tmis)
-    auc = 0
-    memory = 0
-    mi = 0
-    for i in range(len(mis)):
-       mi += mis[i]
-       memory += tmis[i]
-       auc += mi * tmis[i]
-    #print("MaxMemory", memory)
-    assert 7>memory
-    auc += mi * (7-memory)
-    #print("AUC", auc)
+
+    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
     return auc, devSurprisalTable
-    #assert False
-    
-    #outpath = TARGET_DIR+"/estimates-"+args.language+"_"+__file__+"_model_"+str(myID)+"_"+args.model+".txt"
-    #print(outpath)
-    #with open(outpath, "w") as outFile:
-    #         print >> outFile, str(args)
-    #         print >> outFile, devSurprisalTable[-1]
-    #         print >> outFile, " ".join(map(str,devSurprisalTable))
-    #
-    #
    
 
 
@@ -338,8 +182,8 @@ for iteration in range(1000):
   while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
      coordinate = choice(itos)
 
-  # This will store the maximal AOC found so far and the corresponding position
-  mostCorrect, mostCorrectValue = 0, None
+  # This will store the minimal AOC found so far and the corresponding position
+  mostCorrect, mostCorrectValue = 1e100, None
 
   # Iterate over possible new positions
   for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
@@ -356,8 +200,8 @@ for iteration in range(1000):
      # Calculate AOC for this updated assignment
      resultingAOC, _ = calculateTradeoffForWeights(weights_)
 
-     # Update variables if AOC is larger than maximum AOC found so far
-     if resultingAOC > mostCorrect:
+     # Update variables if AOC is smaller than minimum AOC found so far
+     if resultingAOC < mostCorrect:
         mostCorrectValue = newValue
         mostCorrect = resultingAOC
   print(iteration, mostCorrect)
