@@ -168,11 +168,11 @@ for sentence in corpusTrain:
 #             data.append([line["lemma"]])
 
 
-print(len(data))
-with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
-    for item in data:
-        fout.write("%s\n" % item)
-quit()
+# print(len(data))
+# with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
+#     for item in data:
+#         fout.write("%s\n" % item)
+# quit()
 
 from collections import Counter
 import matplotlib.pyplot as plt
@@ -207,96 +207,45 @@ import torch.nn.functional
 
 words = []
 
-### splitting verbs into lemmas -- each affix is a lemma ###
-# affixFrequencies = {}
-# for verbWithAff in data:
-#   for affix in verbWithAff[1:]: # TODO: why does this start at 1?
-#     affixLemma = getRepresentation(affix)
-#     affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0)+1
-#
-# itos = set() # set of affixes
-# for verbWithAff in data:
-#   for affix in verbWithAff[1:]:
-#     affixLemma = getRepresentation(affix)
-#     itos.add(affixLemma)
-
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
-# affixFrequencies = {}
-# for verbWithAff in data:
-#   for affix in verbWithAff[1:]:
-#     morphs = affix.split("+")
-#     for morph in morphs:
-#         affixFrequencies[morph] = affixFrequencies.get(morph, 0) + 1
-#
-# itos = set() # set of affixes
-# for verbWithAff in data:
-#   for affix in verbWithAff[1:]:
-#     morphs = affix.split("+")
-#     for morph in morphs:
-#         itos.add(morph)
-
-import time
-### splitting verb into morphemes excluding root -- each affix is a morpheme ###
 affixFrequencies = {}
 for verbWithAff in data:
-  morphemes = [] # create a flat list of morphemes in the verb
-  for affix in verbWithAff:
-    morphemes.extend(affix.split("+"))
-
-  for morph in morphemes[1:]: # exclude first morpheme, which is the root
-    affixFrequencies[morph] = affixFrequencies.get(morph, 0) + 1
+  for affix in verbWithAff[1:]: # TODO: why does this start at 1? mhahn: in Japanese, this is to only conider suffixes, not the stem. Should probably be changed for Korean.
+        affixFrequencies[affix] = affixFrequencies.get(affix, 0) + 1
 
 itos = set() # set of affixes
 for verbWithAff in data:
-  morphemes = [] # create a flat list of morphemes in the verb
-  for affix in verbWithAff:
-    morphemes.extend(affix.split("+"))
-
-  for morph in morphemes[1:]: # exclude first morpheme, which is the root
-    itos.add(morph)
-
+  for affix in verbWithAff[1:]:
+        itos.add(affix)
 itos = sorted(list(itos)) # sorted list of verb affixes
-stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix an ID
-
-# print(itos)
-# print(stoi)
-print(len(itos))
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
 
-def getCorrectOrderCount(weights, coordinate, newValue):
-   correct = 0
-   incorrect = 0
-   for verb in data:
-      for i in range(1, len(verb)):
-         for j in range(1, i):
-             if verb[i] == coordinate:
-                 weightI = newValue
-             else:
-                weightI = weights[getRepresentation(verb[i])]
+from collections import defaultdict
+affixChains = defaultdict(int)
+for d in data:
+   affixChains[tuple(d[1:])] += 1
 
-             if verb[j] == coordinate:
-                 weightJ = newValue
-             else:
-                weightJ = weights[getRepresentation(verb[j])]
-             if weightI > weightJ:
-               correct+=1
-             else:
-               incorrect+=1
-   return correct/(correct+incorrect)
+freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item[1])}
+with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+  for x in freqs.keys():
+     print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
+quit()
 
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
    incorrect = 0
-   for verb in data:
-      vb = [] # create a flat list of morphemes in the verb
-      for lemma in verb:
-          vb.extend(lemma.split("+"))
+#   print(data[:10])
+   for affixChain, count in affixChains.items():
+#      print(affixChain, count)
+      vb = affixChain
+#      print(vb)
 
-      for i in range(len(verb[0]), len(vb)): # start after the first lemma
-         for j in range(len(verb[0]), i):
+      for i in range(0, len(vb)):
+         for j in range(0, i):
              if vb[i] == coordinate:
                  weightI = newValue
              else:
@@ -307,51 +256,26 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
              else:
                 weightJ = weights[getRepresentation(vb[j])]
              if weightI > weightJ:
-               correct+=1
+               correct+=count
              else:
-               incorrect+=1
-   return correct/(correct+incorrect)
-
-def getCorrectOrderCountPerMorphemeExcludingRoot(weights, coordinate, newValue):
-   correct = 0
-   incorrect = 0
-   for verb in data:
-      vb = [] # create a flat list of morphemes in the verb
-      for lemma in verb:
-          vb.extend(lemma.split("+"))
-
-      for i in range(1, len(vb)): # start after the first morpheme (root)
-         for j in range(1, i):
-             if vb[i] == coordinate:
-                 weightI = newValue
-             else:
-                weightI = weights[getRepresentation(vb[i])]
-
-             if vb[j] == coordinate:
-                 weightJ = newValue
-             else:
-                weightJ = weights[getRepresentation(vb[j])]
-             if weightI > weightJ:
-               correct+=1
-             else:
-               incorrect+=1
+               incorrect+=count
    return correct/(correct+incorrect)
 
 lastMostCorrect = 0
-for iteration in range(200):
-  coordinate = choice(itos)
-  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100:
-     coordinate = choice(itos)
-  mostCorrect, mostCorrectValue = 0, None
+for iteration in range(10):
 
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
+  coordinate = choice(itos)
+  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
+     coordinate = choice(itos)
+
+  mostCorrect, mostCorrectValue = 0, None
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]: # TODO: why is there -1 and +1 here? mhahn: this describes all ways of ordering the chosen morpheme between any two other morphemes
      if random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
          continue
-
      weights_ = {x : y for x,y in weights.items()}
      weights_[coordinate] = newValue
-     correctCount = getCorrectOrderCountPerMorphemeExcludingRoot(weights_, None, None)
-#    print(coordinate, newValue, iteration, correctCount)
+     correctCount = getCorrectOrderCountPerMorpheme(weights_, None, None)
+#     print(coordinate, newValue, iteration, correctCount)
      if correctCount > mostCorrect:
         mostCorrectValue = newValue
         mostCorrect = correctCount
@@ -361,18 +285,19 @@ for iteration in range(200):
   lastMostCorrect = mostCorrect
 
   weights[coordinate] = mostCorrectValue
-  # print(getCorrectOrderCount(weights, None, None) , mostCorrect)
-  # assert getCorrectOrderCount(weights, None, None) == mostCorrect
+#  print(getCorrectOrderCount(weights, None, None) , mostCorrect)
+ # assert getCorrectOrderCount(weights, None, None) == mostCorrect
+  # TODO: shouldn't this only be done if the weights improved the correct score? mhahn: the score can never worsen, so this shouldn't be an issue.
   itos_ = sorted(itos, key=lambda x:weights[x])
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   #assert getCorrectOrderCount(weights, None, None) == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
   #assert mostCorrect == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
+  # for x in itos_:
+  #  if affixFrequencies[x] >= 50:
+  #    print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))
 
 #  print(weights)
- # for x in itos_:
-  # if affixFrequencies[x] >= 50:
-   #  print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))
-with open("output/extracted_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+with open("output/extracted_"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in itos_:
   #   if affixFrequencies[x] < 10:
    #    continue
