@@ -12,7 +12,7 @@ def readUDCorpus(language, partition, ignoreCorporaWithoutWords=True):
       language = "_".join(l[:-1])
       version = l[-1]
       print(l, language)
-      basePaths = ["/u/scr/corpora/Universal_Dependencies/Universal_Dependencies_"+version+"/ud-treebanks-v"+version+"/"]
+      basePaths = ["/home/user/UniversalDependencies/Universal_Dependencies_"+version+"/ud-treebanks-v"+version+"/"]
       files = []
       while len(files) == 0:
         if len(basePaths) == 0:
