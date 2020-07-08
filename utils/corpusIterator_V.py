@@ -12,7 +12,8 @@ def readUDCorpus(language, partition, ignoreCorporaWithoutWords=True):
       language = "_".join(l[:-1])
       version = l[-1]
       print(l, language)
-      basePaths = ["/u/scr/corpora/Universal_Dependencies/Universal_Dependencies_"+version+"/ud-treebanks-v"+version+"/"]
+      basePaths = ["../data/UD_Korean-Kaist-master/"]
+      # basePaths = ["/u/scr/corpora/Universal_Dependencies/Universal_Dependencies_"+version+"/ud-treebanks-v"+version+"/"]
       files = []
       while len(files) == 0:
         if len(basePaths) == 0:
@@ -101,5 +102,3 @@ class CorpusIterator_V():
         if len(sentence) < 3 and rejectShortSentences:
            continue
         yield self.processSentence(sentence)
-
-
