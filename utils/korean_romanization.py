@@ -23,6 +23,13 @@ our_romanization = {
     "r": "l" # allophones, although I think this transliter always uses "l"
 }
 
+# Common morphemes that are not full syllable blocks
+letter_romanization = {
+    "ㄹ": "l",
+    "ㄴ": "n",
+    "ㅆ": "S",
+}
+
 def romanize(word):
     """
     Phonemize a single (!) word in Hangul to a romanization where each phoneme corresponds to a single unique Latin alphabet letter. 
@@ -43,14 +50,16 @@ def romanize(word):
     for char in word:
         original_romanized.append(transliter.translit(char))
     
-    print(original_romanized)
     our_romanized = ""
     for i, char in enumerate(original_romanized):
         for original, ours in our_romanization.items():
             if i == 0 and original == "ui": # see footnote, this only works if word is a single word and not a string of words
                 char = char.replace(original, "Ui")
             else: 
-                char = char.replace(original, ours)
+                if len(char) == 1: # check if it's a single Hangul character
+                    if char in letter_romanization:
+                        char = letter_romanization[char]
+                char = char.replace(original, ours) # normal syllable block
         our_romanized += char
     return our_romanized
         
