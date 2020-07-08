@@ -1,4 +1,4 @@
-
+from math import log, exp
 def calculateMemorySurprisalTradeoff(train, dev, args):
     """ Input: 
         - train (list): training data for fitting an n-gram model
