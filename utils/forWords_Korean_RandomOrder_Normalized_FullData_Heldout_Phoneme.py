@@ -163,8 +163,6 @@ elif args.model != "REAL": # Load the ordering from a file
         weights[morpheme] = int(weight)
 
 
-
-
 def calculateTradeoffForWeights(weights):
     train = []
     dev = []
