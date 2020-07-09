@@ -60,11 +60,37 @@ def getRepresentation(lemma):
 # Getting fine labels for the verb
 def processVerb(verb, data_):
     if len(verb) > 0:
+      # get flattened list of labels
       flattened = []
       for group in verb:
          for morpheme in group["posFine"].split("+"):
            flattened.append(morpheme)
-      data_.append(flattened)
+
+      joined_nouns = []
+      # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
+      # consecutive nouns are usually a form of compounding
+      for item in flattened: 
+        if item[0] == "n" and not item[:3] == "nbn":
+          if len(joined_nouns) > 0:
+            if joined_nouns[-1][0] == "n" and not joined_nouns[-1][:3] == "nbn":
+              joined_nouns[-1] += "_" + item 
+        else:
+          joined_nouns.append(item)
+
+      # split on nonconsecutive nouns
+      start = 0
+      lsts = []
+      for i, item in enumerate(joined_nouns):
+        if item[0] == "n" and not item[:3] == "nbn":
+          lsts.append(joined_nouns[start:i]) 
+          start = i # start a new verb list beginning at this noun
+        if i == len(joined_nouns) - 1: 
+          lsts.append(joined_nouns[start:]) # append the last verb list
+      
+      # add each verb list to data
+      for lst in lsts:
+        if len(lst) > 0:
+          data_.append(lst)
 
 # Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
@@ -76,43 +102,47 @@ data_train = []
 data_dev = []
 for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
     for sentence in corpus:
-        verb = []
-        for line in sentence:
-            if line["posUni"] == "PUNCT":
-                # Clear existing verb if you see punctuation
-                processVerb(verb, data_)
-                verb = []
-            elif line["posUni"] == "VERB":
-                # Clear existing verb if you see a new verb
-                processVerb(verb, data_)
-                verb = []
-                verb.append(line)
-            elif line["posUni"] == "AUX" and len(verb) > 0:
-                # Add auxiliary to existing verb
-                verb.append(line)
-            elif line["posUni"] == "AUX" and len(verb) == 0 and "px" in line["posFine"].split("+"):
-                # Auxiliary is a verb if it has a px (auxiliary verb)
-                verb.append(line)
-            elif line["word"] == "수" and len(verb) > 0:
-                # Part of VERB + ㄹ/을 수 있다/없다 construction
-                verb.append(line)
-            elif line["posUni"] == "SCONJ" and len(verb) > 0:
-                # Add subordinating conjunction to existing verb
-                verb.append(line)
-            elif line["posUni"] == "SCONJ" and len(verb) == 0 and "pvg" in line["posFine"].split("+"):
-                # Subordinating conjunction is a verb if it has pvg (general verb)
-                verb.append(line)
-                # TODO: can AUX appear after SCONJ in it?
-            elif line["posUni"] == "SCONJ" and len(verb) == 0 and "xsv" in line["posFine"].split("+"):
-                # Subordinating conjunction is a verb if it has xsv (verb derivational suffix)
-                verb.append(line)
-            elif "있" in line["word"] or "없" in line["word"]:
-                # These are bound roots that mean "to have" or "to not have"
-                verb.append(line)
-            else:
-                # Reached end of verb
-                processVerb(verb, data_)
-                verb = []
+      verb = []
+      for line in sentence:
+        if line["posUni"] == "PUNCT":
+            # Clear existing verb if you see punctuation
+            processVerb(verb, data_)
+            verb = []
+        elif line["posUni"] == "VERB":
+            # Clear existing verb if you see a new verb
+            processVerb(verb, data_)
+            verb = []
+            verb.append(line)
+        elif line["posUni"] == "AUX" and len(verb) > 0:
+            # Add auxiliary to existing verb
+            verb.append(line)
+        elif line["posUni"] == "AUX" and len(verb) == 0 and "px" in line["posFine"].split("+"):
+            # Auxiliary is a verb if it has a px (auxiliary verb)
+            verb.append(line)
+        elif line["word"] == "수" and len(verb) > 0:
+            # Part of VERB + ㄹ/을 수 있다/없다 construction
+            verb.append(line)
+        elif line["posUni"] == "SCONJ" and "pvg" in line["posFine"].split("+"):
+            # Subordinating conjunction is a new verb if it has pvg (general verb)
+            processVerb(verb, data_)
+            verb = []
+            verb.append(line)
+            # TODO: can AUX appear after SCONJ in it?
+        elif line["posUni"] == "SCONJ" and "xsv" in line["posFine"].split("+"):
+            # Subordinating conjunction is a new verb if it has xsv (verb derivational suffix)
+            processVerb(verb, data_)
+            verb = []
+            verb.append(line)
+        elif line["posUni"] == "SCONJ" and len(verb) > 0:
+            # Add subordinating conjunction to existing verb
+            verb.append(line)
+        elif "있" in line["word"] or "없" in line["word"]:
+            # These are bound roots that mean "to have" or "to not have"
+            verb.append(line)
+        else:
+            # Reached end of verb
+            processVerb(verb, data_)
+            verb = []
 
 words = []
 
@@ -129,10 +159,6 @@ for verbWithAff in data_train:
     itos.add(affix)
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
-
-
-print(itos)
-print(stoi)
 
 itos_ = itos[::]
 shuffle(itos_)
@@ -152,9 +178,6 @@ elif args.model != "REAL": # Load the ordering from a file
         morpheme, weight = line.strip().split(" ")
         weights[morpheme] = int(weight)
 
-
-
-
 def calculateTradeoffForWeights(weights):
     train = []
     dev = []
@@ -168,6 +191,7 @@ def calculateTradeoffForWeights(weights):
             affixes = affixes[::-1]
          else: # Order based on weights
             affixes = sorted(affixes, key=lambda x:weights.get(x, 0))
+         
          for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
             processed.append(getRepresentation(ch))
          processed.append("EOS") # Indicate end-of-sequence
