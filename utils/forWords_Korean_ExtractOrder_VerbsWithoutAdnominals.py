@@ -80,7 +80,7 @@ def processVerb(verb):
         if item[0] == "n" and not item[:3] == "nbn":
           if len(joined_nouns) > 0:
             if joined_nouns[-1][0] == "n" and not joined_nouns[-1][:3] == "nbn":
-              joined_nouns[-1] += item 
+              joined_nouns[-1] += "_" + item 
         else:
           joined_nouns.append(item)
 
