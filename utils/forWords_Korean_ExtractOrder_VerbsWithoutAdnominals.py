@@ -64,27 +64,41 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-
-# def processVerb(verb):
-#     if len(verb) > 0:
-#       flattened = []
-#       for group in verb:
-#          for morpheme in group["lemma"].split("+"):
-#            flattened.append(morpheme)
-#       # TODO: scoping issue with data
-#       data.append(flattened)
-
 # using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb):
     if len(verb) > 0:
-      #print(verb)
+      # get flattened list of labels + morphemes
       flattened = []
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
            flattened.append("_".join(morpheme))
-      #print(flattened)
-      data.append(flattened)
 
+      joined_nouns = []
+      # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
+      # consecutive nouns are usually a form of compounding
+      for item in flattened: 
+        if item[0] == "n" and not item[:3] == "nbn":
+          if len(joined_nouns) > 0:
+            if joined_nouns[-1][0] == "n" and not joined_nouns[-1][:3] == "nbn":
+              joined_nouns[-1] += item 
+        else:
+          joined_nouns.append(item)
+
+      # split on nonconsecutive nouns
+      start = 0
+      lsts = []
+      for i, item in enumerate(joined_nouns):
+        if item[0] == "n" and not item[:3] == "nbn":
+          lsts.append(joined_nouns[start:i]) 
+          start = i # start a new verb list beginning at this noun
+        if i == len(joined_nouns) - 1: 
+          lsts.append(joined_nouns[start:]) # append the last verb list
+      
+      # add each verb list to data
+      for lst in lsts:
+        if len(lst) > 0:
+          data.append(lst)
+          
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 pairs = set()
 counter = 0
@@ -119,15 +133,19 @@ for sentence in corpusTrain:
         elif line["word"] == "수" and len(verb) > 0:
             # Part of VERB + ㄹ/을 수 있다/없다 construction
             verb.append(line)
-        elif line["posUni"] == "SCONJ" and len(verb) > 0:
-            # Add subordinating conjunction to existing verb
-            verb.append(line)
-        elif line["posUni"] == "SCONJ" and len(verb) == 0 and "pvg" in line["posFine"].split("+"):
-            # Subordinating conjunction is a verb if it has pvg (general verb)
+        elif line["posUni"] == "SCONJ" and "pvg" in line["posFine"].split("+"):
+            # Subordinating conjunction is a new verb if it has pvg (general verb)
+            processVerb(verb)
+            verb = []
             verb.append(line)
             # TODO: can AUX appear after SCONJ in it?
-        elif line["posUni"] == "SCONJ" and len(verb) == 0 and "xsv" in line["posFine"].split("+"):
-            # Subordinating conjunction is a verb if it has xsv (verb derivational suffix)
+        elif line["posUni"] == "SCONJ" and "xsv" in line["posFine"].split("+"):
+            # Subordinating conjunction is a new verb if it has xsv (verb derivational suffix)
+            processVerb(verb)
+            verb = []
+            verb.append(line)
+        elif line["posUni"] == "SCONJ" and len(verb) > 0:
+            # Add subordinating conjunction to existing verb
             verb.append(line)
         elif "있" in line["word"] or "없" in line["word"]:
             # These are bound roots that mean "to have" or "to not have"
