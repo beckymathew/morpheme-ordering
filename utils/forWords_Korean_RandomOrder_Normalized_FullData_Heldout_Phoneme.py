@@ -1,13 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Estimate memory-surprisal tradeoff 
 
 import random
 import sys
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
-import torch.nn as nn
-import torch
-from torch.autograd import Variable
-import numpy.random
-import torch.nn.functional
 from math import log, exp
 from corpusIterator_V import CorpusIterator_V
 from random import shuffle, randint, Random, choice
