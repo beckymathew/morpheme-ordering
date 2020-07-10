@@ -64,6 +64,7 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
+import allomorphy
 # using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb):
     if len(verb) > 0:
@@ -71,7 +72,8 @@ def processVerb(verb):
       flattened = []
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
-           flattened.append("_".join(morpheme))
+           morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
+           flattened.append(morph + "_" + fine_label)
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
@@ -215,14 +217,6 @@ def bar_num_morphs(data):
     plt.savefig("kor_num_morphs_all.png")
 
 # bar_num_morphs(data)
-
-import torch.nn as nn
-import torch
-from torch.autograd import Variable
-import numpy.random
-import torch.cuda
-import torch.nn.functional
-
 words = []
 
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
@@ -251,7 +245,6 @@ freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item
 with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in freqs.keys():
      print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
-quit()
 
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
