@@ -14,7 +14,7 @@
 # effective (으)니까, (으)니까요 -- ecs or ef, but doesn't show up that much 
 # purposive (으)러 -- ecs, very infrequent
 # past ㅆ / 었 -- ep
-# perfective 은 / ㄴ -- etm, but is already represented in underlying form
+# perfective 은 / ㄴ / 는 -- etm, but is already represented in underlying form
 # intentional (으)려 -- ecs or ecx, but usually appears with go, neun, or myeon following
 # nominalizer 음 / ㅁ -- etn
 # conjunctive (으)면서 -- ecs
@@ -47,6 +47,7 @@ def get_underlying_morph_no_epenthesis(morph, fine_label):
         ("으니까요", "ef"): ("니까요", "ef"),
         ("으러", "ecs"): ("러", "ecs"),
         ("었", "ep"): ("ㅆ", "ep"),
+        ("는", "etm"): ("ㄴ", "etm"),
         ("으려", "ecs"): ("려", "ecs"),
         ("으려", "ecx"): ("려", "ecx"),
         ("으려고", "ecs"): ("려고", "ecs"),
@@ -83,6 +84,7 @@ def get_underlying_morph(morph, fine_label):
         ("과", "jcj"): ("와", "jcj"),
         ("과", "jct"): ("와", "jct"),
         ("었", "ep"): ("ㅆ", "ep"),
+        ("는", "etm"): ("ㄴ", "etm"),
         ("음", "etn"): ("ㅁ", "etn"),
     }
 
