@@ -210,13 +210,6 @@ def bar_num_morphs(data):
 
 # bar_num_morphs(data)
 
-import torch.nn as nn
-import torch
-from torch.autograd import Variable
-import numpy.random
-import torch.cuda
-import torch.nn.functional
-
 words = []
 
 ### splitting lemmas into morphemes -- each affix is a morpheme ###

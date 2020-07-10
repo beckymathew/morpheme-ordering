@@ -216,13 +216,6 @@ def bar_num_morphs(data):
 
 # bar_num_morphs(data)
 
-import torch.nn as nn
-import torch
-from torch.autograd import Variable
-import numpy.random
-import torch.cuda
-import torch.nn.functional
-
 words = []
 
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
@@ -251,7 +244,6 @@ freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item
 with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in freqs.keys():
      print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
-quit()
 
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
@@ -280,7 +272,7 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    return correct/(correct+incorrect)
 
 lastMostCorrect = 0
-for iteration in range(10):
+for iteration in range(1000):
 
   coordinate = choice(itos)
   while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
