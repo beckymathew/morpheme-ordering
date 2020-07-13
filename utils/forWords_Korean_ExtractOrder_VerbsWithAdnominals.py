@@ -73,7 +73,7 @@ def processVerb(verb):
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
            morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
-           flattened.append(morph + "_" + fine_label)
+           flattened.append(fine_label + "_" + morph)
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
@@ -240,6 +240,7 @@ freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item
 with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in freqs.keys():
      print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
+quit()
 
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
