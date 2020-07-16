@@ -64,7 +64,6 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import allomorphy
 # using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb):
     if len(verb) > 0:
@@ -72,8 +71,7 @@ def processVerb(verb):
       flattened = []
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
-           morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
-           flattened.append(morph + "_" + fine_label)
+           flattened.append("_".join(morpheme))
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
@@ -217,6 +215,7 @@ def bar_num_morphs(data):
     plt.savefig("kor_num_morphs_all.png")
 
 # bar_num_morphs(data)
+
 words = []
 
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
@@ -273,7 +272,7 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    return correct/(correct+incorrect)
 
 lastMostCorrect = 0
-for iteration in range(10):
+for iteration in range(1000):
 
   coordinate = choice(itos)
   while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
