@@ -153,6 +153,38 @@ morpheme_slots = {
 단다	ef	1	[('단다', 'ef')]
 """
 
+def automatic_morpheme_meaning(grapheme, label):
+    slots = []
+    politeFlag = False
+
+    if grapheme[-1] == "요": # This should basically always be last
+    politeFlag = True
+
+    if grapheme[0] == "으": # allomorph, epenthetic vowel
+        grapheme = grapheme[1:]
+
+    if grapheme[0] == "ㅂ" or grapheme[0] == "습" or grapheme[0] == "읍":
+        slots.append("FORMALITY")
+        grapheme = grapheme[1:]
+
+    if label == "ef":
+        if grapheme[0] == "ㄹ": # future tense
+            slots.append("TENSE/ASPECT")
+            grapheme = grapheme[1:]
+        if grapheme[0] == "ㄴ" or grapheme[0] == "는": # indicative
+            slots.append("SYNTACTICMOOD")
+            grapheme = grapheme[1:]
+        # check for interrogative -kka unless preceded by -ni (then it's cause/reason -nikka)
+
+    if label + "_" + grapheme in morpheme_slots:
+        slots.append(morpheme_slots[label + "_" + grapheme])
+
+    if politeFlag: # This should always be last
+        slots.append("POLITE")
+    
+    # TODO maybe I should yield instead of returning a list or something
+    return slots 
+
 def morpheme_meaning(grapheme, label):
     ret = morpheme_slots.get(label + "_" + grapheme)
     if ret == None: 
