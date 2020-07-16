@@ -1,0 +1,16 @@
+Scores for lemma per verb:
+0.6232394366197183, 0.6690140845070423
+
+Scores for morpheme per verb (excluding morphemes from first lemma):
+0.9720534629404617, 0.9781287970838396
+
+Scores for morpheme per verb (excluding first morpheme, which should be the root):
+0.8826608832217777
+
+Score for withoutAdnominals, morphemeMeanings, UnknownDiscard
+0.799334682578454
+
+Score for withoutAdnominals, morphemeMeanings, UnknownGrapheme
+0.8612866376505632
+
+Score for withoutAdnominals, morphemeMeanings, Unknown
