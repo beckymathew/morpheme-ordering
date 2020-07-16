@@ -11,6 +11,7 @@ Score for withoutAdnominals, morphemeMeanings, UnknownDiscard
 0.799334682578454
 
 Score for withoutAdnominals, morphemeMeanings, UnknownGrapheme
-0.8612866376505632
+0.8643665861734893
 
 Score for withoutAdnominals, morphemeMeanings, Unknown
+0.8612866376505632
