@@ -25,8 +25,17 @@ morpheme_slots = {
     "jp_이": "ROOT",
     "ep_으시": "HONORIFIC",
     "ef_십시오": "HONORIFIC", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
+    "ef_세요": "HONORIFIC", # honorific informal polite imperative
     "ef_으리오": "VALENCY", # passative / causative https://en.wiktionary.org/wiki/%EB%A6%AC
     "ef_리오": "VALENCY", # passative / causastive https://en.wiktionary.org/wiki/%EB%A6%AC
+    "ef_ㄹ세": "TENSE/ASPECT", # not certain about this, but -l usually means future tense and -se usually involves an honorific
+    "ef_ㄹ걸": "TENSE/ASPECT", # future tense -l
+    "ef_ㄹ지어다": "TENSE/ASPECT", # future tense -l
+    "ef_ㄹ지": "TENSE/ASPECT", # future tense -l
+    "ef_ㄹ지라": "TENSE/ASPECT", # future tense -l
+    "ef_ㄹ쏘냐": "TENSE/ASPECT", # future tense -l
+    "ef_ㄹ지어라": "TENSE/ASPECT", # future tense -l
+    "ef_ㄹ텐데": "TENSE/ASPECT", # future tense -l
     "ef_읍시다": "FORMALITY", # -eub is formal
     "ef_ㅂ디다": "FORMALITY", # -b is formal
     "ef_ㅂ시다": "FORMALITY", # -b is formal
@@ -54,6 +63,14 @@ morpheme_slots = {
     "ef_ㄴ지": "SYNTACTICMOOD", # indicative -n, of course / biased questions -ji
     "ef_는지": "SYNTACTICMOOD", # indicative -neun, of course / biased questions -ji
     "ef_던가": "SYNTACTICMOOD", # retrospective / imperfective -deon with interrogative https://www.howtostudykorean.com/unit-5/unit-5-lessons-117-125/lesson-117/#1171
+    "ef_는구나": "SYNTACTICMOOD", # indicative -neun
+    "ef_ㄴ걸": "SYNTACTICMOOD", # indicative -n
+    "ef_ㄴ데": "SYNTACTICMOOD", # indicative -n, contrast connector -de
+    "ef_는지요": "SYNTACTICMOOD", # indicative -neun, of course / biased question -ji, polite -yo
+    "ef_ㄴ데요": "SYNTACTICMOOD", # indicative -n, contrast connector -de, polite -yo
+    "ef_는단다": "SYNTACTICMOOD", # indicative -neun
+    "ef_ㄴ지라": "SYNTACTICMOOD", # indicative -n
+    "ef_ㄴ거지": "SYNTACTICMOOD", # indicative -n
     "ef_오": "PRAGMATICMOOD", # imperative
     "ef_아라": "PRAGMATICMOOD",	# allomorph of 어라
     "ef_어라": "PRAGMATICMOOD",
@@ -69,8 +86,10 @@ morpheme_slots = {
     "ef_에요": "PRAGMATICMOOD", # polite -yo
     "ef_구나": "PRAGMATICMOOD", # something like a mirative, "Oh I just realized that..." https://www.howtostudykorean.com/upper-intermediate-korean-grammar/unit-4-lessons-76-83/lesson-82-2/#921
     "ef_군": "PRAGMATICMOOD", # ^ same mirative
+    "ef_군요": "PRAGMATICMOOD", # ^ same mirative with polite -yo
     "ef_라고": "PRAGMATICMOOD", # quotative
     "ef_라구": "PRAGMATICMOOD", # quotative
+    "ef_라니": "PRAGMATICMOOD", # contraction of quotative
     "ef_자": "PRAGMATICMOOD",
     "ef_냐": "PRAGMATICMOOD", # interrogative
     "ef_소": "PRAGMATICMOOD", # declarative from outdated haoche style https://blog.lingodeer.com/the-definitive-guide-to-korean-speech-levels/
@@ -80,6 +99,10 @@ morpheme_slots = {
     "ef_죠": "PRAGMATICMOOD", # same as -ji with -yo polite
     "ef_지요": "PRAGMATICMOOD", # same as ^ -jyo
     "ef_나": "PRAGMATICMOOD", # casual interrogative https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjT1NPEj9DqAhXEGc0KHVZaDbsQFjAAegQIBhAB&url=https%3A%2F%2Fgobillykorean.com%2Fshop%2FFile%2Fget%2F%3Ffile%3DGo_Billy_Korean_Episode_28.pdf&usg=AOvVaw1Q1-UDawtJGqrhJ62jjstX
+    "ef_어야지": "PRAGMATICMOOD", # one should do something
+    "ef_지마라": "PRAGMATICMOOD", # negative imperative
+    "ef_리요": "PRAGMATICMOOD", # imperative (but an older style)
+    "ef_답니다": "PRAGMATICMOOD", # something like a quotative? https://forum.wordreference.com/threads/%EB%8B%B5%EB%8B%88%EB%8B%A4.2253519/
     "jxf_요": "POLITE",
     "ef_요": "POLITE",
     "ef_니까": "CONNECTOR", # formal polite cause/reason -nikka https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
@@ -89,6 +112,9 @@ morpheme_slots = {
     "ef_고": "CONNECTOR", 
     "ef_구": "CONNECTOR", # can't tell what this is, some people say it's a different way to write -go
     "ef_야": "CONNECTOR", # condition connective form, https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
+    "ef_데": "CONNECTOR", # contrast connective form https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
+    "ef_랴": "CONNECTOR", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
+    "ef_으랴": "CONNECTOR", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_옵니다": "AUXILIARY" # formal indicative "to come" (not a suffix, it's a new verb)
 }
 
@@ -96,60 +122,35 @@ morpheme_slots = {
 """
 아	ef	4	[('아', 'ef')]
 아야지	ef	2	[('아야지', 'ef')]
-는단다	ef	1	[('는단다', 'ef')]
 다니	ef	1	[('다니', 'ef')]
-ㄹ쏘냐	ef	1	[('ㄹ쏘냐', 'ef')]
 지라	ef	2	[('지라', 'ef'), ('으지라', 'ef')]
 다더라	ef	1	[('다더라', 'ef')]
 냐고	ef	2	[('으냐고', 'ef'), ('냐고', 'ef')]
-ㄹ지어다	ef	1	[('ㄹ지어다', 'ef')]
-지마라	ef	1	[('지마라', 'ef')]
 너라	ef	1	[('너라', 'ef')]
 나다	ef	1	[('나다', 'ef')]
-는구나	ef	1	[('는구나', 'ef')]
 대서야	ef	1	[('대서야', 'ef')]
-ㄹ지어라	ef	1	[('ㄹ지어라', 'ef')]
-ㄹ걸	ef	2	[('ㄹ걸', 'ef')]
 옵소서	ef	2	[('옵소서', 'ef')]
-어야지	ef	4	[('어야지', 'ef')]
 노라	ef	3	[('노라', 'ef')]
 구려	ef	1	[('구려', 'ef')]
-데	ef	1	[('데', 'ef')]
-ㄹ세	ef	4	[('ㄹ세', 'ef')]
 랍니다	ef	2	[('랍니다', 'ef')]
 라나	ef	1	[('라나', 'ef')]
 로다	ef	2	[('로다', 'ef')]
-ㄴ데	ef	1	[('ㄴ데', 'ef')]
 란다	ef	2	[('란다', 'ef')]
 여	ef	2	[('여', 'ef')]
 외다	ef	2	[('외다', 'ef')]
-ㄹ텐데	ef	1	[('ㄹ텐데', 'ef')]
-군요	ef	1	[('군요', 'ef')]
 예요	ef	2	[('예요', 'ef')]
-ㄴ걸	ef	1	[('ㄴ걸', 'ef')]
-리요	ef	4	[('리요', 'ef')]
 이요	ef	1	[('이요', 'ef')]
 이랴	ef	1	[('이랴', 'ef')]
 든가	ef	1	[('든가', 'ef')]
 지예	ef	1	[('지예', 'ef')]
 다면	ef	1	[('다면', 'ef')]
-ㄴ데요	ef	1	[('ㄴ데요', 'ef')]
 거든	ef	4	[('거든', 'ef')]
-ㄹ지	ef	2	[('ㄹ지', 'ef')]
-랴	ef	9	[('으랴', 'ef'), ('랴', 'ef')]
-ㄴ지라	ef	2	[('ㄴ지라', 'ef')]
-세요	ef	8	[('세요', 'ef')]
 라네	ef	3	[('라네', 'ef')]
 인가	ef	1	[('인가', 'ef')]
-는지요	ef	3	[('는지요', 'ef')]
-ㄹ지라	ef	1	[('ㄹ지라', 'ef')]
 긴	ef	1	[('긴', 'ef')]
 다네	ef	4	[('다네', 'ef')]
 네	ef	3	[('네', 'ef')]
 단다	ef	1	[('단다', 'ef')]
-라니	ef	2	[('라니', 'ef')]
-ㄴ거지	ef	1	[('ㄴ거지', 'ef')]
-답니다	ef	6	[('답니다', 'ef')]
 """
 
 def morpheme_meaning(grapheme, label):
