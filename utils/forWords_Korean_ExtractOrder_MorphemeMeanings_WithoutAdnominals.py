@@ -50,7 +50,6 @@ def getRepresentation(lemma):
    else:
      return lemma
 
-
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
 
@@ -65,6 +64,7 @@ morphKeyValuePairs = set()
 vocab_lemmas = {}
 
 import allomorphy
+from korean_morpheme_meanings import morpheme_meaning
 # using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb):
     if len(verb) > 0:
@@ -73,7 +73,9 @@ def processVerb(verb):
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
            morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
-           flattened.append(fine_label + "_" + morph)
+           morpheme_slot = morpheme_meaning(grapheme=morph, label=fine_label) 
+           if not morpheme_slot == "UNKNOWN":
+              flattened.append(morph + "_" + fine_label)
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
@@ -100,7 +102,7 @@ def processVerb(verb):
       for lst in lsts:
         if len(lst) > 0:
           data.append(lst)
-
+          
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 pairs = set()
 counter = 0
@@ -117,7 +119,15 @@ for sentence in corpusTrain:
             # Clear existing verb if you see a new verb
             processVerb(verb)
             verb = []
-            verb.append(line)
+            if not line["posFine"].split("+")[-1] in ["etm", "etn"]:
+                # only use the new verb if it isn't adnominalized or nominalized
+                verb.append(line)
+        elif line["posFine"].split("+")[-1] == "etm":
+            # The existing verb is in adnominal form, so we won't consider it
+            verb = []
+        elif line["posFine"].split("+")[-1] == "etn":
+            # The existing verb is nominalized, so we won't consider it
+            verb = []
         elif line["posUni"] == "AUX" and len(verb) > 0:
             # Add auxiliary to existing verb
             verb.append(line)
@@ -180,13 +190,11 @@ for sentence in corpusTrain:
 #             data.append([line["lemma"]])
 
 
-print(len(data))
-# with open('labeled_noun_verbs_with_adnominals.txt', 'w') as fout:
+# print(len(data))
+# with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
 #     for item in data:
-#         for morph in item:
-#           if morph[0] == "n" and not morph[:3] == "nbn":
-#             fout.write("%s\n" % item)
-#             continue
+#         fout.write("%s\n" % item)
+# quit()
 
 from collections import Counter
 import matplotlib.pyplot as plt
@@ -211,7 +219,6 @@ def bar_num_morphs(data):
     plt.savefig("kor_num_morphs_all.png")
 
 # bar_num_morphs(data)
-
 words = []
 
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
@@ -240,7 +247,6 @@ freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item
 with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in freqs.keys():
      print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
-quit()
 
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
