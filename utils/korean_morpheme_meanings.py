@@ -1,41 +1,23 @@
-# {
-#     "ep_았": "",
-#     "jcr_고": "",
-#     "ecs_면": "",
-#     "px_지": "", # M2TA_064-s16, M2TA_064-s22, M2TA_064-s58 TODO: no idea...
-#     "ecx_게": "CAUSATIVE", # https://en.wiktionary.org/wiki/%EA%B2%8C etymology 6 -- causative / passive
-#     "paa_있": "", # TODO: can't find an example
-#     "etn_기": "DERIVATION", # nominalizer
-#     "ecx_지": "CONNECTOR", # used with ji + anhda / motha negation
-#     "nbn_수": "ABILITY", # exclusively used with verb + su + iss/eops-da pattern
-#     "ecx_고": "CONNECTOR", 
-#     "px_있"	"AUXILIARY", # sometimes used for progressive, ability/inability, etc
-#     "ef_ㄴ다": "DECLARATIVE", # plain present indicative for action verbs
-#     "ecs_어": "CONNECTOR", # https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/lessons-67-75/lesson-70/ TODO
-#     "ecx_어": "TENSE", # It's not exactly tense, but verbs must conjugate with -a or -o at the end in -a/-o/ya register TODO
-#     "etm_ㄹ": "DERIVATION", # adnominalizer (used with future tense? TODO)
-#     "jp_이": "VERB_DERIVATION", # predicative maker, appears earlier than other derivation slots
-#     "ep_ㅆ": "TENSE", # pre-final past tense marker
-#     "ef_다": "FINAL", # TODO
-#     "etm_ㄴ": "DERIVATION" # adnominalizer
-# }
-
 # based on matchedAllomorphs.tsv
 morpheme_slots = {
     "jp_이": "ROOT",
     "ep_으시": "HONORIFIC",
     "ef_십시오": "HONORIFIC", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_세요": "HONORIFIC", # honorific informal polite imperative
+    "ef_세": "HONORIFIC",
     "ef_으리오": "VALENCY", # passative / causative https://en.wiktionary.org/wiki/%EB%A6%AC
     "ef_리오": "VALENCY", # passative / causastive https://en.wiktionary.org/wiki/%EB%A6%AC
     "ef_ㄹ세": "TENSE/ASPECT", # not certain about this, but -l usually means future tense and -se usually involves an honorific
     "ef_ㄹ걸": "TENSE/ASPECT", # future tense -l
     "ef_ㄹ지어다": "TENSE/ASPECT", # future tense -l
+    "ef_지어다": "PRAGMATICMOOD", # https://www.reddit.com/r/Korean/comments/di3d8z/help_me_understand_the_ending_%EC%9D%84%EC%A7%80%EC%96%B4%EB%8B%A4_please/
     "ef_ㄹ지": "TENSE/ASPECT", # future tense -l
     "ef_ㄹ지라": "TENSE/ASPECT", # future tense -l
     "ef_ㄹ쏘냐": "TENSE/ASPECT", # future tense -l
+    "ef_쏘냐": "PRAGMATICMOOD", # interrogative https://www.reddit.com/r/Korean/comments/aqytjr/what_does_%EB%91%90%EB%A0%A4%EC%9A%B8%EC%86%8C%EB%83%90_consist_of/
     "ef_ㄹ지어라": "TENSE/ASPECT", # future tense -l
     "ef_ㄹ텐데": "TENSE/ASPECT", # future tense -l
+    "ef_텐데": "PRAGMATICMOOD", # expresses uncertainty and regret https://www.howtostudykorean.com/upper-intermediate-korean-grammar/unit-4-lessons-92-100/lesson-100/
     "ef_읍시다": "FORMALITY", # -eub is formal
     "ef_ㅂ디다": "FORMALITY", # -b is formal
     "ef_ㅂ시다": "FORMALITY", # -b is formal
@@ -115,7 +97,8 @@ morpheme_slots = {
     "ef_데": "CONNECTOR", # contrast connective form https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_랴": "CONNECTOR", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_으랴": "CONNECTOR", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
-    "ef_옵니다": "AUXILIARY" # formal indicative "to come" (not a suffix, it's a new verb)
+    "ef_옵니다": "AUXILIARY", # formal indicative "to come" (not a suffix, it's a new verb)
+    "ef_걸": "DERIVATION" # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/
 }
 
 # ef: Final ending marker. SLOTS: V, VI, VII
@@ -157,38 +140,79 @@ def automatic_morpheme_meaning(grapheme, label):
     slots = []
     politeFlag = False
 
-    if grapheme[-1] == "요": # This should basically always be last
-    politeFlag = True
+    if grapheme[-1] == "요": # This should always be last
+        politeFlag = True
+        grapheme = grapheme[:-1]
 
-    if grapheme[0] == "으": # allomorph, epenthetic vowel
-        grapheme = grapheme[1:]
-
-    if grapheme[0] == "ㅂ" or grapheme[0] == "습" or grapheme[0] == "읍":
-        slots.append("FORMALITY")
-        grapheme = grapheme[1:]
-
-    if label == "ef":
-        if grapheme[0] == "ㄹ": # future tense
-            slots.append("TENSE/ASPECT")
+    if grapheme:
+        if grapheme[0] == "으": # allomorph, epenthetic vowel
             grapheme = grapheme[1:]
-        if grapheme[0] == "ㄴ" or grapheme[0] == "는": # indicative
-            slots.append("SYNTACTICMOOD")
+
+        if grapheme[0] == "ㅂ" or grapheme[0] == "습" or grapheme[0] == "읍":
+            slots.append("FORMALITY")
             grapheme = grapheme[1:]
-        # check for interrogative -kka unless preceded by -ni (then it's cause/reason -nikka)
 
-    if label + "_" + grapheme in morpheme_slots:
-        slots.append(morpheme_slots[label + "_" + grapheme])
+        if "FORMALITY" in slots and grapheme == "니까": # this is an interrogative after a formal, otherwise cause/reason
+            slots.append("PRAGMATICMOOD")
+            grapheme = ""
 
-    if politeFlag: # This should always be last
-        slots.append("POLITE")
+        if label == "ef" and grapheme:
+            if grapheme[0] == "ㄹ": # future tense TODO: this looks like it's not always future
+                slots.append("TENSE/ASPECT")
+                grapheme = grapheme[1:]
+            if grapheme[0] == "ㄴ" or grapheme[0] == "는": # indicative
+                slots.append("SYNTACTICMOOD")
+                grapheme = grapheme[1:]
+                if grapheme == "지": # indicative + ji turns a verb into a noun-like clause https://www.howtostudykorean.com/unit-2-lower-intermediate-korean-grammar/unit-2-lessons-26-33/lesson-30/
+                    slots.append("DERIVATION")
+                    grapheme = ""
+                    
+        ret = morpheme_slots.get(label + "_" + grapheme)
+        if ret == None: 
+            if label == "px": # auxiliary verb
+                slots.append("AUXILIARY")
+            elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
+                slots.append("AUXILIARY")
+            elif label == "pvg" or label == "paa": # general verb or attributive adjective
+                slots.append("ROOT") # TODO: why would a root appear later in an affix chain
+            elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
+                # not technically the root, but probably part of a noun / adj root that got turned into a verb
+                slots.append("DERIVATION")
+            elif label == "xsv": # verb derivational suffix
+                slots.append("VALENCY")
+            elif label == "etm" or label == "etn": # adnominalizer or nominalizer
+                slots.append("SYNTACTICMOOD")
+            elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
+                slots.append("TENSE/ASPECT")
+            elif label == "jcr": # quotative case particle
+                slots.append("PRAGMATICMOOD")
+            elif label == "jca": # adverbial case particle (looks like mostly locative or instrumental)
+                slots.append("PRAGMATICMOOD")
+            elif label == "jxc": # common auxiliary (looks like "only", "until", "up to")
+                slots.append("PRAGMATICMOOD")
+            elif label == "ecc" or label == "ecs" or label == "ecx": # coordinate conjunction, conjunctive ending, auxiliary conjunction
+                slots.append("CONNECTOR")
+            else:
+                slots.append("UNKNOWN")
+        else:
+            slots.append(ret) # label from dictionary morpheme_slots
+
+        grapheme = ""
+        if label + "_" + grapheme in morpheme_slots:
+            slots.append(morpheme_slots[label + "_" + grapheme])
+            grapheme = ""
+
+        if politeFlag: # This should always be last
+            slots.append("POLITE")
     
-    # TODO maybe I should yield instead of returning a list or something
     return slots 
 
 def morpheme_meaning(grapheme, label):
     ret = morpheme_slots.get(label + "_" + grapheme)
     if ret == None: 
         if label == "px": # auxiliary verb
+            return "AUXILIARY"
+        elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
             return "AUXILIARY"
         elif label == "pvg" or label == "paa": # general verb or attributive adjective
             return "ROOT"
