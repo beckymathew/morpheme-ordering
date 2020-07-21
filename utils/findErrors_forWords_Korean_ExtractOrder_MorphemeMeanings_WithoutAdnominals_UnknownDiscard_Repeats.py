@@ -111,6 +111,7 @@ pairs = set()
 counter = 0
 data = []
 
+import copy
 for sentence in corpusTrain:
     verb = []
     for line in sentence:
@@ -131,6 +132,34 @@ for sentence in corpusTrain:
         elif line["posFine"].split("+")[-1] == "etn":
             # The existing verb is nominalized, so we won't consider it
             verb = []
+        elif "px" in line["posFine"].split("+"):
+            if "pvg" in line["posFine"].split("+") or "paa" in line["posFine"].split("+"):
+              processVerb(verb)
+              verb = []
+            posfine = line["posFine"].split("+")
+            lemma = line["lemma"].split("+")
+            idx = 0
+            for pos in posfine:
+              if pos == "px":
+                break
+              idx += 1
+            before = copy.copy(line)
+            after = copy.copy(line)
+            before_posfine = "+".join(posfine[:idx])
+            after_posfine = "+".join(posfine[idx:])
+            if before_posfine:
+             before["posFine"] = "+".join(posfine[:idx])
+             before["lemma"] = "+".join(lemma[:idx])
+             verb.append(before)
+             processVerb(verb)
+             verb = []
+            if after_posfine:
+              after["posFine"] = "+".join(posfine[idx:])
+              after["lemma"] = "+".join(lemma[idx:])
+              processVerb(verb)
+              verb = []
+              verb.append(after) 
+            continue
         elif line["posUni"] == "AUX" and len(verb) > 0:
             # # Add auxiliary to existing verb
             # verb.append(line)
@@ -270,6 +299,7 @@ freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item
 
 from collections import defaultdict
 errors = defaultdict(int)
+correct_connectors = []
 
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
@@ -294,6 +324,8 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
                 weightJ = weights[getRepresentation(vb[j])]
              if not vb[i] in seen: 
               if weightI > weightJ: # allow for repeated slots
+                if "CONNECTOR" in vb:
+                  correct_connectors.append(fromAffixChainsToMorphemeSeqs[vb])
                 correct+=count
               else:
                 incorrect+=count
@@ -313,3 +345,8 @@ with open("output/errors_becky_repeats_3.txt", "w") as outFile:
       for x in fromAffixChainsToMorphemeSeqs[error]:
           print(x, file=outFile)
   #print(errors)
+
+with open("output/correct_connectors.txt", "w") as fout:
+  for line in correct_connectors:
+    for x in line:
+      print(x, file=fout)
