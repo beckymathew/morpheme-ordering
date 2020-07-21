@@ -7,7 +7,7 @@ objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Korean_2.6")
+parser.add_argument("--language", dest="language", type=str, default="Japanese_2.4")
 parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
@@ -74,17 +74,17 @@ def processVerb(verb):
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
            morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
            morpheme_slot = automatic_morpheme_meaning(grapheme=morph, label=fine_label) 
-           for slot in morpheme_slot: 
+           for slot in morpheme_slot:
              if not slot == "UNKNOWN":
-               flattened.append({"SLOT": slot, "MORPHEME": morpheme})
+               flattened.append(slot)
           #  if not morpheme_slot == "UNKNOWN":
-          #      flattened.append({"SLOT" : morpheme_slot, "MORPHEME" : morpheme})
+          #     flattened.append(morpheme_slot)
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
       # consecutive nouns are usually a form of compounding
       for item in flattened: 
-        if item["SLOT"][0] == "n" and not item["SLOT"][:3] == "nbn":
+        if item[0] == "n" and not item[:3] == "nbn":
           if len(joined_nouns) > 0:
             if joined_nouns[-1][0] == "n" and not joined_nouns[-1][:3] == "nbn":
               joined_nouns[-1] += "_" + item 
@@ -95,7 +95,7 @@ def processVerb(verb):
       start = 0
       lsts = []
       for i, item in enumerate(joined_nouns):
-        if item["SLOT"][0] == "n" and not item["SLOT"][:3] == "nbn":
+        if item[0] == "n" and not item[:3] == "nbn":
           lsts.append(joined_nouns[start:i]) 
           start = i # start a new verb list beginning at this noun
         if i == len(joined_nouns) - 1: 
@@ -127,26 +127,27 @@ for sentence in corpusTrain:
             verb = []
         elif "px" in line["posFine"].split("+"):
             if "pvg" in line["posFine"].split("+") or "paa" in line["posFine"].split("+"):
+              # general verb or adjective is part of new verb
               processVerb(verb)
               verb = []
             posfine = line["posFine"].split("+")
             lemma = line["lemma"].split("+")
 
-            posfine_lsts = [x.split("+") for x in line["posFine"].split("px")]
+            posfine_lsts = [x.split("+") for x in line["posFine"].split("px")] # make list of lists, split on px
             
             for lst in posfine_lsts:
               if lst[0] == "":
-                lst.insert(0, "px")
+                lst.insert(0, "px") # splitting deleted px, bring it back
 
               while "" in lst: # removing some artefacts of splitting and joining
                 lst.remove("")
 
-            while ["px"] in posfine_lsts:
+            while ["px"] in posfine_lsts: # removing lists that were originally empty
               posfine_lsts.remove(["px"])
 
-            lemma_lsts = []
+            lemma_lsts = [] 
             idx = 0
-            for lst in posfine_lsts:
+            for lst in posfine_lsts: # find corresponding lemmas of posfine lsts
               lemma_lsts.append(lemma[idx:idx + len(lst)])
               idx += len(lst)
 
@@ -154,11 +155,11 @@ for sentence in corpusTrain:
               copied = copy.copy(line)
               copied["posFine"] = "+".join(posfine_lsts[i])
               copied["lemma"] = "+".join(lemma_lsts[i])
-              if i == 0 and "px" not in posfine_lsts[i]:
+              if i == 0 and "px" not in posfine_lsts[i]: # still part of previous verb
                 verb.append(copied)
                 processVerb(verb)
                 verb = []
-              else:
+              else: # starts w px and is a new verb
                 processVerb(verb)
                 verb = []
                 verb.append(copied)
@@ -170,8 +171,6 @@ for sentence in corpusTrain:
                 # only use the new verb if it isn't adnominalized or nominalized
                 verb.append(line)
         elif line["posUni"] == "AUX" and len(verb) > 0:
-            # # Add auxiliary to existing verb
-            # verb.append(line)
             # Auxiliary is new verb
             processVerb(verb)
             verb = []
@@ -206,22 +205,6 @@ for sentence in corpusTrain:
             processVerb(verb)
             verb = []
 
-
-### look at all Korean words instead of just verbs ###
-# data = []
-# for sentence in corpusTrain:
-#     for line in sentence:
-#         # print(line)
-#         if not line["posUni"] == "PUNCT":
-#             data.append([line["lemma"]])
-
-
-# print(len(data))
-# with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
-#     for item in data:
-#         fout.write("%s\n" % item)
-# quit()
-
 from collections import Counter
 import matplotlib.pyplot as plt
 
@@ -251,54 +234,32 @@ words = []
 affixFrequencies = {}
 for verbWithAff in data:
   for affix in verbWithAff[1:]: # TODO: why does this start at 1? mhahn: in Japanese, this is to only conider suffixes, not the stem. Should probably be changed for Korean.
-        affixFrequencies[affix["SLOT"]] = affixFrequencies.get(affix["SLOT"], 0) + 1
+        affixFrequencies[affix] = affixFrequencies.get(affix, 0) + 1
 
 itos = set() # set of affixes
 for verbWithAff in data:
   for affix in verbWithAff[1:]:
-        itos.add(affix["SLOT"])
+        itos.add(affix)
 itos = sorted(list(itos)) # sorted list of verb affixes
 stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
 
-print(weights)
-
-# with open("output/extracted_Korean_2.6_forWords_Korean_ExtractOrder_MorphemeMeanings_WithoutAdnominals_UnknownDiscard.py_4821478.tsv", "r") as outFile:
-with open("output/extracted_Korean_forWords_Korean_ExtractOrder_MorphemeMeanings_WithoutAdnominals_UnknownDiscard_Repeats.py_5102554.tsv", "r") as outFile:
-  for x in outFile:
-      x = x.strip().split("\t")
-      print(x)
-      assert x[0] in weights, x
-      weights[x[0]] = int(x[1])
-print(weights)
 
 from collections import defaultdict
 affixChains = defaultdict(int)
-fromAffixChainsToMorphemeSeqs = defaultdict(list)
 for d in data:
-   affixChain = tuple([x["SLOT"] for x in d[1:]])
-   affixChains[affixChain] += 1
-   fromAffixChainsToMorphemeSeqs[affixChain].append(d)
+   affixChains[tuple(d[1:])] += 1
 
-freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item[1])}
-
-from collections import defaultdict
-errors = defaultdict(int)
-correct_connectors = []
-
+incorrect_orders = []
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
    incorrect = 0
-#   print(data[:10])
    for affixChain, count in affixChains.items():
-#      print(affixChain, count)
       vb = affixChain
-#      print(vb)
-      foundError=False
-      seen = []
+
       for i in range(0, len(vb)):
          for j in range(0, i):
              if vb[i] == coordinate:
@@ -310,31 +271,40 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
                 weightJ = newValue
              else:
                 weightJ = weights[getRepresentation(vb[j])]
-             if not vb[i] in seen: 
-              if weightI > weightJ: # allow for repeated slots
-                if "CONNECTOR" in vb:
-                  correct_connectors.append(fromAffixChainsToMorphemeSeqs[vb])
-                correct+=count
-              else:
-                incorrect+=count
-                foundError=True
-         seen.append(vb[i])
-      if foundError:
-          errors[vb] += 1
+             if weightI > weightJ:
+               correct+=count
+             else:
+               incorrect_orders.append(affixChain)
+               incorrect+=count
    return correct/(correct+incorrect)
-getCorrectOrderCountPerMorpheme(weights, None, None)
-errors = sorted(list(errors.items()), key=lambda x:x[1])
-with open("output/errors_becky_repeats_3.txt", "w") as outFile:
-  for error, count in errors:
-      print("====", file=outFile)
-      print("ERROR: Incompatible Suffix Chain: ", error, file=outFile)
-      print("Occurrences: ", count, file=outFile)
-      print("Relevant Examples:", file=outFile)
-      for x in fromAffixChainsToMorphemeSeqs[error]:
-          print(x, file=outFile)
-  #print(errors)
 
-with open("output/correct_connectors.txt", "w") as fout:
-  for line in correct_connectors:
-    for x in line:
-      print(x, file=fout)
+lastMostCorrect = 0
+for iteration in range(1000):
+
+  coordinate = choice(itos)
+  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
+     coordinate = choice(itos)
+
+  mostCorrect, mostCorrectValue = 0, None
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]: # TODO: why is there -1 and +1 here? mhahn: this describes all ways of ordering the chosen morpheme between any two other morphemes
+     if random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
+         continue
+     weights_ = {x : y for x,y in weights.items()}
+     weights_[coordinate] = newValue
+     correctCount = getCorrectOrderCountPerMorpheme(weights_, None, None)
+     if correctCount > mostCorrect:
+        mostCorrectValue = newValue
+        mostCorrect = correctCount
+  print(iteration, mostCorrect)
+
+  assert mostCorrect >= lastMostCorrect
+  lastMostCorrect = mostCorrect
+
+  weights[coordinate] = mostCorrectValue
+  itos_ = sorted(itos, key=lambda x:weights[x])
+  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+
+print(weights)
+with open("output/extracted_"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+  for x in itos_:
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]), file=outFile)
