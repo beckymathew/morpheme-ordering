@@ -1,0 +1,343 @@
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '따르')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '맺')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '움직이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '걷')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jca', '에')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '따르')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '오')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ가')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '움직이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '말하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '느끼')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '못하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '라')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '옮기')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '바뀌')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'SYNTACTICMOOD', 'DERIVATION')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '않')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '았')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '않')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '았')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '이르')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '이르')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '전후하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('DERIVATION', 'PRAGMATICMOOD', 'PRAGMATICMOOD', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsn', '뿐')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '라')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어도')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'TENSE/ASPECT', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '대하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '지만')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '같')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '이')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '다고')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '아니')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '더라면')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '지만')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'TENSE/ASPECT', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '다니')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '통하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '만들')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '적절하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '크')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '같')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '이')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '잇달')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '배우')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면서')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '쉽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '들')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어야')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '알')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄹ수록')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '견주')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '없')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '이')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '보')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '나')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '대하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '대하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '않')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄹ까')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '떠나')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '론가')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '같')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '이')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '지')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecc', '고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '늙')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '비하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '관하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '크')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '지만')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '썩')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '듯')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '날아오')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '대하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '크')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '이르')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '이르')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '보')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아야')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '오르')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '걷')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄹ수록')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '의하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '비하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라고')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '사라지')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '다고')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '닿')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '으면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '든지')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '대하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecc', '고')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '보')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '나마')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '않')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecc', '고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어도')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '아니')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '들')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어도')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄴ다면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '지')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄴ다면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '지')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecc', '고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '오')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '부딪치')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '따르')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '짓')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '으면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}]
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '낮')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '으면')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라고')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '되')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ걸')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ걸')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '지')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '있')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '밝')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'PRAGMATICMOOD', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '안되')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', 'ㄴ다')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '고')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '이르')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라도')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '가르치')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '가르치')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄴ데')}]
+====
+ERROR: Incompatible Suffix Chain:  ('PRAGMATICMOOD', 'PRAGMATICMOOD', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '라')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'TENSE/ASPECT', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '크')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', '기')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '으나')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'DERIVATION')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '하')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ef', 'ㄹ걸')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄹ걸')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'PRAGMATICMOOD', 'DERIVATION', 'TENSE/ASPECT', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '나오')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면서')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jxc', '부터')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('PRAGMATICMOOD', 'PRAGMATICMOOD', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('xsm', '없')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'SYNTACTICMOOD', 'DERIVATION', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '하')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'SYNTACTICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '웃')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ가')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'PRAGMATICMOOD', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '라')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}]
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '롭')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '라')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'PRAGMATICMOOD', 'DERIVATION', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '되')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecc', '면서')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jxc', '부터')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '나')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '서')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jxc', '부터')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '오')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '아서')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jxc', '부터')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'PRAGMATICMOOD', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '않')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecc', '고서')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jxc', '도')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'SYNTACTICMOOD', 'DERIVATION', 'POLITE')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '알')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ep', '시')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지요')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지요')}, {'SLOT': 'POLITE', 'MORPHEME': ('ef', '는지요')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'CONNECTOR', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '지')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '다고')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '면')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'CONNECTOR', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '맡기')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '겠')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '다고')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'TENSE/ASPECT', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '깨닫')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '얼')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', '음')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'POLITE')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '들')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지요')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지요')}, {'SLOT': 'POLITE', 'MORPHEME': ('ef', '는지요')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '않')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지요')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지요')}, {'SLOT': 'POLITE', 'MORPHEME': ('ef', '는지요')}]
+====
+ERROR: Incompatible Suffix Chain:  ('PRAGMATICMOOD', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '하')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '느냐')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('paa', '아름답')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '고')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '고')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'PRAGMATICMOOD', 'PRAGMATICMOOD', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '치')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'SYNTACTICMOOD', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('paa', '있')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '스럽')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '못하')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'TENSE/ASPECT', 'TENSE/ASPECT')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '싶')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ef', 'ㄹ까')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'SYNTACTICMOOD', 'DERIVATION')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ep', '시')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}]
+====
+ERROR: Incompatible Suffix Chain:  ('VALENCY', 'CONNECTOR', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'FORMALITY', 'MORPHEME': ('ncpa', '습득')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'PRAGMATICMOOD', 'POLITE', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '되')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는가')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '가')}, {'SLOT': 'POLITE', 'MORPHEME': ('ncps', '중요')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄴ데')}]
+====
+ERROR: Incompatible Suffix Chain:  ('TENSE/ASPECT', 'SYNTACTICMOOD', 'DERIVATION', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '주')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', '는지')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'AUXILIARY', 'MORPHEME': ('px', '있')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'TENSE/ASPECT', 'PRAGMATICMOOD', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '흐르')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'PRAGMATICMOOD', 'PRAGMATICMOOD', 'VALENCY', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '살')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', 'ㄴ다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}, {'SLOT': 'VALENCY', 'MORPHEME': ('xsv', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecx', '어')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'FORMALITY')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '웃')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'FORMALITY', 'MORPHEME': ('ef', 'ㅂ니다')}]
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '나누')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('etn', 'ㅁ')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'FORMALITY', 'MORPHEME': ('ef', 'ㅂ니다')}]
+====
+ERROR: Incompatible Suffix Chain:  ('SYNTACTICMOOD', 'DERIVATION', 'DERIVATION', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'SYNTACTICMOOD', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('ef', 'ㄴ지')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('xsm', '하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '게')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'CONNECTOR', 'CONNECTOR')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '지내')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄴ다는데')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '라')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', 'ㄴ지')}]
+====
+ERROR: Incompatible Suffix Chain:  ('CONNECTOR', 'DERIVATION', 'TENSE/ASPECT', 'PRAGMATICMOOD', 'PRAGMATICMOOD')
+Occurrences:  1
+Relevant Examples:
+[{'SLOT': 'ROOT', 'MORPHEME': ('pvg', '위하')}, {'SLOT': 'CONNECTOR', 'MORPHEME': ('ecs', '어서')}, {'SLOT': 'DERIVATION', 'MORPHEME': ('jp', '이')}, {'SLOT': 'TENSE/ASPECT', 'MORPHEME': ('ep', '었')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('ef', '다')}, {'SLOT': 'PRAGMATICMOOD', 'MORPHEME': ('jcr', '고')}]
