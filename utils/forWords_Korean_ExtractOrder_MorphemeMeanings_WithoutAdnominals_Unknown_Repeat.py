@@ -64,7 +64,7 @@ morphKeyValuePairs = set()
 vocab_lemmas = {}
 
 import allomorphy
-from korean_morpheme_meanings import morpheme_meaning, automatic_morpheme_meaning
+from korean_morpheme_meanings import morpheme_meaning
 # using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb):
     if len(verb) > 0:
@@ -73,13 +73,9 @@ def processVerb(verb):
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
            morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
-           morpheme_slot = automatic_morpheme_meaning(grapheme=morph, label=fine_label) 
-           for slot in morpheme_slot:
-             if not slot == "UNKNOWN":
-               flattened.append(slot)
-          #  if not morpheme_slot == "UNKNOWN":
-          #     flattened.append(morpheme_slot)
-
+           morpheme_slot = morpheme_meaning(grapheme=morph, label=fine_label) 
+           flattened.append(morpheme_slot)
+           
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
       # consecutive nouns are usually a form of compounding
@@ -205,6 +201,43 @@ for sentence in corpusTrain:
             processVerb(verb)
             verb = []
 
+# for sentence in corpusTrain:
+#     verb = []
+#     for line in sentence:
+#        if line["posUni"] == "PUNCT":
+#           processVerb(verb)
+#           verb = []
+#           continue
+#        elif line["posUni"] == "VERB":
+#           processVerb(verb)
+#           verb = []
+#           verb.append(line)
+#        elif line["posUni"] == "AUX" and len(verb) > 0:
+#           verb.append(line)
+#        elif line["posUni"] == "SCONJ" and line["word"] == 'て':
+#           verb.append(line)
+#           processVerb(verb)
+#           verb = []
+#        else:
+#           processVerb(verb)
+#           verb = []
+
+
+### look at all Korean words instead of just verbs ###
+# data = []
+# for sentence in corpusTrain:
+#     for line in sentence:
+#         # print(line)
+#         if not line["posUni"] == "PUNCT":
+#             data.append([line["lemma"]])
+
+
+# print(len(data))
+# with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
+#     for item in data:
+#         fout.write("%s\n" % item)
+# quit()
+
 from collections import Counter
 import matplotlib.pyplot as plt
 
@@ -245,21 +278,27 @@ stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
 
 from collections import defaultdict
 affixChains = defaultdict(int)
 for d in data:
    affixChains[tuple(d[1:])] += 1
 
-incorrect_orders = []
+# freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item[1])}
+# with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+#   for x in freqs.keys():
+#      print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
+
 def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
    correct = 0
    incorrect = 0
+#   print(data[:10])
    for affixChain, count in affixChains.items():
+#      print(affixChain, count)
       vb = affixChain
-
+#      print(vb)
+      
       seen = []
       for i in range(0, len(vb)):
          for j in range(0, i):
@@ -275,8 +314,7 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
              if weightI > weightJ:
                correct+=count
              else:
-               if vb[i] not in seen: # don't penalize for repeated slots
-                incorrect_orders.append(affixChain)
+               if not vb[i] in seen: # don't penalize for duplicated slots
                 incorrect+=count
    return correct/(correct+incorrect)
 
@@ -305,8 +343,15 @@ for iteration in range(1000):
   weights[coordinate] = mostCorrectValue
   itos_ = sorted(itos, key=lambda x:weights[x])
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+  #assert getCorrectOrderCount(weights, None, None) == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
+  #assert mostCorrect == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
+  # for x in itos_:
+  #  if affixFrequencies[x] >= 50:
+  #    print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))
 
-print(weights)
+#  print(weights)
 with open("output/extracted_"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in itos_:
+  #   if affixFrequencies[x] < 10:
+   #    continue
      print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]), file=outFile)
