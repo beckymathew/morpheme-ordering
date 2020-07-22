@@ -15,3 +15,15 @@ Score for withoutAdnominals, morphemeMeanings, UnknownGrapheme
 
 Score for withoutAdnominals, morphemeMeanings, Unknown
 0.8612866376505632
+
+Score for VerbsWithoutAdnominals_Split
+0.9939506172839506
+
+forWords_Korean_ExtractOrder_MorphemeMeanings_WithoutAdnominals_Unknown_Repeat.py
+0.942168826664144
+
+forWords_Korean_ExtractOrder_MorphemeMeanings_WithoutAdnominals_UnknownDiscard_Repeats.py
+0.9201855015865267
+
+forWords_Korean_ExtractOrder_MorphemeMeanings_WithoutAdnominals_UnknownGrapheme_Repeat.py
+0.9605839876391385
