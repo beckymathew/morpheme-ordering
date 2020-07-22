@@ -225,8 +225,7 @@ def bar_num_morphs(data):
     plt.savefig("kor_num_morphs_verbs_without_adnominals.png")
 
 
-bar_num_morphs(data)
-quit()
+# bar_num_morphs(data)
 
 words = []
 
