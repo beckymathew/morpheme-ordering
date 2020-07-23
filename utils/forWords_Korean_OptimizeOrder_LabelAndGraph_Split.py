@@ -43,7 +43,7 @@ posUni = set()
 
 posFine = set() 
 
-
+# TODO: make this output abstract morpheme
 def getRepresentation(lemma):
    if lemma == "させる" or lemma == "せる":
      return "CAUSATIVE"
@@ -190,7 +190,6 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
             processVerb(verb, data_)
             verb = []
             verb.append(line)
-            # TODO: can AUX appear after SCONJ in it?
         elif line["posUni"] == "SCONJ" and "xsv" in line["posFine"].split("+"):
             # Subordinating conjunction is a new verb if it has xsv (verb derivational suffix)
             processVerb(verb, data_)
@@ -228,7 +227,7 @@ stoi = dict(list(zip(itos, range(len(itos)))))
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
 
 
 def calculateTradeoffForWeights(weights):
@@ -240,7 +239,7 @@ def calculateTradeoffForWeights(weights):
          affixes = verb[1:]
          affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
          for ch in [verb[0]] + affixes:
-            processed.append(getRepresentation(ch))
+            processed.append(getRepresentation(ch)) # grapheme morpheme, label_grapheme morpheme, don't call getRepresentation if abstract slot
          #    print(char)
          processed.append("EOS")
          for _ in range(args.cutoff+2):
@@ -251,7 +250,7 @@ def calculateTradeoffForWeights(weights):
     return auc, devSurprisalTable
    
 
-
+import os
 for iteration in range(1000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
@@ -292,10 +291,18 @@ for iteration in range(1000):
   if (iteration + 1) % 50 == 0:
      _, surprisals = calculateTradeoffForWeights(weights_)
 
-     with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-        print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-        for key in itos_:
-           print(key, weights[key], file=outFile)
+     if os.path.exists(TARGET_DIR):
+      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+          for key in itos_:
+            print(key, weights[key], file=outFile)
+     else:
+       os.makedirs(TARGET_DIR)
+       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+          for key in itos_:
+            print(key, weights[key], file=outFile)
+  
 
 
 
