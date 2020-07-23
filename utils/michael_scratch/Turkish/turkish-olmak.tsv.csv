@@ -1,0 +1,101 @@
+Based off the conjugation tables at: https://en.wiktionary.org/wiki/olmak#Turkish
+
+This file describes conjugation of basic verbs (without causative, passive, etc suffixes) using the example of "ol-".
+
+Every line from the tables in that article corresponds to a line in this file.
+Additionally, I've added some morpheme segmentation, and for some of the lines, have added
+(1) the suffix chains used in this line,
+(2) corresponding feature combinations in UD_Turkish-IMST,
+(3) a few examples from UD_Turkish-IMST.
+
+
+The following MORPHEME SLOTS can be deduced from the forms here:
+- TAM1 where TAM stands for Tense/Aspect/Mood
+- 3rd Pl -lar-: a suffix used in all 3rd person plural forms
+- TAM2: a second slot for TAM markers that follow the 3rd person plural marker
+- Subject Agreement: this is empty in the 3rd person, and is occupied by some suffix otherwise. One could also think about decomposing this into Person+Number, which makes a lot of sense for the second person (singular -sun, plural -sun-uz), though a bit less for the first person (singular -um, plural -uz).
+
+POSITIVE DECLARATIVE								
+				1sg	2sg	3sg	1pl	2pl	3pl
+				+um	+sun	(Zero)	+uz	+sunuz	+lar
+
+direct 	nonpast 	aorist 	ol+ur+um	ol+ur+sun	ol+ur	ol+ur+uz	ol+ur+sunuz	ol+ur+lar
+#Suffix: +ur+
+
+		imperfective 	ol+uyor+um 	ol+uyor+sun 	ol+uyor 	ol+uyor+uz 	ol+uyor+sunuz 	ol+uyor+lar
+#Suffix: +uyor+
+
+		prospective 	ol+acağ+ım 	ol+acak+sın 	ol+acak 	ol+acağ+ız 	ol+acak+sınız 	ol+acak+lar
+#Suffix: +acak+ / +acağ+
+
+	past 	perfective 	ol+du+m 	ol+du+n 	ol+du 	ol+du+k 	ol+du+nuz 	ol+du+lar
+#Suffix: +du+
+# Features: Aspect=Perf|Mood=Ind|Polarity=Pos|Tense=Past 
+# Examples:
+#      yöneldim        yönel   VERB    Verb    Aspect=Perf|Mood=Ind|Number=Sing|Person=1|Polarity=Pos|Tense=Past
+#      fırladım        fırla   VERB    Verb    Aspect=Perf|Mood=Ind|Number=Sing|Person=1|Polarity=Pos|Tense=Past
+
+		imperfective 	ol+uyor+d+um 	ol+uyor+d+un 	ol+uyor+du 	ol+uyor+d+uk 	ol+uyor+d+unuz 	ol+uyor+lar+dı 
+# Suffix: -uyor- (TAM1) + 3dPl -lar- + -dı (TAM2)
+# Features: Aspect=Prog|Mood=Ind|Polarity=Pos|Polite=Infm|Tense=Past
+
+indirect 		perfective 	ol+muş+um 	ol+muş+sun 	ol+muş 	ol+muş+uz 	ol+muş+sunuz 	ol+muş+lar 
+#Suffix: +muş+
+
+		aorist 	ol+ur+muş+um 	ol+ur+muş+sun 	ol+ur+muş 	ol+ur+muş+uz 	ol+ur+muş+sunuz 	ol+ur+lar+muş 
+#Suffix: +ur+...+muş+
+
+		imperfective 	ol+uyor+muş+um 	ol+uyor+muş+sun 	ol+uyor+muş 	ol+uyor+muş+uz 	ol+uyor+muş+sunuz 	ol+uyor+lar+muş	
+#Suffix: uyor+...+muş
+							
+								
+POSITIVE INTERROGATIVE								
+Here mu- is an auxiliary that seems to be inflected like a POSITIVE DECLARATIVE verb.
+In many of these forms, the main stem is not inflected for person, except for the 3rd Person Plural suffix -lar-, which seems to be always present. 
+								
+direct 	nonpast 	aorist 	ol+ur muyum? 	ol+ur musun? 	ol+ur mu? 	ol+ur muyuz? 	ol+ur musunuz? 	ol+ur+lar mı?
+#Suffix: -ur- (TAM1 Slot) + 3rd Pl -lar-
+
+		imperfective 	ol+uyor muyum? 	ol+uyor musun? 	ol+uyor mu? 	ol+uyor muyuz? 	ol+uyor musunuz? 	ol+uyor+lar mı? 
+#Suffix: -uyor- (TAM1 Slot) + 3rd Pl -lar-
+
+		prospective 	ol+acak mıyım? 	ol+acak mısın? 	ol+acak mı? 	ol+acak mıyız? 	ol+acak mısınız? 	ol+acak+lar mı? 
+#Suffix: -acak- (TAM1 Slot) + 3rd Pl -lar-
+
+	past 	perfective 	ol+du+m mu? 	ol+du+n mu? 	ol+du mu? 	ol+du+k mu? 	ol+du+nuz mu? 	ol+du+lar mu? 
+# Suffix -du- (TAM1 Slot) + SubjectAgreement
+		imperfective 	ol+uyor muydum? 	ol+uyor muydun? 	ol+uyor muydu? 	ol+uyor muyduk? 	ol+uyor muydunuz? 	ol+uyorlar mıydı? 
+# Suffix -uyor- (TAM1 Slot) + 3rd Pl -lar-
+indirect 		perfective 	ol+muş muyum? 	ol+muş musun? 	ol+muş mu? 	ol+muş muyuz? 	ol+muş musunuz? 	ol+muşlar mu? 
+# Suffix -muş- (TAM1 Slot) + 3rd Pl -lar-
+		aorist 	ol+ur muymuşum? 	ol+ur muymuşsun? 	ol+ur muymuş? 	ol+ur muymuşuz? 	ol+ur muymuşsunuz? 	ol+ur+lar mıymuş? 
+# Suffix -ur- (TAM1 Slot) + 3rd Pl -lar-
+		imperfective 	ol+uyor muymuşum? 	ol+uyor muymuşsun? 	ol+uyor muymuş? 	ol+uyor muymuşuz? 	ol+uyor muymuşsunuz? 	ol+uyorlar mıymış? 
+# Suffix -uyor- (TAM1 Slot) + 3rd Pl -lar-
+								
+NEGATIVE DECLARATIVE								
+								
+direct 	nonpast 	aorist 	ol+ma+m 	ol+maz+sın 	ol+maz 	ol+ma+yız 	ol+maz+sınız 	ol+maz+lar 
+# Suffix: -maz- (TAM1)
+
+		imperfective 	ol+muyor+um 	ol+muyor+sun 	ol+muyor 	ol+muyor+uz 	ol+muyor+sunuz 	ol+muyor+lar
+# Suffux: -muyor- (TAM1 Slot)
+# Features: Aspect=Prog|Mood=Ind|Polarity=Neg|Polite=Infm|Tense=Pres (Example: istemiyoruz)
+
+		prospective 	ol+mayacağım 	ol+mayacaksın 	ol+mayacak 	ol+mayacağız 	ol+mayacaksınız 	ol+mayacaklar 
+	past 	perfective 	ol+madım 	ol+madın 	ol+madı 	ol+madık 	ol+madınız 	ol+madılar 
+		imperfective 	ol+muyordum 	ol+muyordun 	ol+muyordu 	ol+muyorduk 	ol+muyordunuz 	ol+muyorlardı 
+indirect 		perfective 	ol+mamuşum 	ol+mamuşsun 	ol+mamuş 	ol+mamuşuz 	ol+mamuşsunuz 	ol+mamuşlar 
+		aorist 	ol+mazmuşım 	ol+mazmuşsın 	ol+mazmuş 	ol+mazmuşız 	ol+mazmuşsınız 	ol+mazlarmuş 
+		imperfective 	ol+muyormuşum 	ol+muyormuşsun 	ol+muyormuş 	ol+muyormuşuz 	ol+muyormuşsunuz 	ol+muyorlarmuş 
+								
+NEGATIVE INTERROGATIVE								
+								
+direct 	nonpast 	aorist 	ol+maz mıyım? 	ol+maz mısın? 	ol+maz mı? 	ol+maz mıyız? 	ol+maz mısınız? 	ol+mazlar mı? 
+		imperfective 	ol+muyor muyum? 	ol+muyor musun? 	ol+muyor mu? 	ol+muyor muyuz? 	ol+muyor musunuz? 	ol+muyorlar mı? 
+		prospective 	ol+mayacak mıyım? 	ol+mayacak mısın? 	ol+mayacak mı? 	ol+mayacak mıyız? 	ol+mayacak mısınız? 	ol+mayacaklar mı? 
+	past 	perfective 	ol+madım mı? 	ol+madın mı? 	ol+madı mı? 	ol+madık mı? 	ol+madınız mı? 	ol+madılar mı? 
+		imperfective 	ol+muyor muydum? 	ol+muyor muydun? 	ol+muyor muydu? 	ol+muyor muyduk? 	ol+muyor muydunuz? 	ol+muyorlar mıydı? 
+indirect 		perfective 	ol+mamuş muyum? 	ol+mamuş musun? 	ol+mamuş mu? 	ol+mamuş muyuz? 	ol+mamuş musunuz? 	ol+mamuşlar mu? 
+		aorist 	ol+maz mıymuşım? 	ol+maz mıymuşsın? 	ol+maz mımuş? 	ol+maz mıymuşız? 	ol+maz mıymuşsınız? 	ol+mazlar mıymuş? 
+		imperfective 	ol+muyor muymuşum? 	ol+muyor muymuşsun? 	ol+muyor muymuş? 	ol+muyor muymuşuz? 	ol+muyor muymuşsunuz? 	ol+muyorlar mıymış? 
