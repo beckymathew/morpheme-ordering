@@ -204,7 +204,10 @@ def automatic_morpheme_meaning(grapheme, label):
 
         if politeFlag: # This should always be last
             slots.append("POLITE")
-    
+        
+        if len(slots) == 0:
+            slots.append("UNKNOWN")
+
     return slots 
 
 def morpheme_meaning(grapheme, label):
