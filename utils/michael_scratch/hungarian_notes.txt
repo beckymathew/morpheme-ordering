@@ -1,0 +1,54 @@
+==================
+VERBS
+
+Based off https://en.wiktionary.org/wiki/sz%C3%B3l%C3%ADt
+
+BY PERSON:
+1SG
+-k 1sg indef
+-m 1sg def
+
+2SG
+Present:
+- asz
+- od
+Conditional & Past:
+- al
+- ad
+Subjunctive:
+-s, -sal
+-d, -sad
+
+3SG
+Present:
+Indef: zero
+Def: ja
+Past:
+t
+ta
+Conditional:
+a
+`a
+Subjunctive:
+on
+a
+
+BY TAM:
+present indef: szolit
+past indef: szolitott
+conditional szolitan
+subjunctive szolits
+
+
+DERIVATION:
+Causative: http://www.hungarianreference.com/Verbs/Causative-at-tat.aspx (only about 40 times in the treebank)
+
+
+OTHERS:
+http://www.hungarianreference.com/Verbs/Causative-at-tat.aspx
+stem + causative + permission/potential + conditional = could make do something
+
+    Daniellel hív + at + hat + nál egy taxit Daniel{instrumental} call + cause + may + conditional{you}
+    Daniellel hívathatnál egy taxit you could have Daniel call a taxi
+
+
