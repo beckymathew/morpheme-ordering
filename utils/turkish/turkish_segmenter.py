@@ -27,18 +27,24 @@ def get_abstract_morphemes(labels):
     # Note: Nonpast tense is not labeled bc it's void
     person = label_dict.get("Person")
     number = label_dict.get("Number")
-    if person == "3" and number == "Plur": 
-        # (2) Tense/Aspect/Mood/Polarity/... Maybe this can be split into multiple slots, I've written more on this in turkish-olmak.tsv.csv.
-        aspect = label_dict.get("Aspect")
-        if aspect == "Prog": # should look like -yor-
-            morphs.append("IMPERFECTIVE")
-        elif aspect == "Prosp":
-            morphs.append("PROSPECTIVE")
-        elif aspect == "Hab": # can't tell if aorist or perfective is the default
-            morphs.append("AORIST")
-        elif aspect == "Perf":
-            morphs.append("PERFECTIVE")
 
+    # (2) Tense/Aspect/Mood/Polarity/... Maybe this can be split into multiple slots, I've written more on this in turkish-olmak.tsv.csv.
+    # negative comes before indirect
+    if label_dict.get("Polarity") == "Neg": # skip positive bc it's void
+        morphs.append("Neg")
+
+    # In the UD corpus, Prog is Wikipedia's imperfective and Hab is Wikipedia's aorist
+    aspect = label_dict.get("Aspect")
+    if aspect == "Prog": # should look like -yor-
+        morphs.append("IMPERFECTIVE")
+    elif aspect == "Prosp":
+        morphs.append("PROSPECTIVE")
+    elif aspect == "Hab": # can't tell if aorist or perfective is the default
+        morphs.append("AORIST")
+    elif aspect == "Perf":
+        morphs.append("PERFECTIVE")
+
+    if person == "3" and number == "Plur": 
         if aspect == "Perf":
             # (4) A second Tense/Aspect/Mood/... suffix slot
             if label_dict.get("Evident"):
@@ -60,22 +66,6 @@ def get_abstract_morphemes(labels):
                 if label_dict.get("Tense") == "Past":
                     morphs.append("Past")
     else:
-        # (2) Tense/Aspect/Mood/Polarity/... Maybe this can be split into multiple slots, I've written more on this in turkish-olmak.tsv.csv.
-        # negative comes before indirect
-        if label_dict.get("Polarity") == "Neg": # skip positive bc it's void
-            morphs.append("Neg")
-
-        # In the UD corpus, Prog is Wikipedia's imperfective and Hab is Wikipedia's aorist
-        aspect = label_dict.get("Aspect")
-        if aspect == "Prog": # should look like -yor-
-            morphs.append("IMPERFECTIVE")
-        elif aspect == "Prosp":
-            morphs.append("PROSPECTIVE")
-        elif aspect == "Hab": # can't tell if aorist or perfective is the default
-            morphs.append("AORIST")
-        elif aspect == "Perf":
-            morphs.append("PERFECTIVE")
-
         if label_dict.get("Evident"):
             morphs.append("Indirect")
         else:
@@ -88,8 +78,9 @@ def get_abstract_morphemes(labels):
         morphs.append(person + number)
     
     return morphs
-    
+
     # TODO: interrogative
     # TODO: voice morphemes (caus, pass, causpass) https://www.turkishexplained.com/passivemood.htm
     # TODO: Tense=Pqp? Seems to be indirect. Also, any Evident other than Nfh?
     # TODO: Mood
+    # TODO: Polite
