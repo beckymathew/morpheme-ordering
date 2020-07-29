@@ -1,6 +1,6 @@
 # based on matchedAllomorphs.tsv
 morpheme_slots = {
-    "jp_이": "ROOT",
+    "jp_이": "DERIVATION", # predicative maker
     "ep_으시": "HONORIFIC",
     "ef_십시오": "HONORIFIC", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_세요": "HONORIFIC", # honorific informal polite imperative
