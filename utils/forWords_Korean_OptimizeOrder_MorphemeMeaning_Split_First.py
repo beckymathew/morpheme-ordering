@@ -47,7 +47,7 @@ from korean_morpheme_meanings import automatic_morpheme_meaning
 def getRepresentation(lemma):
     lst = lemma.split("_") # kaist_label, graph, kaist_label, graph, ...
     morpheme_slot = automatic_morpheme_meaning(grapheme=lst[1], label=lst[0]) 
-    return tuple(morpheme_slot)
+    return morpheme_slot
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -246,7 +246,7 @@ def calculateTradeoffForWeights(weights):
    
 
 import os
-for iteration in range(1):
+for iteration in range(1000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
 
