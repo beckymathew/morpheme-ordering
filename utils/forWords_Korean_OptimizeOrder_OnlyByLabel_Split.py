@@ -212,7 +212,7 @@ itos = set()
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
-      itos.add(affix["kaist_label"])
+      itos.add(getRepresentation(affix))
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
