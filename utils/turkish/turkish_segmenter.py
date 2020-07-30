@@ -61,15 +61,23 @@ def get_abstract_morphemes(labels):
             else:
                 if label_dict.get("Tense") == "Past":
                     morphs.append("Past")
+                elif label_dict.get("Tense") == "Pqp":
+                    morphs.append("Pqp")
             
-            if mood in ["Cnd", "Opt", "Imp"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm
-                morphs.append(mood)  
+            if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
+                morphs.append(mood) 
+            elif mood == "DesPot":
+                morphs.append("Des")
+                morphs.append("Pot")
 
             # (3) A special suffix -lar- for 3rd person plural
             morphs.append("3Plur")
         else:
-            if mood in ["Cnd", "Opt", "Imp"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm
+            if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
                 morphs.append(mood) 
+            elif mood == "DesPot":
+                morphs.append("Des")
+                morphs.append("Pot")
 
             # (3) A special suffix -lar- for 3rd person plural
             morphs.append("3Plur")
@@ -80,12 +88,16 @@ def get_abstract_morphemes(labels):
             else:
                 if label_dict.get("Tense") == "Past":
                     morphs.append("Past")
+                elif label_dict.get("Tense") == "Pqp":
+                    morphs.append("Pqp")
     else:
         if label_dict.get("Evident"):
             morphs.append("Indirect")
         else:
             if label_dict.get("Tense") == "Past":
                 morphs.append("Past")
+            elif label_dict.get("Tense") == "Pqp":
+                    morphs.append("Pqp")
 
         if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
             morphs.append(mood) 
@@ -98,10 +110,17 @@ def get_abstract_morphemes(labels):
     if person in ["1","2"]: # skip 3SG because it's void
         morphs.append(person + number)
     
+    if label_dict.get("Polite") == "Form": # https://elon.io/learn-turkish/lesson/the-suffix-dir-formal-usage
+        morphs.append("Form")
+        # can't tell if this is correct bc couldn't find good sources
+        # there's only 7 verbs w this label in the notes, so here's my guess based on those 7
+
     return morphs
 
     # TODO: interrogative
-    # TODO: Tense=Pqp? Seems to be indirect. Also, any Evident other than Nfh?
-    # TODO: Mood: Ind, Cnd, Imp, Pot, Gen, Opt, Des, DesPot, Nec
-    #   Gen comes after TAM suffix ?
-    # TODO: Polite
+    # TODO: Tense=Pqp? Seems to be indirect? Usually looks like mıştı but I don't know if it's mış+tı
+    # Mood: Ind, Cnd, Imp, Pot, Gen, Opt, Des, DesPot, Nec
+    #   TODO: Gen comes after TAM suffix ?
+    #   Indicative is default?
+    # Polite
+    #   It looks informal is default, although I don't know why only some of the verbs have Polite labeled
