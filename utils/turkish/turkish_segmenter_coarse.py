@@ -87,8 +87,8 @@ def get_abstract_morphemes(labels):
             if label_dict.get("Tense") in ["Past", "Pqp"]:
                 morphs.append("TENSE")
 
-         if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
-                morphs.append("MOOD") 
+        if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
+            morphs.append("MOOD") 
         elif mood == "DesPot":
             morphs.append("MOOD")
             morphs.append("MOOD")
