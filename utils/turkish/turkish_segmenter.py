@@ -115,12 +115,16 @@ def get_abstract_morphemes(labels):
         # can't tell if this is correct bc couldn't find good sources
         # there's only 7 verbs w this label in the notes, so here's my guess based on those 7
 
+    if mood == "Gen": # copula
+        morphs.append(mood)
+
     return morphs
 
     # TODO: interrogative
-    # TODO: Tense=Pqp? Seems to be indirect? Usually looks like mıştı but I don't know if it's mış+tı
+    # Tense=Pqp? Seems to be indirect? Usually looks like mıştı but I don't know if it's mış+tı
+    #   Pqp tense is miş-ti, which maybe could be broken down into Pqp+Past
     # Mood: Ind, Cnd, Imp, Pot, Gen, Opt, Des, DesPot, Nec
-    #   TODO: Gen comes after TAM suffix ?
+    #   Gen comes after TAM suffix ?
     #   Indicative is default?
     # Polite
     #   It looks informal is default, although I don't know why only some of the verbs have Polite labeled
