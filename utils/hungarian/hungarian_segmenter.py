@@ -20,6 +20,9 @@ def get_abstract_morphemes(labels):
     if label_dict.get("VerbForm") == "Inf":
         morphs.append("Inf")
 
+    if label_dict.get("Voice") == "Cau":
+        morphs.append("Cau")
+
     if label_dict.get("Tense") == "Past":
         morphs.append("Past")
 
@@ -35,4 +38,4 @@ def get_abstract_morphemes(labels):
         morphs.append(definite + person + number)
     
     return morphs
-    # TODO: non-active voice
+    # TODO: 2po in Wikipedia doesn't show up in corpus
