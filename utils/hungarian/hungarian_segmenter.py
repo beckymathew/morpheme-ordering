@@ -39,3 +39,5 @@ def get_abstract_morphemes(labels):
     
     return morphs
     # TODO: 2po in Wikipedia doesn't show up in corpus
+    # http://www.hungarianreference.com/Verbs/Causative-at-tat.aspx says causative + potential + conditional = could make do something
+    # but mood that is both potential and conditional isn't attested in corpus
