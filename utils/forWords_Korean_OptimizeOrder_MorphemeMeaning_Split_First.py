@@ -47,7 +47,7 @@ from korean_morpheme_meanings import automatic_morpheme_meaning
 def getRepresentation(lemma):
     lst = lemma.split("_") # kaist_label, graph, kaist_label, graph, ...
     morpheme_slot = automatic_morpheme_meaning(grapheme=lst[1], label=lst[0]) 
-    return tuple(morpheme_slot)
+    return morpheme_slot
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -212,11 +212,11 @@ for verbWithAff in data_train:
     # affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
 
 
-itos = set()
+itos = set() # all the first elems of outputs of getrepresentation
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
-      itos.add(affix)
+      itos.add(getRepresentation(affix)[0]) # getRepresentation[0]
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
@@ -235,7 +235,6 @@ def calculateTradeoffForWeights(weights):
          affixes = sorted(affixes, key=lambda x: weights.get(getRepresentation(x)[0], 0)) # take the weight of the first morpheme slot
          for ch in [verb[0]] + affixes:
             processed.append(ch) # grapheme morpheme, label_grapheme morpheme, don't call getRepresentation if abstract slot
-         #    print(char)
          processed.append("EOS")
          for _ in range(args.cutoff+2):
            processed.append("PAD")
@@ -246,7 +245,7 @@ def calculateTradeoffForWeights(weights):
    
 
 import os
-for iteration in range(1):
+for iteration in range(1000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
 

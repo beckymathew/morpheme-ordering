@@ -1,0 +1,3 @@
+forWords_Turkish_ExtractOrder_Fine.py: 0.9967335510965936
+forWords_Turkish_ExtractOrder_Coarse.py (without repeats): 0.9413905739617359
+forWords_Turkish_ExtractOrder_Coarse.py (with repeats): 0.9533536006080182
