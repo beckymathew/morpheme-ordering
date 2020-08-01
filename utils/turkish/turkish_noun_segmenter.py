@@ -28,7 +28,7 @@ def get_abstract_morphemes(labels):
 
     case = label_dict.get("Case")
     if not case == "Nom": # absolute (nominative) case is void
-        morphs.append("Case")
+        morphs.append(case)
 
     # Wikipedia says predicative suffixes may show up with person and number (https://en.wikipedia.org/wiki/Turkish_grammar#Nouns)
     # But the corpus only has Person=3 for all nouns
