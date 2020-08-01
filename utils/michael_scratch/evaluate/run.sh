@@ -1,0 +1,2 @@
+~/python-py37-mhahn run_forWords_Japanese_EvaluateWeights_FullData.py
+~/python-py37-mhahn run_forWords_Japanese_EvaluateWeights_MorphemeGrammar_FullData.py
