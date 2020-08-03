@@ -63,12 +63,12 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import hungarian_segmenter_coarse
+import hungarian_segmenter
 def processVerb(verb): 
    # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = hungarian_segmenter_coarse.get_abstract_morphemes(labels)
+      morphs = hungarian_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       data.append(morphs)
 
