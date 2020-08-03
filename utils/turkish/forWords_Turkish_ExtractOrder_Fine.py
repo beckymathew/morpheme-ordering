@@ -83,6 +83,7 @@ for sentence in corpusTrain:
           processVerb(verb)
           verb = []
 
+
 from collections import Counter
 import matplotlib.pyplot as plt
 
