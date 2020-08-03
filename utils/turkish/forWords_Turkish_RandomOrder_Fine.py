@@ -52,12 +52,12 @@ def getRepresentation(lemma):
    # return turkish_segmenter.get_abstract_morphemes(lemma)
    return lemma
 
-# using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
       morphs = turkish_segmenter.get_abstract_morphemes(labels)
+      morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       data_.append(morphs)
 
 # Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data

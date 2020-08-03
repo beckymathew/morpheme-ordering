@@ -58,6 +58,7 @@ def processVerb(verb, data_):
    for vb in verb:
       labels = vb["morph"]
       morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
+      morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       data_.append(morphs)
 
 # Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
