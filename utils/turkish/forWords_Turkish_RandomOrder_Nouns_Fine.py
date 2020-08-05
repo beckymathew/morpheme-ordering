@@ -46,7 +46,7 @@ myID = args.idForProcess
 
 TARGET_DIR = "estimates/"
 
-import turkish_segmenter
+import turkish_noun_segmenter
 # Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    # return turkish_segmenter.get_abstract_morphemes(lemma)
@@ -56,7 +56,7 @@ def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_segmenter.get_abstract_morphemes(labels)
+      morphs = turkish_noun_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       data_.append(morphs)
 
@@ -72,7 +72,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "VERB":
+       if line["posUni"] == "NOUN":
           verb.append(line)
           processVerb(verb, data_)
           verb = []

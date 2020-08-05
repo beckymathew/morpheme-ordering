@@ -73,7 +73,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "VERB":
+       if line["posUni"] == "NOUN":
           verb.append(line)
           processVerb(verb, data_)
           verb = []

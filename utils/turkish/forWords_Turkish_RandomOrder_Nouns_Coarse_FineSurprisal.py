@@ -46,7 +46,6 @@ myID = args.idForProcess
 
 TARGET_DIR = "estimates/"
 
-import turkish_segmenter_coarse
 # Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    # return turkish_segmenter.get_abstract_morphemes(lemma)

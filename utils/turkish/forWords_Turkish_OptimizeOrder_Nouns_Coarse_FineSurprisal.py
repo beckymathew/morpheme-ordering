@@ -62,14 +62,14 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import turkish_segmenter_coarse
-import turkish_segmenter
+import turkish_noun_segmenter_coarse
+import turkish_noun_segmenter
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = turkish_segmenter.get_abstract_morphemes(labels)
+      morphs = turkish_noun_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = turkish_noun_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
       morph_dict = {"fine": fine, "coarse": morphs}
@@ -86,7 +86,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "VERB":
+       if line["posUni"] == "NOUN":
           verb.append(line)
           processVerb(verb, data_)
           verb = []
