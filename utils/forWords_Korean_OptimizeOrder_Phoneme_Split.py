@@ -46,7 +46,8 @@ posFine = set()
 from korean_romanization import romanize
 # TODO: make this output abstract morpheme
 def getRepresentation(lemma):
-   return romanize(lemma)
+   label, grapheme = lemma.split("_")
+   return romanize(grapheme)
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -206,14 +207,18 @@ affixFrequency = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affixLemma = getRepresentation(affix)
-    affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
+    for ch in affixLemma:
+      affixFrequency[ch] = affixFrequency.get(ch, 0) + 1
 
 
 itos = set()
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
-      itos.add(getRomanization(affix))
+      affixLemma = getRepresentation(affix)
+      for ch in affixLemma:
+        itos.add(ch)
+
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
@@ -229,10 +234,10 @@ def calculateTradeoffForWeights(weights):
     for data, processed in [(data_train, train), (data_dev, dev)]:
       for verb in data:
          affixes = verb[1:]
-         affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0)) # phoneme representation
+         affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0)) # TODO: ga
          for ch in [verb[0]] + affixes:
-            processed.append(ch) # grapheme morpheme, label_grapheme morpheme, don't call getRepresentation if abstract slot
-         #    print(char)
+           for phoneme in ch:
+             processed.append(phoneme) # add each phoneme separately
          processed.append("EOS")
          for _ in range(args.cutoff+2):
            processed.append("PAD")
