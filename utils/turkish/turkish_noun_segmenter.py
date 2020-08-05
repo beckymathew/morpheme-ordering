@@ -27,7 +27,7 @@ def get_abstract_morphemes(labels):
         # Also, Plur + 3Plur[psor] seems to look the same as Sing + 3Plur[psor]
 
     case = label_dict.get("Case")
-    if not case == "Nom": # absolute (nominative) case is void
+    if not case == "Nom" and not case == None: # absolute (nominative) case is void
         morphs.append(case)
 
     # Wikipedia says predicative suffixes may show up with person and number (https://en.wikipedia.org/wiki/Turkish_grammar#Nouns)
