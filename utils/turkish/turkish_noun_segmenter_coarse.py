@@ -22,7 +22,7 @@ def get_abstract_morphemes(labels):
         # Singular is void
 
     if label_dict.get("Number[psor]") and label_dict.get("Person[psor]"):
-        morphs.append(label_dict.get("Person[psor].Number[psor]"))
+        morphs.append("Person[psor].Number[psor]")
         # Theoretically, you could separate person and number except the 3pl doesn't match the pattern
         # Also, Plur + 3Plur[psor] seems to look the same as Sing + 3Plur[psor]
     
