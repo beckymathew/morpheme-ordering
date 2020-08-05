@@ -106,6 +106,12 @@ def get_abstract_morphemes(labels):
     if mood == "Gen": # copula
         morphs.append("MOOD")
 
+    # Verbal nouns -- can't find a lot of examples of these that don't look exactly like the infinitive
+    if label_dict.get("VerbForm") == "Vnoun":
+        morphs.append("VerbForm")
+        if label_dict.get("Number[psor]") and label_dict.get("Person[psor]"):
+            morphs.append("Number[psor].Person[psor]")
+
     return morphs
 
     # TODO: interrogative
