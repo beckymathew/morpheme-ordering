@@ -72,8 +72,11 @@ def processVerb(verb, data_):
       fine = turkish_noun_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
-      morph_dict = {"fine": fine, "coarse": morphs}
-      data_.append(morph_dict)
+      lst_dict = []
+      for i in range(len(fine)):
+        morph_dict = {"fine": fine[i], "coarse": morphs[i]}
+        lst_dict.append(morph_dict)
+      data_.append(lst_dict)
 
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
