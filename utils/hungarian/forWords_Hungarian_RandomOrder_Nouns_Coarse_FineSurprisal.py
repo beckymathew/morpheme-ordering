@@ -98,7 +98,6 @@ for verbWithAff in data_train:
 
 itos = set()
 for verbWithAff in data_train:
- verbWithAff = getRepresentation(verbWithAff)
  for affix in verbWithAff[1:]:
     affix = getRepresentation(affix)
     itos.add(affix)
