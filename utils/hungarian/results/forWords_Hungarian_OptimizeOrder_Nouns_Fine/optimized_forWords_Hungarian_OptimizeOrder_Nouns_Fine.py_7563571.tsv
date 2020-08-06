@@ -1,0 +1,27 @@
+999 28.327693860855412 Namespace(alpha=1.0, cutoff=4, delta=1.0, gamma=1, idForProcess=7563571, language='Hungarian', model=None) [5.416865795223673, 4.04681340869363, 4.04681340869363, 4.04681340869363]
+Sup 0
+Ter 2
+Tra 4
+Ine 6
+Tem 8
+Plur 10
+Ade 12
+Abl 14
+Sing[psor] 16
+Plur[psor] 18
+Loc 20
+1[psor] 22
+3[psor] 24
+Ess 26
+Ins 28
+All 30
+Ela 32
+Ill 34
+Abs 36
+Dat 38
+Cau 40
+Sub 42
+Del 44
+Gen 46
+Acc 48
+Dis 50
