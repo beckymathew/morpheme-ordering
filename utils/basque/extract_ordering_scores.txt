@@ -1,0 +1,2 @@
+forWords_Basque_ExtractOrder_Nouns_Fine: 1.0
+forWords_Basque_ExtractOrder_Nouns_Coarse: 1.0

@@ -32,20 +32,20 @@ def get_abstract_morphemes(labels):
     # inanimate locative declension
     if anim == "Inan" and case in loc:
         if definite == "Ind":
-            morphs.append(definite)
+            morphs.append("Definite")
         elif definite == "Def" and number == "Plur":
-            morphs.append(definite + "." + number)
-        morphs.append(case)
+            morphs.append("Definite.Number")
+        morphs.append("Case")
     else:
         if definite == "Def":
-            morphs.append(definite + "." + number)
+            morphs.append("Definite.Number")
 
         if case in loc: # animate locative declension
-            morphs.append("Gen")
+            morphs.append("Loc.Case")
             morphs.append("GAN")
         
         if case:
-            morphs.append(case)
+            morphs.append("Case")
     
     return morphs
 
