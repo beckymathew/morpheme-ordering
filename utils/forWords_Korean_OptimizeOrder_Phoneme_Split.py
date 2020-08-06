@@ -234,8 +234,9 @@ def calculateTradeoffForWeights(weights):
     for data, processed in [(data_train, train), (data_dev, dev)]:
       for verb in data:
          affixes = verb[1:]
-         affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0)) # TODO: ga
+         affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
          for ch in [verb[0]] + affixes:
+           ch = getRepresentation(ch)
            for phoneme in ch:
              processed.append(phoneme) # add each phoneme separately
          processed.append("EOS")
@@ -245,7 +246,6 @@ def calculateTradeoffForWeights(weights):
 
     auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
     return auc, devSurprisalTable
-   
 
 import os
 for iteration in range(1000):
