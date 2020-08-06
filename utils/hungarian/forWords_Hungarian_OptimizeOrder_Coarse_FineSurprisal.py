@@ -106,6 +106,7 @@ for verbWithAff in data_train:
 itos = set()
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
+    verbWithAff = getRepresentation(verbWithAff)
     for affix in verbWithAff[1:]:
       itos.add(getRepresentation(affix))
 itos = sorted(list(itos))
