@@ -207,17 +207,14 @@ affixFrequency = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affixLemma = getRepresentation(affix)
-    for ch in affixLemma:
-      affixFrequency[ch] = affixFrequency.get(ch, 0) + 1
-
+    affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0) + 1
 
 itos = set()
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
       affixLemma = getRepresentation(affix)
-      for ch in affixLemma:
-        itos.add(ch)
+      itos.add(affixLemma)
 
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
@@ -225,7 +222,6 @@ stoi = dict(list(zip(itos, range(len(itos)))))
 itos_ = itos[::]
 shuffle(itos_)
 weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
-
 
 def calculateTradeoffForWeights(weights):
     # Order the datasets based on the given weights
