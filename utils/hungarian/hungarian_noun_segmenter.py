@@ -23,8 +23,8 @@ def get_abstract_morphemes(labels):
     psor_person = label_dict.get("Person[psor]")
     psor_number = label_dict.get("Number[psor]")
     if psor_person and not psor_person == "None" and psor_number and not psor_number =="None":
-        morphs.append(psor_person)
-        morphs.append(psor_number)
+        morphs.append(psor_person + "[psor]")
+        morphs.append(psor_number + "[psor]")
     
     case = label_dict.get("Case")
 
