@@ -1,0 +1,29 @@
+0.4693816884661118
+0.13524317121918722
+0.5085514834205934
+0.14832535885167464
+3[psor] Sing[psor] 1122
+3[psor] Ine 111
+Sing[psor] Ine 110
+3[psor] Sup 92
+Sing[psor] Sup 91
+3[psor] Plur[psor] 55
+Plur Ine 50
+1[psor] Sing[psor] 35
+1[psor] Plur[psor] 26
+Plur Sup 24
+3[psor] Ter 11
+3[psor] Abl 10
+Sing[psor] Abl 10
+Sing[psor] Ter 8
+3[psor] Ade 6
+Plur[psor] Ine 5
+Sing[psor] Ade 5
+1[psor] Ine 4
+Plur[psor] Ter 3
+Plur Ter 2
+Plur[psor] Sup 1
+Plur[psor] Ade 1
+Plur Tra 1
+3[psor] Tra 1
+Sing[psor] Tra 1
