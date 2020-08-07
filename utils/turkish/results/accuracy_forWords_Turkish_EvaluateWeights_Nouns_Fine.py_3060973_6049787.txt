@@ -1,0 +1,19 @@
+0.9581823250627265
+0.9458288190682557
+0.9500359453630481
+0.9327202323330106
+1Sing[psor] Acc 44
+1Plur[psor] Dat 19
+2Sing[psor] Acc 17
+1Plur[psor] Acc 13
+2Plur[psor] Acc 10
+1Plur[psor] Gen 9
+2Sing[psor] Gen 8
+2Sing[psor] Abl 7
+2Sing[psor] Dat 7
+1Plur[psor] Abl 4
+2Sing[psor] Loc 3
+1Plur[psor] Ins 3
+Plur Equ 2
+2Plur[psor] Abl 2
+2Sing[psor] Ins 2
