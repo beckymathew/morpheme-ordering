@@ -47,7 +47,7 @@ myID = args.idForProcess
 
 TARGET_DIR = "estimates/"
 
-import hungarian_segmenter_coarse
+import finnish_segmenter_coarse
 # Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    # return turkish_segmenter.get_abstract_morphemes(lemma)
@@ -58,7 +58,7 @@ def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = hungarian_segmenter_coarse.get_abstract_morphemes(labels)
+      morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       data_.append(morphs)
 
