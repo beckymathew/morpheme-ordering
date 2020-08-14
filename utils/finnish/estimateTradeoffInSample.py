@@ -1,6 +1,7 @@
+from math import log
 # Based on memory-surprisal/code/NOT_USED/optimization/verifyAUCCOmputation.py
 
-def estimateTradeoffInSample(train):
+def estimateTradeoffInSample(train, args):
     """
     Inputs:
        - train (list): input. IMPORTANT: padding symbols are expected to be encoded as zeros
@@ -99,13 +100,13 @@ def estimateTradeoffInSample(train):
                        j+=1
                i = endOfCurrentPrefix+1
                assert lengthsOfSuffixes >= i-contextLength
-               assert min(abs(probSumForThisPrefix - 0.0), abs(probSumForThisPrefix - 1.0)) < 0.00001, probSumForThisPrefix
+               assert min(abs(probSumForThisPrefix - 0.0), abs(probSumForThisPrefix - 1.0)) < 0.001, probSumForThisPrefix
           assert i-lengthsOfSuffixes == contextLength
           #assert lastCrossEntropy >= crossEntropy
        
           print("==================================================countTowardsSurprisal", countTowardsSurprisal)
           print("CONTEXT LENGTH "+str(contextLength)+"   "+str( crossEntropy)+"  "+str((lastCrossEntropy-crossEntropy)))
-          assert abs(totalSum - 1.0) < 0.00001, totalSum
+          assert abs(totalSum - 1.0) < 0.001, totalSum
        
       
           lastCrossEntropy = crossEntropy
@@ -122,6 +123,6 @@ def estimateTradeoffInSample(train):
        auc += mi * tmis[i]
     assert 20>memory, memory
     auc += mi * (20-memory)
-    auc = 20*trainSurprisalTable - auc
+    auc = 20*trainSurprisalTable[0] - auc
     return auc, trainSurprisalTable
 

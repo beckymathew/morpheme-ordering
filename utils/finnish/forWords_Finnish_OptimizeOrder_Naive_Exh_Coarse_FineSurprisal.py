@@ -2,6 +2,7 @@
 
 import random
 import sys
+from estimateTradeoffInSample import estimateTradeoffInSample
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 
 objectiveName = "LM"
@@ -13,7 +14,7 @@ parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=7)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
 
@@ -115,6 +116,11 @@ itos_ = itos[::]
 shuffle(itos_)
 weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
 
+cached_stoi = {}
+def getNumeric(x):
+    if x not in cached_stoi:
+      cached_stoi[x] = len(cached_stoi)+10
+    return cached_stoi[x]
 
 def calculateTradeoffForWeights(weights):
     # Order the datasets based on the given weights
@@ -125,14 +131,18 @@ def calculateTradeoffForWeights(weights):
          affixes = verb[1:]
          affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0)) 
          for ch in [verb[0]] + affixes:
-            processed.append(getSurprisalRepresentation(ch))
-         processed.append("EOS")
+            processed.append(getNumeric(getSurprisalRepresentation(ch)))
+         processed.append(1)
          for _ in range(args.cutoff+2):
-           processed.append("PAD")
-         processed.append("SOS")
+           processed.append(0)
+         processed.append(2)
  #   print(processed[:100])
 #    quit()
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
+#    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, train, args)
+
+    auc, devSurprisalTable = estimateTradeoffInSample(train, args)
+ #   print(auc, auc1)
+  #  quit()
     return auc, devSurprisalTable
    
 
@@ -175,7 +185,7 @@ if True:
      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
         print("-1", mostCorrect, str(args), surprisals, file=outFile)
         for key in itos_:
-          print(key, weights_[key], file=outFile)
+          print(key, weights[key], file=outFile)
   
 
 
