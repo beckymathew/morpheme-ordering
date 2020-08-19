@@ -2,6 +2,7 @@
 
 import random
 import sys
+from corpus import CORPUS
 from estimateTradeoffInSample import estimateTradeoffInSample
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 
@@ -9,7 +10,7 @@ objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Finnish-TDT_2.6")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
@@ -69,6 +70,8 @@ def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
+      if "VerbForm=Part" in labels or "VerbForm=Inf" in labels:
+          continue
       morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
       fine = finnish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
@@ -159,10 +162,11 @@ from itertools import permutations
 # This will store the minimal AOC found so far and the corresponding position
 mostCorrect, mostCorrectValue = 1e100, None
 
-
+orders = list(permutations(itos))
+shuffle(orders)
 
 counter = 0
-for order in permutations(itos):
+for order in orders:
    counter += 1
    weights_ = dict(list(zip(order, range(len(order)))))
    if counter % 10 == 0:
@@ -185,8 +189,8 @@ if True:
      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
         print("-1", mostCorrect, str(args), surprisals, file=outFile)
         for key in itos_:
-          print(key, weights[key], file=outFile)
+          print(key, weights_[key], file=outFile)
   
-
+print(weights_)
 
 
