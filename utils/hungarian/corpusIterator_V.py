@@ -14,7 +14,8 @@ def readUDCorpus(language, partition, ignoreCorporaWithoutWords=True):
       print(l, language)
       # basePaths = ["/home/user/UniversalDependencies/Universal_Dependencies_"+version+"/ud-treebanks-v"+version+"/"]
       # basePaths = ["../data/UD_Korean-Kaist-master"]
-      basePaths = ["../../.."]
+      basePaths = ["/u/scr/corpora/Universal_Dependencies/Universal_Dependencies_"+version+"/ud-treebanks-v"+version+"/"]
+      print(basePaths, language)
       files = []
       while len(files) == 0:
         if len(basePaths) == 0:
@@ -23,7 +24,7 @@ def readUDCorpus(language, partition, ignoreCorporaWithoutWords=True):
         basePath = basePaths[0]
         del basePaths[0]
         files = os.listdir(basePath)
-        files = list(filter(lambda x:x.startswith("UD_"+version.replace("-Adap", "")), files))
+        files = list(filter(lambda x:x.startswith("UD_"+language.replace("-Adap", "")), files))
       data = []
       for name in files:
         suffix = name[len("UD_"+language):]

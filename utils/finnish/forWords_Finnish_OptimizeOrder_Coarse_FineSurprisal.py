@@ -8,7 +8,7 @@ objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Japanese-GSD_2.4")
+parser.add_argument("--language", dest="language", type=str, default="Finnish-TDT_2.6")
 parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
@@ -130,7 +130,8 @@ def calculateTradeoffForWeights(weights):
          for _ in range(args.cutoff+2):
            processed.append("PAD")
          processed.append("SOS")
-
+ #   print(processed[:100])
+#    quit()
     auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
     return auc, devSurprisalTable
    
@@ -150,9 +151,9 @@ for iteration in range(1000):
   # Iterate over possible new positions
   for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
 
-     # Stochastically exclude positions to save compute time
-     if random() < 0.9 and newValue != weights[coordinate]:
-        continue
+     # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
+  #   if random() < 0.9 and newValue != weights[coordinate]:
+   #     continue
      print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
      weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
@@ -164,6 +165,7 @@ for iteration in range(1000):
      if resultingAOC < mostCorrect:
         mostCorrectValue = newValue
         mostCorrect = resultingAOC
+  assert mostCorrect < 1e99
   print(iteration, mostCorrect)
   weights[coordinate] = mostCorrectValue
   itos_ = sorted(itos, key=lambda x:weights[x])
@@ -177,16 +179,13 @@ for iteration in range(1000):
      _, surprisals = calculateTradeoffForWeights(weights_)
 
      if os.path.exists(TARGET_DIR):
-      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
+       pass
      else:
        os.makedirs(TARGET_DIR)
-       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
+     with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+        print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+        for key in itos_:
+          print(key, weights[key], file=outFile)
   
 
 
