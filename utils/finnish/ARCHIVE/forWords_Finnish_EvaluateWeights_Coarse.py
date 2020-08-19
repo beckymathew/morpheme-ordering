@@ -2,13 +2,12 @@
 
 import random
 import sys
-from corpus import CORPUS
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default=CORPUS)
+parser.add_argument("--language", dest="language", type=str, default="Finnish-TDT_2.6")
 parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
@@ -35,7 +34,7 @@ assert args.gamma >= 1
 myID = args.idForProcess
 
 
-TARGET_DIR = "/u/scr/mhahn/deps/memory-need-ngrams-morphology/"
+TARGET_DIR = "results/"+__file__.replace(".py", "")
 
 
 
@@ -43,10 +42,8 @@ posUni = set()
 
 posFine = set() 
 
-
 def getRepresentation(lemma):
     return lemma
-
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -61,12 +58,12 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import turkish_segmenter_coarse
+import finnish_segmenter_coarse
 def processVerb(verb):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
+      morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       data.append(morphs)
 

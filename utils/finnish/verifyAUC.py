@@ -2,17 +2,18 @@
 
 import random
 import sys
+from estimateTradeoffInSample import estimateTradeoffInSample
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Hungarian-Szeged_2.6")
+parser.add_argument("--language", dest="language", type=str, default="Finnish-TDT_2.6")
 parser.add_argument("--model", dest="model", type=str)
-parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
+parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
-parser.add_argument("--delta", dest="delta", type=float, default=1.0)
+parser.add_argument("--delta", dest="delta", type=float, default=0.0)
 parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
@@ -62,14 +63,14 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import hungarian_segmenter_coarse
-import hungarian_segmenter
+import finnish_segmenter_coarse
+import finnish_segmenter
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = hungarian_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = hungarian_segmenter.get_abstract_morphemes(labels)
+      morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = finnish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
       lst_dict = []
@@ -115,6 +116,11 @@ itos_ = itos[::]
 shuffle(itos_)
 weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
 
+cached_stoi = {}
+def getNumeric(x):
+    if x not in cached_stoi:
+      cached_stoi[x] = len(cached_stoi)+10
+    return cached_stoi[x]
 
 def calculateTradeoffForWeights(weights):
     # Order the datasets based on the given weights
@@ -125,56 +131,55 @@ def calculateTradeoffForWeights(weights):
          affixes = verb[1:]
          affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0)) 
          for ch in [verb[0]] + affixes:
-            processed.append(getSurprisalRepresentation(ch))
-         processed.append("EOS")
+            processed.append(getNumeric(getSurprisalRepresentation(ch)))
+         processed.append(1)
          for _ in range(args.cutoff+2):
-           processed.append("PAD")
-         processed.append("SOS")
+           processed.append(0)
+         processed.append(2)
+ #   print(processed[:100])
+#    quit()
+    train = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, train, args)
 
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
+    auc1, devSurprisalTable1 = estimateTradeoffInSample(train, args)
+    print(devSurprisalTable)
+    print(devSurprisalTable1)
+ 
+    print(auc, auc1)
+    quit()
     return auc, devSurprisalTable
    
 
 import os
-for iteration in range(1000):
-  # Randomly select a morpheme whose position to update
-  coordinate=choice(itos)
 
-  # Stochastically filter out rare morphemes
-  while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
-     coordinate = choice(itos)
 
-  # This will store the minimal AOC found so far and the corresponding position
-  mostCorrect, mostCorrectValue = 1e100, None
+print(itos)
 
-  # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
 
-     # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
-  #   if random() < 0.9 and newValue != weights[coordinate]:
-   #     continue
-     print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
-     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
-     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
-     # Calculate AOC for this updated assignment
-     resultingAOC, _ = calculateTradeoffForWeights(weights_)
+from itertools import permutations 
 
-     # Update variables if AOC is smaller than minimum AOC found so far
-     if resultingAOC < mostCorrect:
-        mostCorrectValue = newValue
-        mostCorrect = resultingAOC
-  assert mostCorrect < 1e99
-  print(iteration, mostCorrect)
-  weights[coordinate] = mostCorrectValue
-  itos_ = sorted(itos, key=lambda x:weights[x])
-  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-  print(weights)
-  for x in itos_:
-     if affixFrequency.get(x,0) < 10:
-       continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequency.get(x,0)]]))
-  if (iteration + 1) % 50 == 0:
+
+# This will store the minimal AOC found so far and the corresponding position
+mostCorrect, mostCorrectValue = 1e100, None
+
+
+
+counter = 0
+for order in permutations(itos):
+   counter += 1
+   weights_ = dict(list(zip(order, range(len(order)))))
+   if counter % 10 == 0:
+      print(counter)
+      print(mostCorrectValue)
+   resultingAOC, _ = calculateTradeoffForWeights(weights_)
+
+   # Update variables if AOC is smaller than minimum AOC found so far
+   if resultingAOC < mostCorrect:
+      mostCorrectValue = weights_
+      mostCorrect = resultingAOC
+weights_ = mostCorrectValue
+if True:
      _, surprisals = calculateTradeoffForWeights(weights_)
 
      if os.path.exists(TARGET_DIR):
@@ -182,7 +187,7 @@ for iteration in range(1000):
      else:
        os.makedirs(TARGET_DIR)
      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-        print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+        print("-1", mostCorrect, str(args), surprisals, file=outFile)
         for key in itos_:
           print(key, weights[key], file=outFile)
   

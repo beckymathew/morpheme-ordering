@@ -47,28 +47,20 @@ myID = args.idForProcess
 
 TARGET_DIR = "estimates/"
 
-import turkish_noun_segmenter_coarse
-import turkish_noun_segmenter
+import turkish_segmenter_coarse
 # Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
-   return lemma["coarse"]
+   # return turkish_segmenter.get_abstract_morphemes(lemma)
+   return lemma
 
-def getSurprisalRepresentation(lemma):
-   return lemma["fine"]
-   
+# using label_grapheme version bc it's easier to see if the verb processing is correct
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_noun_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = turkish_noun_segmenter.get_abstract_morphemes(labels)
+      morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
-      fine[0] = vb["lemma"] # replace "ROOT" w actual root
-      lst_dict = []
-      for i in range(len(fine)):
-        morph_dict = {"fine": fine[i], "coarse": morphs[i]}
-        lst_dict.append(morph_dict)
-      data_.append(lst_dict)
+      data_.append(morphs)
 
 # Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
@@ -82,7 +74,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "NOUN":
+       if line["posUni"] == "VERB":
           verb.append(line)
           processVerb(verb, data_)
           verb = []
@@ -93,14 +85,12 @@ words = []
 affixFrequency = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
     affixFrequency[affix] = affixFrequency.get(affix, 0)+1
 
 
 itos = set()
 for verbWithAff in data_train:
  for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
     itos.add(affix)
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
@@ -132,14 +122,14 @@ def calculateTradeoffForWeights(weights):
          affixes = verb[1:]
          if args.model == "REAL": # Real ordering
             _ = 0
-         elif args.model == "REVERSE": # Reverse affixes
+         elif args.model == "REVERSE": # Reverse affixs
             affixes = affixes[::-1]
          else: # Order based on weights
-            affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
+            affixes = sorted(affixes, key=lambda x:weights.get(x, 0))
 
 
          for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
-            processed.append(getSurprisalRepresentation(ch))
+            processed.append(getRepresentation(ch))
          processed.append("EOS") # Indicate end-of-sequence
          for _ in range(args.cutoff+2): # Interpose a padding symbol between each pair of successive verb forms. There is no relation between successive verb forms, and adding padding prevents the n-gram models from "trying to learn" any spurious relations between successive verb forms.
            processed.append("PAD")

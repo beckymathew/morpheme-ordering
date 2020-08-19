@@ -5,6 +5,7 @@
 
 import random
 import sys
+from corpus import CORPUS
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 from math import log, exp
 from corpusIterator_V import CorpusIterator_V
@@ -16,7 +17,7 @@ objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Japanese-GSD_2.4")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 
 # May be REAL, RANDOM, REVERSE, or a pointer to a file containing an ordering grammar.
 parser.add_argument("--model", dest="model", type=str)
@@ -30,8 +31,7 @@ parser.add_argument("--cutoff", dest="cutoff", type=int, default=12)
 # An identifier for this run of this script.
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 
-# Optional flag to specify part of output file name
-parser.add_argument("--outName", dest="outName", type=str, default=None)
+
 
 args=parser.parse_args()
 print(args)
@@ -55,7 +55,7 @@ def getRepresentation(lemma):
 
 def getSurprisalRepresentation(lemma):
    return lemma["fine"]
-   
+
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
@@ -116,7 +116,6 @@ elif args.model != "REAL": # Load the ordering from a file
   import glob
   files = glob.glob(args.model)
   assert len(files) == 1
-#   assert "Normalized" in files[0]
   with open(files[0], "r") as inFile:
      next(inFile)
      for line in inFile:
@@ -133,7 +132,7 @@ def calculateTradeoffForWeights(weights):
          affixes = verb[1:]
          if args.model == "REAL": # Real ordering
             _ = 0
-         elif args.model == "REVERSE": # Reverse affixs
+         elif args.model == "REVERSE": # Reverse affixes
             affixes = affixes[::-1]
          else: # Order based on weights
             affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
@@ -152,10 +151,9 @@ def calculateTradeoffForWeights(weights):
 
     # Write results to a file
     model = args.model
-    if args.outName:
-       outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+str(myID)+"_"+args.outName+".txt"
-    else:
-       outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+str(myID)+"_"+model+".txt"
+    if "/" in model:
+        model = model[model.rfind("_"):-4]+"-OPTIM"
+    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model == "RANDOM" else model)+".txt"
     print(outpath)
     with open(outpath, "w") as outFile:
        print(str(args), file=outFile)

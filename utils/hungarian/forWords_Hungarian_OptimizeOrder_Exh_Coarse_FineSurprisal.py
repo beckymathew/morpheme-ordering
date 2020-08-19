@@ -136,45 +136,39 @@ def calculateTradeoffForWeights(weights):
    
 
 import os
-for iteration in range(1000):
-  # Randomly select a morpheme whose position to update
-  coordinate=choice(itos)
 
-  # Stochastically filter out rare morphemes
-  while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
-     coordinate = choice(itos)
 
-  # This will store the minimal AOC found so far and the corresponding position
-  mostCorrect, mostCorrectValue = 1e100, None
+print(itos)
 
-  # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
 
-     # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
-  #   if random() < 0.9 and newValue != weights[coordinate]:
-   #     continue
-     print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
-     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
-     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
-     # Calculate AOC for this updated assignment
-     resultingAOC, _ = calculateTradeoffForWeights(weights_)
+from itertools import permutations 
 
-     # Update variables if AOC is smaller than minimum AOC found so far
-     if resultingAOC < mostCorrect:
-        mostCorrectValue = newValue
-        mostCorrect = resultingAOC
-  assert mostCorrect < 1e99
-  print(iteration, mostCorrect)
-  weights[coordinate] = mostCorrectValue
-  itos_ = sorted(itos, key=lambda x:weights[x])
-  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-  print(weights)
-  for x in itos_:
-     if affixFrequency.get(x,0) < 10:
-       continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequency.get(x,0)]]))
-  if (iteration + 1) % 50 == 0:
+
+# This will store the minimal AOC found so far and the corresponding position
+mostCorrect, mostCorrectValue = 1e100, None
+
+
+
+counter = 0
+for order in permutations(itos):
+   counter += 1
+   weights_ = dict(list(zip(order, range(len(order)))))
+   if counter % 10 == 0:
+      print(counter)
+      print(mostCorrectValue)
+   resultingAOC, _ = calculateTradeoffForWeights(weights_)
+
+   # Update variables if AOC is smaller than minimum AOC found so far
+   if resultingAOC < mostCorrect:
+      mostCorrectValue = weights_
+      mostCorrect = resultingAOC
+if True:
+      print(counter)
+      print(mostCorrectValue)
+
+weights_ = mostCorrectValue
+if True:
      _, surprisals = calculateTradeoffForWeights(weights_)
 
      if os.path.exists(TARGET_DIR):
@@ -182,9 +176,9 @@ for iteration in range(1000):
      else:
        os.makedirs(TARGET_DIR)
      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-        print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-        for key in itos_:
-          print(key, weights[key], file=outFile)
+        print("-1", mostCorrect, str(args), surprisals, file=outFile)
+        for key in sorted(itos_, key=lambda x:weights_[x]):
+          print(key, weights_[key], file=outFile)
   
 
 

@@ -5,6 +5,7 @@
 
 import random
 import sys
+from corpus import CORPUS
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 from math import log, exp
 from corpusIterator_V import CorpusIterator_V
@@ -16,10 +17,10 @@ objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Japanese-GSD_2.4")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 
 # May be REAL, RANDOM, REVERSE, or a pointer to a file containing an ordering grammar.
-parser.add_argument("--model", dest="model", type=str)
+parser.add_argument("--model", dest="model", type=str, default="REAL")
 
 # parameters for n-gram smoothing. See also estimateTradeoffHeldout.py
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
@@ -46,20 +47,31 @@ myID = args.idForProcess
 
 TARGET_DIR = "estimates/"
 
-import turkish_segmenter_coarse
-# Translate a verb into an underlying morpheme
-def getRepresentation(lemma):
-   # return turkish_segmenter.get_abstract_morphemes(lemma)
-   return lemma
+import finnish_segmenter_coarse
+import finnish_segmenter
 
-# using label_grapheme version bc it's easier to see if the verb processing is correct
+def getRepresentation(lemma):
+   return lemma["coarse"]
+
+def getSurprisalRepresentation(lemma):
+   return lemma["fine"]
+
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
+      if "VerbForm=Part" in labels or "VerbForm=Inf" in labels:
+          continue
+      morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = finnish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
-      data_.append(morphs)
+      fine[0] = vb["lemma"] # replace "ROOT" w actual root
+      lst_dict = []
+      for i in range(len(fine)):
+        morph_dict = {"fine": fine[i], "coarse": morphs[i]}
+        lst_dict.append(morph_dict)
+      data_.append(lst_dict)
+      lst_dict[0]["original"] = (vb["word"], vb["lemma"], vb["morph"])
 
 # Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
@@ -84,12 +96,14 @@ words = []
 affixFrequency = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
+    affix = getRepresentation(affix)
     affixFrequency[affix] = affixFrequency.get(affix, 0)+1
 
 
 itos = set()
 for verbWithAff in data_train:
  for affix in verbWithAff[1:]:
+    affix = getRepresentation(affix)
     itos.add(affix)
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
@@ -105,7 +119,6 @@ elif args.model != "REAL": # Load the ordering from a file
   import glob
   files = glob.glob(args.model)
   assert len(files) == 1
-  assert "Normalized" in files[0]
   with open(files[0], "r") as inFile:
      next(inFile)
      for line in inFile:
@@ -113,40 +126,11 @@ elif args.model != "REAL": # Load the ordering from a file
         weights[morpheme] = int(weight)
 
 
-def calculateTradeoffForWeights(weights):
+if True:
     train = []
     dev = []
     # Iterate through the verb forms in the two data partitions, and linearize as a sequence of underlying morphemes
-    for data, processed in [(data_train, train), (data_dev, dev)]:
+    for data, processed in [(data_dev, dev)]: # (data_train, train), 
       for verb in data:
-         affixes = verb[1:]
-         if args.model == "REAL": # Real ordering
-            _ = 0
-         elif args.model == "REVERSE": # Reverse affixs
-            affixes = affixes[::-1]
-         else: # Order based on weights
-            affixes = sorted(affixes, key=lambda x:weights.get(x, 0))
-
-
-         for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
-            processed.append(getRepresentation(ch))
-         processed.append("EOS") # Indicate end-of-sequence
-         for _ in range(args.cutoff+2): # Interpose a padding symbol between each pair of successive verb forms. There is no relation between successive verb forms, and adding padding prevents the n-gram models from "trying to learn" any spurious relations between successive verb forms.
-           processed.append("PAD")
-         processed.append("SOS") # start-of-sequence for the next verb form
-    
-    # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-
-
-    # Write results to a file
-    model = args.model
-    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+str(myID)+"_"+model+".txt"
-    print(outpath)
-    with open(outpath, "w") as outFile:
-       print(str(args), file=outFile)
-       print(" ".join(map(str,devSurprisalTable)), file=outFile)
-    return auc
+          print(verb[0]["original"], verb[1:])
    
-auc = calculateTradeoffForWeights(weights)
-print("AUC: ", auc)

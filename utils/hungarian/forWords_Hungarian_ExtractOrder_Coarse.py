@@ -2,12 +2,13 @@
 
 import random
 import sys
+from corpus import CORPUS
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Japanese_2.4")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)

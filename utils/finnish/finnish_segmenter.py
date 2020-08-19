@@ -37,8 +37,8 @@ def get_abstract_morphemes(labels):
     if person and number:
         morphs.append(person + "." + number)
     
-    if verbform not in ["Inf", None]: # TODO: not certain where to put this
-        morphs.append(verbform)
+#    if verbform not in ["Inf", None]: # TODO: not certain where to put this
+ #       morphs.append(verbform)
 
     if clitic:
         morphs.append(clitic)
