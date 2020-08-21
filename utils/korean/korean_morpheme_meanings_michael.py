@@ -114,7 +114,7 @@ morpheme_slots = {
     "ecs_어야" : "CONNECTOR_conjunctive_aya",
     "ecs_이" : "CONNECTOR_connector_i",
     "ef_ㄹ까" : "TENSE/ASPECT_ri+PRAGMATICMOOD_interrogative_kka",
-    "ep_셨" : "honorific_s+TENSE/ASPECT_honorific_past_yeot", # portmanteau honorific (SLOT II) + past  (https://en.wikipedia.org/wiki/Korean_verbs)
+    "ep_셨" : "HONORIFIC_honorific_s+TENSE/ASPECT_honorific_past_yeot", # portmanteau honorific (SLOT II) + past  (https://en.wikipedia.org/wiki/Korean_verbs)
     "ep_었겠" : "TENSE/ASPECT_remote_past/future_eossget",
     "ep_았겠" : "TENSE/ASPECT_remote_past/future_eossget", # SLOT III
     "ep_겠" : "TENSE/ASPECT_assertive",   # assertive (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4) (SLOT III)
@@ -153,7 +153,7 @@ morpheme_slots = {
     "ecs_게" : "CONNECTOR_so-that_ge", # https://en.wiktionary.org/wiki/%EA%B2%8C#Suffix
     "ecx_게" : "CONNECTOR_so-that_ge",
     "ecs_고" : "CONNECTOR_and;that_go", # https://en.wiktionary.org/wiki/%EA%B3%A0#Suffix_2
-    "ecs_나" : "CONNECTOIR_but_na", # https://en.wiktionary.org/wiki/%EB%82%98#Suffix
+    "ecs_나" : "CONNECTOR_but_na", # https://en.wiktionary.org/wiki/%EB%82%98#Suffix
     "ecs_듯이" : "CONNECTOR_deusi", # https://en.wiktionary.org/wiki/%EB%93%AF%EC%9D%B4#Suffix
     "ecs_라면" : "PRAGMATICMOOD_ra+CONNECTOR_conditional_myeon", # https://en.wiktionary.org/wiki/%EB%A9%B4
     "ecx_려" : "CONNECTOR_intention_려",

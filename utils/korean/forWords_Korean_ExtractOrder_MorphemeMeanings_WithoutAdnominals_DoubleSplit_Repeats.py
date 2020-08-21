@@ -119,6 +119,7 @@ pairs = set()
 counter = 0
 data = []
 
+import copy
 for sentence in corpusTrain:
     verb = []
     for line in sentence:
@@ -126,6 +127,50 @@ for sentence in corpusTrain:
             # Clear existing verb if you see punctuation
             processVerb(verb)
             verb = []
+        elif line["posFine"].split("+")[-1] == "etm":
+            # The existing verb is in adnominal form, so we won't consider it
+            verb = []
+        elif line["posFine"].split("+")[-1] == "etn":
+            # The existing verb is nominalized, so we won't consider it
+            verb = []
+        elif "px" in line["posFine"].split("+"):
+            if "pvg" in line["posFine"].split("+") or "paa" in line["posFine"].split("+"):
+              # general verb or adjective is part of new verb
+              processVerb(verb)
+              verb = []
+            posfine = line["posFine"].split("+")
+            lemma = line["lemma"].split("+")
+
+            posfine_lsts = [x.split("+") for x in line["posFine"].split("px")] # make list of lists, split on px
+            
+            for lst in posfine_lsts:
+              if lst[0] == "":
+                lst.insert(0, "px") # splitting deleted px, bring it back
+
+              while "" in lst: # removing some artefacts of splitting and joining
+                lst.remove("")
+
+            while ["px"] in posfine_lsts: # removing lists that were originally empty
+              posfine_lsts.remove(["px"])
+
+            lemma_lsts = [] 
+            idx = 0
+            for lst in posfine_lsts: # find corresponding lemmas of posfine lsts
+              lemma_lsts.append(lemma[idx:idx + len(lst)])
+              idx += len(lst)
+
+            for i in range(len(posfine_lsts)):
+              copied = copy.copy(line)
+              copied["posFine"] = "+".join(posfine_lsts[i])
+              copied["lemma"] = "+".join(lemma_lsts[i])
+              if i == 0 and "px" not in posfine_lsts[i]: # still part of previous verb
+                verb.append(copied)
+                processVerb(verb)
+                verb = []
+              else: # starts w px and is a new verb
+                processVerb(verb)
+                verb = []
+                verb.append(copied)
         elif line["posUni"] == "VERB":
             # Clear existing verb if you see a new verb
             processVerb(verb)
@@ -133,22 +178,18 @@ for sentence in corpusTrain:
             if not line["posFine"].split("+")[-1] in ["etm", "etn"]:
                 # only use the new verb if it isn't adnominalized or nominalized
                 verb.append(line)
-        elif line["posFine"].split("+")[-1] == "etm":
-            # The existing verb is in adnominal form, so we won't consider it
-            verb = []
-        elif line["posFine"].split("+")[-1] == "etn":
-            # The existing verb is nominalized, so we won't consider it
-            verb = []
         elif line["posUni"] == "AUX" and len(verb) > 0:
-            # Add auxiliary to existing verb
+            # Auxiliary is new verb
+            processVerb(verb)
+            verb = []
             verb.append(line)
-        elif line["posUni"] == "AUX" and len(verb) == 0 and "px" in line["posFine"].split("+"):
-            # Auxiliary is a verb if it has a px (auxiliary verb)
+        elif line["posUni"] == "AUX" and len(verb) == 0 and ("px" in line["posFine"].split("+") or "pvg" in line["posFine"].split("+")):
+            # Auxiliary is a verb if it has a px (auxiliary verb) or pvg (general verb)
             verb.append(line)
         elif line["word"] == "수" and len(verb) > 0:
             # Part of VERB + ㄹ/을 수 있다/없다 construction
             verb.append(line)
-        elif line["posUni"] == "SCONJ" and "pvg" in line["posFine"].split("+"):
+        elif line["posUni"] == "SCONJ" and ("pvg" in line["posFine"].split("+") or "paa" in line["posFine"].split("+")):
             # Subordinating conjunction is a new verb if it has pvg (general verb)
             processVerb(verb)
             verb = []
@@ -164,6 +205,8 @@ for sentence in corpusTrain:
             verb.append(line)
         elif "있" in line["word"] or "없" in line["word"]:
             # These are bound roots that mean "to have" or "to not have"
+            processVerb(verb)
+            verb = []
             verb.append(line)
         else:
             # Reached end of verb
