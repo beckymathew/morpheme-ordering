@@ -282,7 +282,7 @@ def automatic_morpheme_meaning(grapheme, label):
             elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
                 slots.append("AUXILIARY_"+grapheme)
             elif label == "pvg" or label == "paa": # general verb or attributive adjective
-                slots.append("ROOT_") # TODO: why would a root appear later in an affix chain
+                slots.append("ROOT_"+grapheme) # TODO: why would a root appear later in an affix chain
             elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
                 # not technically the root, but probably part of a noun / adj root that got turned into a verb
                 slots.append("DERIVATION_"+grapheme)
