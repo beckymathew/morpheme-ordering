@@ -224,5 +224,9 @@ with open("../michael_scratch/output/matchedAllomorphs.tsv", "r") as inFile:
 data = dict([(x[1]+"_"+x[0], "\t".join(x[2:])) for x in data if len(x) > 2])
 
 for x in itos_keys:
+    if counts[x] == 1: # no need to care aboit hapaxes for now
+        continue
+    if not ( "_" not in x[1] or "?" in x[1]):
+        continue
     print(x[0], "\t", x[1], "\t", counts[x], data.get(x[0], ""))
 
