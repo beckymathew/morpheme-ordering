@@ -1,7 +1,7 @@
 # based on matchedAllomorphs.tsv
 morpheme_slots = {
     "jp_이": "DERIVATION_predicative", # predicative maker
-    "ep_으시": "HONORIFIC_???",
+    "ep_으시": "SYNTACTICMOOD_subjunctive_Or_honorific_시", # Kawasaki chapter 7.2
     "ef_십시오": "HONORIFIC_formal_polite+imperative_오", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation -si-psio where -si- is honorific, -psio is sentence-final imperative
     "ef_세요": "HONORIFIC_informal_polite_imperative/nonpast_seyo", # honorific informal polite imperative
     "ef_세": "HONORIFIC_???",
@@ -28,7 +28,7 @@ morpheme_slots = {
     "ef_ㅂ시오": "FORMALITY_p+?_???", # -b is formal
     "ef_습니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_interrogative_kka", # -seub is formal, -kka is interrogative
     "ef_입니다": "FORMALITY_p+?_???", # formal "to be"
-    "ep_시": "SYNTACTICMOOD_subjunctive_Or_honorific_시", # usually subjunctive, but sometimes is HONORIFIC
+    "ep_시": "SYNTACTICMOOD_subjunctive_Or_honorific_시", # usually subjunctive, but sometimes is HONORIFIC. Kawasaki chapter 7.2
     "ep_더": "SYNTACTICMOOD_???",
     "ef_리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC
     "ef_으리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC 
@@ -56,8 +56,8 @@ morpheme_slots = {
     "ef_오": "PRAGMATICMOOD_imperative_오", # imperative
     "ef_아라": "PRAGMATICMOOD_imperative_eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
     "ef_어라": "PRAGMATICMOOD_imperative_eora/ara",
-    "ef_라": "PRAGMATICMOOD_plain-declarative/imperative_ra", # imperative
-    "ef_으라": "PRAGMATICMOOD_plain-declarative/imperative_era", # imperative
+    "ef_라"  : "PRAGMATICMOOD_plain-declarative/imperative_ra", # imperative
+    "ef_으라": "PRAGMATICMOOD_plain-declarative/imperative_ra", # imperative
     "ef_을까": "PRAGMATICMOOD_inquisitive_eulkka", # interrogative, https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635 https://en.wiktionary.org/wiki/%EC%9D%84%EA%B9%8C
     "ef_느냐": "PRAGMATICMOOD_formal_polite_interrogative_nopast_neunya", # interrogative formal non-polite (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4)
     "ef_어": "PRAGMATICMOOD_indicative_informal_nonpolite", # indicative informal non-polite
@@ -78,11 +78,11 @@ morpheme_slots = {
     "ef_ㄹ까": "PRAGMATICMOOD_interrogative_lkka", # interrogative "Should I do this for you?" https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635
     "ef_ㄹ까요": "PRAGMATICMOOD_interrogative_lkka+POLITE_polite_yo", # interrogative -lkka, polite -yo
     "ef_지": "PRAGMATICMOOD_ji", # something like "of course" or a biased question. Wikipedia: Casual
-    "ef_죠": "PRAGMATICMOOD_ji+POLITE_polite_yo", # same as -ji with -yo polite
+    "ef_죠": "PRAGMATICMOOD_ji+POLITE_polite_yo", # same as -ji with -yo polite. Kawasaki Chapter 6.15.
     "ef_지요": "PRAGMATICMOOD_of_course_ji+POLITE_polite_yo", # same as ^ -jyo
     "ef_나": "PRAGMATICMOOD_causal_interrogative_na", # casual interrogative https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjT1NPEj9DqAhXEGc0KHVZaDbsQFjAAegQIBhAB&url=https%3A%2F%2Fgobillykorean.com%2Fshop%2FFile%2Fget%2F%3Ffile%3DGo_Billy_Korean_Episode_28.pdf&usg=AOvVaw1Q1-UDawtJGqrhJ62jjstX
     "ef_어야지": "PRAGMATICMOOD_one_should_do_something", # one should do something
-    "ef_지마라": "PRAGMATICMOOD_negative_imperative", # negative imperative
+    "ef_지마라": "PRAGMATICMOOD_negative_imperative_지마라", # negative imperative
     "ef_리요": "PRAGMATICMOOD_imperative_old_style", # imperative (but an older style)
     "ef_답니다": "PRAGMATICMOOD_답니다", # something like a quotative? https://forum.wordreference.com/threads/%EB%8B%B5%EB%8B%88%EB%8B%A4.2253519/
     "jxf_요": "POLITE_yo",
@@ -91,7 +91,7 @@ morpheme_slots = {
     "ef_으니까": "CONNECTOR_eunikka", # formal polite cause/reason -eunikka
     "ef_니까요": "CONNECTOR_nikka+POLITE_polite_yo", # formal polite cause/reason -nikka, polite -yo
     "ef_으니까요": "CONNECTOR_eunikka+POLITE_polite_yo", # formal polite cause/reason -eunikka, polite -yo
-    "ef_고": "CONNECTOR_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 
+    "ef_고": "CONNECTOR_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 Kawasaki chapter 8.2 (...), 11.2 (quotative).
     "ef_구": "CONNECTOR_구", # can't tell what this is, some people say it's a different way to write -go
     "ef_야": "CONNECTOR_connective_condition_ya", # condition connective form, https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_데": "CONNECTOR_de", # contrast connective form https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
@@ -107,7 +107,7 @@ morpheme_slots = {
     "ecx_려고" : "CONNECTOR_speaker_intention",
     "ecc_면서" : "CONNECTOR_conjunctive_myeonseo",
     "ecs_면서" : "CONNECTOR_conjunctive_meyonseo",
-    "ecs_서" : "CONNECTOR_conjunctive_seo",
+    "ecs_서" : "CONNECTOR_conjunctive_seo", # Kawasaki chapter 8.3
     "ecs_아서" : "CONNECTOR_conjunctive_aseo",
     "ecs_아야" : "CONNECTOR_conjunctive_aya",
     "ecs_어서" : "CONNECTOR_conjunctive_aseo",
@@ -117,8 +117,8 @@ morpheme_slots = {
     "ep_셨" : "HONORIFIC_honorific_s+TENSE/ASPECT_honorific_past_yeot", # portmanteau honorific (SLOT II) + past  (https://en.wikipedia.org/wiki/Korean_verbs)
     "ep_었겠" : "TENSE/ASPECT_remote_past/future_eossget",
     "ep_았겠" : "TENSE/ASPECT_remote_past/future_eossget", # SLOT III
-    "ep_겠" : "TENSE/ASPECT_assertive",   # assertive (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4) (SLOT III)
-    "ep_ㅆ" : "TENSE/ASPECT_past",
+    "ep_겠" : "TENSE/ASPECT_assertive/strong-will_get",   # assertive (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4) (SLOT III). Kawasaki 8.10 states that 겠, ᄊ come in orsder determined by scope.
+    "ep_ㅆ" : "TENSE/ASPECT_past", # 
     "xsv_되" : "VALENCY_되",
     "xsv_하" : "VALENCY_하",
     "xsn_뿐" : "DERIVATION_뿐",
@@ -177,7 +177,12 @@ morpheme_slots = {
     "ecs_ㄹ지라도" : "CONNECTOR_even-if-it-were_ㄹ지라도", # koreangrammaticalforms.com/entry.php?eid=0000001066
     "ecc_거나" : "CONNECTOR_or_거나", # https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-51-58/lesson-58/
     "ecc_나" : "CONNECTOR_or_이나", # https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-51-58/lesson-58/
-    "ecs_ㄴ다면서" : "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_declarative_da+CONNECTOR_conjunctive_meyonseo" # https://moen.tistory.com/898
+    "ecs_ㄴ다면서" : "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_declarative_da+CONNECTOR_conjunctive_meyonseo", # https://moen.tistory.com/898
+    "ecc_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C Kawasaki Chapter 6.12
+    "ecs_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
+    "ecx_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
+    "ef_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
+    "ecc_ㄹ까" : "CONNECTOR_weak-will_ㄹ까" # Kawasaki Chapter 6.13
 }
 
 # ef: Final ending marker. SLOTS: V, VI, VII
