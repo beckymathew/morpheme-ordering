@@ -252,15 +252,16 @@ def calculateTradeoffForWeights(weights):
     auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
     return auc, devSurprisalTable
    
-
+lastCoordinate = None
 import os
 for iteration in range(1000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while affixFrequency[coordinate] < 10 and random() < 0.95:
+  while (affixFrequency[coordinate] < 10 and random() < 0.95) or coordinate == lastCoordinate:
      coordinate = choice(itos)
+  lastCoordinate = coordinate
 
   # This will store the minimal AOC found so far and the corresponding position
   mostCorrect, mostCorrectValue = 1e100, None
