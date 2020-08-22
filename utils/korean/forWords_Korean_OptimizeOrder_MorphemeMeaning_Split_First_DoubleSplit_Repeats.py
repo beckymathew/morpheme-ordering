@@ -259,7 +259,7 @@ for iteration in range(1000):
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
+  while affixFrequency[coordinate] < 10 and random() < 0.95:
      coordinate = choice(itos)
 
   # This will store the minimal AOC found so far and the corresponding position
@@ -269,9 +269,9 @@ for iteration in range(1000):
   for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
 
      # Stochastically exclude positions to save compute time
-     if random() < 0.9 and newValue != weights[coordinate]:
+     if random() < 0.2 and newValue != weights[coordinate]:
         continue
-     print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
+     print(newValue, "BestAUC:", mostCorrect, coordinate, affixFrequency[coordinate])
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
      weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
@@ -288,9 +288,9 @@ for iteration in range(1000):
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   print(weights)
   for x in itos_:
-     if affixFrequency.get(x,0) < 10:
+     if affixFrequency[x] < 10:
        continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequency.get(x,0)]]))
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequency[x]]]))
   if (iteration + 1) % 50 == 0:
      _, surprisals = calculateTradeoffForWeights(weights_)
 

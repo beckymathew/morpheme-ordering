@@ -364,10 +364,12 @@ def getCorrectOrderCountPerMorpheme(weights, coordinate, newValue):
                correct+=count
              else:
                incorrect+=count
+               if iteration == 101:
+                 print("   ".join([affixChain[k]["fine"]+("???" if (k in [i,j]) else "") for k in range(len(affixChain))]))
    return correct/(correct+incorrect)
 
 lastMostCorrect = 0
-for iteration in range(1000):
+for iteration in range(102):
 
   coordinate = choice(itos)
   while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: # TODO: why? mhahn: this is to focus early iterations on frequent morphemes
