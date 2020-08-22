@@ -2,7 +2,7 @@
 morpheme_slots = {
     "jp_이": "DERIVATION_predicative_i", # predicative maker
     "ep_으시": "SYNTACTICMOOD_subjunctive_Or_honorific_시", # Kawasaki chapter 7.2
-    "ef_십시오": "HONORIFIC_formal_polite+imperative_오", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation -si-psio where -si- is honorific, -psio is sentence-final imperative
+    "ef_십시오": "HONORIFIC_formal_polite+PRAGMATICMOOD_imperative_오", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation -si-psio where -si- is honorific, -psio is sentence-final imperative
     "ef_세요": "HONORIFIC_informal_polite_imperative/nonpast_seyo", # honorific informal polite imperative
     "ef_세": "HONORIFIC_???",
     "ef_으리오": "VALENCY_passive/causative_ri", # passative / causative https://en.wiktionary.org/wiki/%EB%A6%AC (barely occurs in the corpus)
@@ -121,10 +121,10 @@ morpheme_slots = {
     "ep_겠" : "TENSE/ASPECT_assertive/strong-will_get",   # assertive (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4) (SLOT III). Kawasaki 8.10 states that 겠, ᄊ come in orsder determined by scope.
     "ep_ㅆ" : "TENSE/ASPECT_past", # 
     "xsv_되" : "DERIVATION_되", # as a verb, this means 'to become'
-    "xsv_하" : "DERIVATION_하",  # The verb hada 'to do' as in 해결하려고	해결+하+려고	VERB	ncpa+xsv+ecx: https://en.wiktionary.org/wiki/%ED%95%B4%EA%B2%B0%ED%95%98%EB%8B%A4
+    "xsv_하" : "DERIVATION_verb_하",  # The verb hada 'to do' as in 해결하려고	해결+하+려고	VERB	ncpa+xsv+ecx: https://en.wiktionary.org/wiki/%ED%95%B4%EA%B2%B0%ED%95%98%EB%8B%A4
     "xsn_뿐" : "DERIVATION_뿐", # derives something meaning "only X" https://en.wiktionary.org/wiki/%EB%BF%90#Particle 도시귀족뿐이었다 도시+귀족+뿐+이+었+다	VERB	ncn+ncn+xsn+jp+ep+e 'it was only Urban aristocracy'
     "xsn_들" : "DERIVATION_들", # https://en.wiktionary.org/wiki/%EB%93%A4#Particle
-    "xsm_하" : "DERIVATION_하", # the adjective hada 'have a quality' as in 필요하다	필요+하+다	VERB	ncps+xsm+ef 필요하다 https://en.wiktionary.org/wiki/%ED%95%84%EC%9A%94%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EB%B6%88%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4
+    "xsm_하" : "DERIVATION_adj_하", # the adjective hada 'have a quality' as in 필요하다	필요+하+다	VERB	ncps+xsm+ef 필요하다 https://en.wiktionary.org/wiki/%ED%95%84%EC%9A%94%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EB%B6%88%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4
     "xsm_스럽" : "DERIVATION_스럽", # seureop https://en.wiktionary.org/wiki/%EC%8A%A4%EB%9F%BD%EB%8B%A4 forms adjectives
     "jxc_부터" : "PRAGMATICMOOD_buteo", #https://en.wiktionary.org/wiki/%EB%B6%80%ED%84%B0
     "jxc_라도" : "PRAGMATICMOOD_rado", #https://en.wiktionary.org/wiki/%EB%9D%BC%EB%8F%84
@@ -183,7 +183,16 @@ morpheme_slots = {
     "ecs_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
     "ecx_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
     "ef_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
-    "ecc_ㄹ까" : "CONNECTOR_weak-will_ㄹ까" # Kawasaki Chapter 6.13
+    "ecc_ㄹ까" : "CONNECTOR_weak-will_ㄹ까", # Kawasaki Chapter 6.13
+    "etm_은" : "PRAGMATICMOOD_topic_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
+    "ef_단다" : "PRAGMATICMOOD_tanta", # https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002391173
+    "ef_아" : "PRAGMATICMOOD_아", # https://en.wiktionary.org/wiki/%EC%95%84#Suffix_2
+    "ef_에요" : "PRAGMATICMOOD_e+POLITE_polite_요",
+    "jcm_의" : "CASE_possessive_ui", # https://en.wiktionary.org/wiki/%EC%9D%98
+    "jco_을" : "CASE_admonial_eul", # https://en.wiktionary.org/wiki/%EC%9D%84#Suffix
+    "jxt_은" : "CASE_topic_은", # Also labeled etm. # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
+    "jcs_이" : "CASE_i",
+    "pad_어떻" : "ROOT_어떻"
 }
 
 # ef: Final ending marker. SLOTS: V, VI, VII
