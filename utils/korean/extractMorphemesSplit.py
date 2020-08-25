@@ -241,4 +241,6 @@ for x in sorted(list(allMorphemes)):
 for x in sorted(itos_keys, key=lambda y:counts[y]):
     print(x[0], "\t", x[1], "\t", counts[x], data.get(x[0], ""))
 
+for x in sorted(list(allMorphemes), key=lambda y:allMorphemes[y]):
+    print(x,"\t", allMorphemes[x])
 

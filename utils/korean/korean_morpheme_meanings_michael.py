@@ -56,8 +56,8 @@ morpheme_slots = {
     "ef_오": "?????_ef_오", # imperative TODO
     "ef_아라": "PRAGMATICMOOD_imperative_eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
     "ef_어라": "PRAGMATICMOOD_imperative_eora/ara",
-    "ef_라"  : "PRAGMATICMOOD_imperative_ra", # imperative
-    "ef_으라": "PRAGMATICMOOD_imperative_ra", # imperative
+    "ef_라"  : "PRAGMATICMOOD_imperative_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
+    "ef_으라": "PRAGMATICMOOD_imperative_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
     "ef_을까": "PRAGMATICMOOD_interrogative_lkka", # interrogative, https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635 https://en.wiktionary.org/wiki/%EC%9D%84%EA%B9%8C
     "ef_느냐": "PRAGMATICMOOD_formal_nonpolite_interrogative_냐", # interrogative formal non-polite (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4)
     "ef_어": "PRAGMATICMOOD_indicative_informal_어", # indicative informal non-polite
@@ -100,7 +100,7 @@ morpheme_slots = {
     "ef_으랴": "CONNECTOR_rya", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_옵니다": "AUXILIARY_옵니다", # formal indicative "to come" (not a suffix, it's a new verb)
     "ef_걸": "DERIVATION_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/
-    "etn_기" : "SYNTACTICMOOD_nominalizer_informal_nonpilote_gi",
+    "etn_기" : "SYNTACTICMOOD_nominalizer_informal_nonpolite_gi",
     "etn_ㅁ" : "SYNTACTICMOOD_nominalizer_formal_nonpolite_m",
     "ep_었었" : "TENSE/ASPECT_remote_past_었었",
     "ep_았었" : "TENSE/ASPECT_remote_past_었었",
@@ -173,7 +173,7 @@ morpheme_slots = {
     "ecs_려면" : "CONNECTOR_if-you-want-려면", # https://www.howtostudykorean.com/upper-intermediate-korean-grammar/unit-4-lessons-92-100/lesson-96/
     "ecs_려고" : "CONNECTOR_intention_려고", # https://www.howtostudykorean.com/unit-2-lower-intermediate-korean-grammar/unit-2-lessons-26-33/lesson-32/
     "ecs_려" : "CONNECTOR_ryeo_려",
-    "ecc_고": "CONNECTOR_ecc_ecc_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 
+    "ecc_고": "CONNECTOR_ecc_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 
     "ecs_ㄹ수록" : "CONNECTOR_as-changes_ㄹ수록", #https://www.howtostudykorean.com/unit-6/lessons-126-133/lesson-132/
     "ecs_ㄹ수록" : "CONNECTOR_whether_ㄹ수록", # https://koreanwikiproject.com/wiki/(%EC%9C%BC)%E3%84%B9%EC%A7%80_%EB%AA%A8%EB%A5%B4%EA%B2%A0%EB%8B%A4
     "ecs_ㄹ지도" : "CONNECTOR_you-dont-know-if_ㄹ지도",
@@ -186,7 +186,9 @@ morpheme_slots = {
     "ecx_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
     "ef_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
     "ecc_ㄹ까" : "CONNECTOR_weak-will_ㄹ까", # Kawasaki Chapter 6.13
-    "etm_은" : "PRAGMATICMOOD_topic_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
+    "etm_은" : "CASE_topic?past_determiner_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle. Also  https://en.wiktionary.org/wiki/%EB%82%B3%EB%8B%A4#Korean 낳은 past determiner is labeled pvg+etm
+    "etm_을" : "CASE_future_determiner_을",
+    "etm_는" : "CASE_present_determiner_는",
     "ef_단다" : "PRAGMATICMOOD_tanta", # https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002391173
     "ef_아" : "PRAGMATICMOOD_아", # https://en.wiktionary.org/wiki/%EC%95%84#Suffix_2
     "ef_에요" : "PRAGMATICMOOD_e+POLITE_polite_요",
