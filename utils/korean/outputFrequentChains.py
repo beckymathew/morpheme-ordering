@@ -297,7 +297,7 @@ affixChains = defaultdict(int)
 for d in data:
    affixChains[tuple(d[1:])] += 1
 
-for x in sorted(list(affixChains), key=lambda x:affixChains[x])[-100:]:
+for x in sorted(list(affixChains), key=lambda x:affixChains[x]):
     print(x, affixChains[x])
 
 
