@@ -53,7 +53,7 @@ morpheme_slots = {
     "ef_는단다": "SYNTACTICMOOD_indicative_n+?_?", # indicative -neun
     "ef_ㄴ지라": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
     "ef_ㄴ거지": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
-    "ef_오": "?????_ef_오", # imperative TODO
+    "ef_오": "PRAGMATICMOOD_?????_ef_오", # imperative TODO
     "ef_아라": "PRAGMATICMOOD_imperative_eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
     "ef_어라": "PRAGMATICMOOD_imperative_eora/ara",
     "ef_라"  : "PRAGMATICMOOD_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
@@ -130,6 +130,8 @@ morpheme_slots = {
     "xsn_들" : "DERIVATION_들", # https://en.wiktionary.org/wiki/%EB%93%A4#Particle
     "xsm_하" : "DERIVATION_adj_하", # the adjective hada 'have a quality' as in 필요하다	필요+하+다	VERB	ncps+xsm+ef 필요하다 https://en.wiktionary.org/wiki/%ED%95%84%EC%9A%94%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EB%B6%88%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4
     "xsm_스럽" : "DERIVATION_스럽", # seureop https://en.wiktionary.org/wiki/%EC%8A%A4%EB%9F%BD%EB%8B%A4 forms adjectives
+    "xsv_시키" : "DERIVATION_시키", # https://en.wiktionary.org/wiki/%EC%8B%9C%ED%82%A4%EB%8B%A4
+    "xsv_받"   : "DERIVATION_받", # e.g. https://en.wiktionary.org/wiki/%EC%A3%BC%EA%B3%A0%EB%B0%9B%EB%8B%A4
     "jxc_부터" : "PRAGMATICMOOD_buteo", #https://en.wiktionary.org/wiki/%EB%B6%80%ED%84%B0
     "jxc_라도" : "PRAGMATICMOOD_rado", #https://en.wiktionary.org/wiki/%EB%9D%BC%EB%8F%84
     "jxc_도" : "CONNECTOR_do", # https://en.wiktionary.org/wiki/%EB%8F%84#Particle
@@ -199,7 +201,6 @@ morpheme_slots = {
     "ef_단다" : "PRAGMATICMOOD_tanta", # https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002391173
     "ef_아" : "PRAGMATICMOOD_아", # https://en.wiktionary.org/wiki/%EC%95%84#Suffix_2
     "ef_에요" : "PRAGMATICMOOD_e+POLITE_polite_요",
-    "jcm_의" : "CASE_possessive_ui", # https://en.wiktionary.org/wiki/%EC%9D%98
     "ef_걸": "NOMINALIZER_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/ https://en.wiktionary.org/wiki/%EA%B1%B8
     "etn_기" : "NOMINALIZER_nominalizer_informal_nonpolite_gi",
     "etn_ㅁ" : "NOMINALIZER_nominalizer_formal_nonpolite_m",
@@ -211,8 +212,9 @@ morpheme_slots = {
     # EUN
     "jxt_은" : "NOMINALIZER_topic?past_determiner_은", # Also labeled etm. # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
     "etm_은" : "NOMINALIZER_topic?past_determiner_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle. Also  https://en.wiktionary.org/wiki/%EB%82%B3%EB%8B%A4#Korean 낳은 past determiner is labeled pvg+etm
+    "jcm_의" : "CASE_possessive_ui", # https://en.wiktionary.org/wiki/%EC%9D%98
     "jcs_이" : "CASE_i",
-    "pad_어떻" : "ROOT_어떻",
+    "pad_어떻" : "CONNECTOR_어떻",
     "ecs_는데" : "CONNECTOR_informal_nonpolite_contrast_neunde", #https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ecs_더니" : "CONNECTOR_informal_polite_deoni", # https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_네" : "PRAGMATICMOOD_exclamatory_ne", # https://en.wiktionary.org/wiki/%EB%84%A4#Suffix
@@ -317,12 +319,12 @@ def automatic_morpheme_meaning(grapheme, label):
             elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
                 slots.append("AUXILIARY_"+grapheme)
             elif label == "pvg" or label == "paa": # general verb or attributive adjective
-                slots.append("ROOT_"+grapheme) # TODO: why would a root appear later in an affix chain
+                slots.append("CONNECTOR_"+grapheme) # TODO: why would a root appear later in an affix chain
             elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
                 # not technically the root, but probably part of a noun / adj root that got turned into a verb
                 slots.append("DERIVATION_"+grapheme)
             elif label == "xsv": # verb derivational suffix
-                slots.append("VALENCY_"+grapheme)
+                slots.append("DERIVATION_"+grapheme)
             elif label == "etm" or label == "etn": # adnominalizer or nominalizer
                 slots.append("SYNTACTICMOOD_"+grapheme)
             elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
@@ -353,41 +355,41 @@ def automatic_morpheme_meaning(grapheme, label):
     assert len(slots) > 0, grapheme
     return slots 
 
-def morpheme_meaning(grapheme, label):
-    ret = morpheme_slots.get(label + "_" + grapheme)
-    if ret == None: 
-        if label == "px": # auxiliary verb
-            return "AUXILIARY_"+grapheme
-        elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
-            return "AUXILIARY_"+grapheme
-        elif label == "pvg" or label == "paa": # general verb or attributive adjective
-            return "ROOT"
-        elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
-            # not technically the root, but probably part of a noun / adj root that got turned into a verb
-            return "ROOT"
-        elif label == "xsv": # verb derivational suffix
-            return "VALENCY_"+grapheme
-        elif label == "etm" or label == "etn": # adnominalizer or nominalizer
-            return "SYNTACTICMOOD_"+grapheme
-        elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
-            return "TENSE/ASPECT"
-        elif label == "jcr": # quotative case particle
-            return "PRAGMATICMOOD_"+grapheme
-        elif label == "jca": # adverbial case particle (looks like mostly locative or instrumental)
-            return "PRAGMATICMOOD_"+grapheme
-        elif label == "jxc": # common auxiliary (looks like "only", "until", "up to")
-            return "PRAGMATICMOOD_"+grapheme
-        elif label == "ecc" or label == "ecs" or label == "ecx": # coordinate conjunction, conjunctive ending, auxiliary conjunction
-            return "CONNECTOR_"+grapheme
-        else:
-            return "UNKNOWN_"+grapheme
-    else:
-        return ret # label from dictionary morpheme_slots
-
-### Notes ###
-# - The corpus doesn't fully separate morphemes. In cases where a single morpheme from the corpus actually corresponds to multiple morphemes (like HONORIFIC + PAST), I've labeled it with the left-most morpheme's slot (HONORIFIC).
-
-### Issues ###
-# - doesn't make sense to me that case particles (usually for nouns) should indicate pragmatic mood
-# - doesn't make sense that adnominalizers / nominalizers indicate syntactic mood -- they're changing a verb into a different category
-#   - This doesn't matter if we're using verbsWithoutAdnominals
+#def morpheme_meaning(grapheme, label):
+#    ret = morpheme_slots.get(label + "_" + grapheme)
+#    if ret == None: 
+#        if label == "px": # auxiliary verb
+#            return "AUXILIARY_"+grapheme
+#        elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
+#            return "AUXILIARY_"+grapheme
+#        elif label == "pvg" or label == "paa": # general verb or attributive adjective
+#            return "ROOT"
+#        elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
+#            # not technically the root, but probably part of a noun / adj root that got turned into a verb
+#            return "ROOT"
+#        elif label == "xsv": # verb derivational suffix
+#            return "VALENCY_"+grapheme
+#        elif label == "etm" or label == "etn": # adnominalizer or nominalizer
+#            return "SYNTACTICMOOD_"+grapheme
+#        elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
+#            return "TENSE/ASPECT"
+#        elif label == "jcr": # quotative case particle
+#            return "PRAGMATICMOOD_"+grapheme
+#        elif label == "jca": # adverbial case particle (looks like mostly locative or instrumental)
+#            return "PRAGMATICMOOD_"+grapheme
+#        elif label == "jxc": # common auxiliary (looks like "only", "until", "up to")
+#            return "PRAGMATICMOOD_"+grapheme
+#        elif label == "ecc" or label == "ecs" or label == "ecx": # coordinate conjunction, conjunctive ending, auxiliary conjunction
+#            return "CONNECTOR_"+grapheme
+#        else:
+#            return "UNKNOWN_"+grapheme
+#    else:
+#        return ret # label from dictionary morpheme_slots
+#
+#### Notes ###
+## - The corpus doesn't fully separate morphemes. In cases where a single morpheme from the corpus actually corresponds to multiple morphemes (like HONORIFIC + PAST), I've labeled it with the left-most morpheme's slot (HONORIFIC).
+#
+#### Issues ###
+## - doesn't make sense to me that case particles (usually for nouns) should indicate pragmatic mood
+## - doesn't make sense that adnominalizers / nominalizers indicate syntactic mood -- they're changing a verb into a different category
+##   - This doesn't matter if we're using verbsWithoutAdnominals
