@@ -102,9 +102,6 @@ morpheme_slots = {
     "ef_랴": "CONNECTOR_rya", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_으랴": "CONNECTOR_rya", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_옵니다": "AUXILIARY_옵니다", # formal indicative "to come" (not a suffix, it's a new verb)
-    "ef_걸": "NOMINALIZER_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/
-    "etn_기" : "NOMINALIZER_nominalizer_informal_nonpolite_gi",
-    "etn_ㅁ" : "NOMINALIZER_nominalizer_formal_nonpolite_m",
     "ep_었었" : "TENSE/ASPECT_remote_past_었었",
     "ep_았었" : "TENSE/ASPECT_remote_past_었었",
     "ep_ㅆ었" : "TENSE/ASPECT_remote_past_었었",
@@ -203,6 +200,9 @@ morpheme_slots = {
     "ef_아" : "PRAGMATICMOOD_아", # https://en.wiktionary.org/wiki/%EC%95%84#Suffix_2
     "ef_에요" : "PRAGMATICMOOD_e+POLITE_polite_요",
     "jcm_의" : "CASE_possessive_ui", # https://en.wiktionary.org/wiki/%EC%9D%98
+    "ef_걸": "NOMINALIZER_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/ https://en.wiktionary.org/wiki/%EA%B1%B8
+    "etn_기" : "NOMINALIZER_nominalizer_informal_nonpolite_gi",
+    "etn_ㅁ" : "NOMINALIZER_nominalizer_formal_nonpolite_m",
     # NEUN
     "etm_는" : "NOMINALIZER_present_determiner_는",
     # EUL
