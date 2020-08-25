@@ -2,7 +2,9 @@
 
 import random
 import sys
+from estimateTradeoffInSample import estimateTradeoffInSample
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from frozendict import frozendict
 
 objectiveName = "LM"
 
@@ -13,7 +15,7 @@ parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=7)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
 
@@ -44,10 +46,6 @@ posUni = set()
 posFine = set() 
 
 from korean_morpheme_meanings_michael import automatic_morpheme_meaning
-def getRepresentation(lemma):
-    lst = lemma.split("_") # kaist_label, graph, kaist_label, graph, ...
-    morpheme_slot = automatic_morpheme_meaning(grapheme=lst[1], label=lst[0]) 
-    return morpheme_slot
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -71,8 +69,8 @@ def processVerb(verb, data_):
       flattened = []
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
-           morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0]) # check for allomorphs
-           flattened.append(fine_label + "_" + morph)
+           morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
+           flattened.append(morph + "_" + fine_label)
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
@@ -98,7 +96,19 @@ def processVerb(verb, data_):
       # add each verb list to data
       for lst in lsts:
         if len(lst) > 0:
-          data_.append(lst)
+          lst2 = []
+          for x in lst:
+#              print(x)
+              morph_label = x.split("_")
+ #             print(morph_label)
+              morph, fine_label = "_".join(morph_label[:-1]), morph_label[-1]
+  #            print("107", x, fine_label, morph)
+              for y in automatic_morpheme_meaning(grapheme=morph, label=fine_label):
+                  for z in y.split("+"):
+   #                  print(z)
+                     lst2.append(frozendict({"coarse" : z[:z.index("_")], "fine" : z}))
+          data_.append(lst2)
+    #      print(lst2)
 
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
@@ -206,39 +216,103 @@ words = []
 affixFrequency = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    for slot in affixLemma: 
-      affixFrequency[slot] = affixFrequency.get(slot, 0) + 1
+    slot = affix["coarse"]
+    affixFrequency[slot] = affixFrequency.get(slot, 0) + 1
     # affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
 
-from collections import defaultdict
-counts = defaultdict(int) # all the first elems of outputs of getrepresentation
+
+itos = set() # all the first elems of outputs of getrepresentation
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
-      counts[((affix, "+".join(getRepresentation(affix))))]+=1
-itos_keys = sorted(list(counts))
+      slot = affix["coarse"]
+      itos.add(slot) # getRepresentation[0]
+itos = sorted(list(itos))
+stoi = dict(list(zip(itos, range(len(itos)))))
 
-with open("../michael_scratch/output/matchedAllomorphs.tsv", "r") as inFile:
-    data = [x.split("\t") for x in inFile.read().split("\n")]
-data = dict([(x[1]+"_"+x[0], "\t".join(x[2:])) for x in data if len(x) > 2])
+itos_ = itos[::]
+shuffle(itos_)
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
 
+cached_stoi = {}
+def getNumeric(x):
+    if x not in cached_stoi:
+      cached_stoi[x] = len(cached_stoi)+10
+    return cached_stoi[x]
 
-allMorphemes = defaultdict(int)
+def calculateTradeoffForWeights(weights):
+    # Order the datasets based on the given weights
+    train = []
+    dev = []
+    for data, processed in [(data_train, train), (data_dev, dev)]:
+      for verb in data:
+         affixes = verb[1:]
+         affixes = sorted(affixes, key=lambda x: weights[x["coarse"]]) # take the weight of the first morpheme slot
+         for ch in [verb[0]] + affixes:
+            processed.append(getNumeric(ch["fine"])) # grapheme morpheme, label_grapheme morpheme, don't call getRepresentation if abstract slot
+         processed.append(1)
+         for _ in range(args.cutoff+2):
+           processed.append(0)
+         processed.append(2)
 
-for x in itos_keys:
-#    if counts[x] == 1: # no need to care aboit hapaxes for now
- #       continue
-  #  if not ( "_" not in x[1] or "?" in x[1]):
-   #     continue
-    print(x[0], "\t", x[1], "\t", counts[x], data.get(x[0], ""))
-    for k in x[1].split("+"):
-        allMorphemes[k] += counts[x]
-for x in sorted(list(allMorphemes)):
-    print(x,"\t", allMorphemes[x])
+    auc, devSurprisalTable = estimateTradeoffInSample(train, args)
+    return auc, devSurprisalTable
+   
+lastCoordinate = None
+import os
+for iteration in range(1000):
+  # Randomly select a morpheme whose position to update
+  coordinate=choice(itos)
 
+  # Stochastically filter out rare morphemes
+  while (affixFrequency[coordinate] < 10 and random() < 0.95) or coordinate == lastCoordinate:
+     coordinate = choice(itos)
+  lastCoordinate = coordinate
 
-for x in sorted(itos_keys, key=lambda y:counts[y]):
-    print(x[0], "\t", x[1], "\t", counts[x], data.get(x[0], ""))
+  # This will store the minimal AOC found so far and the corresponding position
+  mostCorrect, mostCorrectValue = 1e100, None
+
+  # Iterate over possible new positions
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
+
+     # Stochastically exclude positions to save compute time
+     if random() < 0.2 and newValue != weights[coordinate]:
+        continue
+     print(newValue, "BestAUC:", mostCorrect, coordinate, affixFrequency[coordinate])
+     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
+     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
+
+     # Calculate AOC for this updated assignment
+     resultingAOC, _ = calculateTradeoffForWeights(weights_)
+
+     # Update variables if AOC is smaller than minimum AOC found so far
+     if resultingAOC < mostCorrect:
+        mostCorrectValue = newValue
+        mostCorrect = resultingAOC
+  print(iteration, mostCorrect)
+  weights[coordinate] = mostCorrectValue
+  itos_ = sorted(itos, key=lambda x:weights[x])
+  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+  print(weights)
+  for x in itos_:
+     if affixFrequency[x] < 10:
+       continue
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequency[x]]]))
+  if (iteration + 1) % 50 == 0:
+     _, surprisals = calculateTradeoffForWeights(weights_)
+
+     if os.path.exists(TARGET_DIR):
+      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+          for key in itos_:
+            print(key, weights[key], file=outFile)
+     else:
+       os.makedirs(TARGET_DIR)
+       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+          for key in itos_:
+            print(key, weights[key], file=outFile)
+  
+
 
 
