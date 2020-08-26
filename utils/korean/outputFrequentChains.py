@@ -2,18 +2,17 @@
 
 import random
 import sys
-from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from frozendict import frozendict
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--language", dest="language", type=str, default="Korean-Kaist_2.6")
-parser.add_argument("--model", dest="model", type=str)
-parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
+parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=15)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
 
@@ -35,19 +34,22 @@ assert args.gamma >= 1
 myID = args.idForProcess
 
 
-TARGET_DIR = "results/"+__file__.replace(".py", "")
+TARGET_DIR = "/u/scr/mhahn/deps/memory-need-ngrams-morphology/"
 
 
 
-posUni = set() 
+posUni = set()
 
-posFine = set() 
+posFine = set()
 
-from korean_morpheme_meanings_michael import automatic_morpheme_meaning
+# TODO: update this for Korean
 def getRepresentation(lemma):
-    lst = lemma.split("_") # kaist_label, graph, kaist_label, graph, ...
-    morpheme_slot = automatic_morpheme_meaning(grapheme=lst[1], label=lst[0]) 
-    return morpheme_slot
+   if lemma == "させる" or lemma == "せる":
+     return "CAUSATIVE"
+   elif lemma == "れる" or lemma == "られる" or lemma == "える" or lemma == "得る" or lemma == "ける":
+     return "PASSIVE_POTENTIAL"
+   else:
+     return lemma
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -62,17 +64,17 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-
 import allomorphy
+from korean_morpheme_meanings_michael import automatic_morpheme_meaning
 # using label_grapheme version bc it's easier to see if the verb processing is correct
-def processVerb(verb, data_):
+def processVerb(verb):
     if len(verb) > 0:
       # get flattened list of labels + morphemes
       flattened = []
       for group in verb:
          for morpheme in zip(group["posFine"].split("+"), group["lemma"].split("+")):
-           morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0]) # check for allomorphs
-           flattened.append(fine_label + "_" + morph)
+           morph, fine_label = allomorphy.get_underlying_morph(morpheme[1], morpheme[0])
+           flattened.append(morph + "_" + fine_label)
 
       joined_nouns = []
       # join consecutive nouns (excluding verbal like nbn non-unit bound noun)
@@ -98,23 +100,32 @@ def processVerb(verb, data_):
       # add each verb list to data
       for lst in lsts:
         if len(lst) > 0:
-          data_.append(lst)
+          lst2 = []
+          for x in lst:
+#              print(x)
+              morph_label = x.split("_")
+ #             print(morph_label)
+              morph, fine_label = "_".join(morph_label[:-1]), morph_label[-1]
+  #            print("107", x, fine_label, morph)
+              for y in automatic_morpheme_meaning(grapheme=morph, label=fine_label):
+                  for z in y.split("+"):
+   #                  print(z)
+                     lst2.append(frozendict({"coarse" : z[:z.index("_")], "fine" : z}))
+          data.append(lst2)
+    #      print(lst2)
 
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
-corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
-
 pairs = set()
 counter = 0
-data_train = []
-data_dev = []
+data = []
+
 import copy
-for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
-   for sentence in corpus:
+for sentence in corpusTrain:
     verb = []
     for line in sentence:
         if line["posUni"] == "PUNCT":
             # Clear existing verb if you see punctuation
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
         elif line["posFine"].split("+")[-1] == "etm":
             # The existing verb is in adnominal form, so we won't consider it
@@ -125,7 +136,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
         elif "px" in line["posFine"].split("+"):
             if "pvg" in line["posFine"].split("+") or "paa" in line["posFine"].split("+"):
               # general verb or adjective is part of new verb
-              processVerb(verb, data_)
+              processVerb(verb)
               verb = []
             posfine = line["posFine"].split("+")
             lemma = line["lemma"].split("+")
@@ -154,22 +165,22 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
               copied["lemma"] = "+".join(lemma_lsts[i])
               if i == 0 and "px" not in posfine_lsts[i]: # still part of previous verb
                 verb.append(copied)
-                processVerb(verb, data_)
+                processVerb(verb)
                 verb = []
               else: # starts w px and is a new verb
-                processVerb(verb, data_)
+                processVerb(verb)
                 verb = []
                 verb.append(copied)
         elif line["posUni"] == "VERB":
             # Clear existing verb if you see a new verb
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
             if not line["posFine"].split("+")[-1] in ["etm", "etn"]:
                 # only use the new verb if it isn't adnominalized or nominalized
                 verb.append(line)
         elif line["posUni"] == "AUX" and len(verb) > 0:
             # Auxiliary is new verb
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
             verb.append(line)
         elif line["posUni"] == "AUX" and len(verb) == 0 and ("px" in line["posFine"].split("+") or "pvg" in line["posFine"].split("+")):
@@ -180,12 +191,13 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
             verb.append(line)
         elif line["posUni"] == "SCONJ" and ("pvg" in line["posFine"].split("+") or "paa" in line["posFine"].split("+")):
             # Subordinating conjunction is a new verb if it has pvg (general verb)
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
             verb.append(line)
+            # TODO: can AUX appear after SCONJ in it?
         elif line["posUni"] == "SCONJ" and "xsv" in line["posFine"].split("+"):
             # Subordinating conjunction is a new verb if it has xsv (verb derivational suffix)
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
             verb.append(line)
         elif line["posUni"] == "SCONJ" and len(verb) > 0:
@@ -193,54 +205,100 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
             verb.append(line)
         elif "있" in line["word"] or "없" in line["word"]:
             # These are bound roots that mean "to have" or "to not have"
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
             verb.append(line)
         else:
             # Reached end of verb
-            processVerb(verb, data_)
+            processVerb(verb)
             verb = []
 
+# for sentence in corpusTrain:
+#     verb = []
+#     for line in sentence:
+#        if line["posUni"] == "PUNCT":
+#           processVerb(verb)
+#           verb = []
+#           continue
+#        elif line["posUni"] == "VERB":
+#           processVerb(verb)
+#           verb = []
+#           verb.append(line)
+#        elif line["posUni"] == "AUX" and len(verb) > 0:
+#           verb.append(line)
+#        elif line["posUni"] == "SCONJ" and line["word"] == 'て':
+#           verb.append(line)
+#           processVerb(verb)
+#           verb = []
+#        else:
+#           processVerb(verb)
+#           verb = []
+
+
+### look at all Korean words instead of just verbs ###
+# data = []
+# for sentence in corpusTrain:
+#     for line in sentence:
+#         # print(line)
+#         if not line["posUni"] == "PUNCT":
+#             data.append([line["lemma"]])
+
+
+# print(len(data))
+# with open('labeled_verbs_without_adnominals.txt', 'w') as fout:
+#     for item in data:
+#         fout.write("%s\n" % item)
+# quit()
+
+from collections import Counter
+import matplotlib.pyplot as plt
+
+def bar_num_morphs(data):
+    """
+    Produces a bar chart of the number of morphemes in the word list.
+
+    Params:
+     - data: A list of lists of verbs, where each inner list item is a lemma that has morphemes delimited by "+"
+
+    Returns:
+     - nothing, creates a PNG of a bar chart of the distribution of number of morphemes
+    """
+    hist = Counter()
+    wd_len = Counter()
+    for wd_list in data:
+        for wd in wd_list:
+            morphs = wd.split("+")
+            hist[len(morphs)] += 1
+    plt.bar(hist.keys(), hist.values())
+    plt.savefig("kor_num_morphs_all.png")
+
+# bar_num_morphs(data)
 words = []
 
-affixFrequency = {}
-for verbWithAff in data_train:
+### splitting lemmas into morphemes -- each affix is a morpheme ###
+affixFrequencies = {}
+for verbWithAff in data:
+  for affix in verbWithAff[1:]: # TODO: why does this start at 1? mhahn: in Japanese, this is to only conider suffixes, not the stem. Should probably be changed for Korean.
+        affixFrequencies[affix["coarse"]] = affixFrequencies.get(affix["coarse"], 0) + 1
+
+itos = set() # set of affixes
+for verbWithAff in data:
   for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    for slot in affixLemma: 
-      affixFrequency[slot] = affixFrequency.get(slot, 0) + 1
-    # affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
+        itos.add(affix["coarse"])
+itos = sorted(list(itos)) # sorted list of verb affixes
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
+
+itos_ = itos[::]
+shuffle(itos_)
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
 
 from collections import defaultdict
-counts = defaultdict(int) # all the first elems of outputs of getrepresentation
-for data_ in [data_train, data_dev]:
-  for verbWithAff in data_:
-    for affix in verbWithAff[1:]:
-      counts[((affix, "+".join(getRepresentation(affix))))]+=1
-itos_keys = sorted(list(counts))
+affixChains = defaultdict(int)
+for d in data:
+   affixChains[tuple(d[1:])] += 1
 
-with open("../michael_scratch/output/matchedAllomorphs.tsv", "r") as inFile:
-    data = [x.split("\t") for x in inFile.read().split("\n")]
-data = dict([(x[1]+"_"+x[0], "\t".join(x[2:])) for x in data if len(x) > 2])
+for x in sorted(list(affixChains), key=lambda x:affixChains[x]):
+    print(x, affixChains[x])
 
 
-allMorphemes = defaultdict(int)
-
-for x in itos_keys:
-#    if counts[x] == 1: # no need to care aboit hapaxes for now
- #       continue
-  #  if not ( "_" not in x[1] or "?" in x[1]):
-   #     continue
-    print(x[0], "\t", x[1], "\t", counts[x], data.get(x[0], ""))
-    for k in x[1].split("+"):
-        allMorphemes[k] += counts[x]
-for x in sorted(list(allMorphemes)):
-    print(x,"\t", allMorphemes[x])
-
-
-for x in sorted(itos_keys, key=lambda y:counts[y]):
-    print(x[0], "\t", x[1], "\t", counts[x], data.get(x[0], ""))
-
-for x in sorted(list(allMorphemes), key=lambda y:allMorphemes[y]):
-    print(x,"\t", allMorphemes[x])
 

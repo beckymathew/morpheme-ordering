@@ -21,13 +21,13 @@ morpheme_slots = {
     "ef_읍시다": "FORMALITY_formal_polite_p+PRAGMATICMOOD_hortative_formal_polite_sida", # -eub is formal
     "ef_ㅂ디다": "FORMALITY_formal_polite_p+?_???", # -b is formal
     "ef_ㅂ시다": "FORMALITY_formal_polite_p+PRAGMATICMOOD_hortative_formal_polite_sida", # -b is formal
-    "ef_ㅂ니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_interrogative_ka", # -b is formal, -kka is interrogative
-    "ef_ㅂ니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_indicative_da", # -b is formal
-    "ef_습니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_indicative_da", # -seub is formal
+    "ef_ㅂ니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_interrogative_ka", # -b is formal, -kka is interrogative
+    "ef_ㅂ니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # -b is formal
+    "ef_습니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # -seub is formal
     "ef_ㅂ시요": "FORMALITY_formal_polite_p+?_???", # -b is formal
     "ef_ㅂ시오": "FORMALITY_formal_polite_p+PRAGMATICMOOD_formal_polite_imperative_시오", # -b is formal
     "ef_습니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_interrogative_ka", # -seub is formal, -kka is interrogative
-    "ef_입니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_indicative_da", # formal "to be"
+    "ef_입니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # formal "to be"
     "ep_시": "HONORIFIC_honorific_s", # usually subjunctive, but sometimes is HONORIFIC. Kawasaki chapter 7.2
     "ep_더": "SYNTACTICMOOD_imperfective_deon", # Lee & Robert: -te- Retrospective https://en.wiktionary.org/wiki/%EB%8D%94 Follows past tense marker, thus not TENSE?ASPECT here https://en.wiktionary.org/wiki/%EB%8D%94
     "ef_리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC
@@ -53,14 +53,12 @@ morpheme_slots = {
     "ef_는단다": "SYNTACTICMOOD_indicative_n+?_?", # indicative -neun
     "ef_ㄴ지라": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
     "ef_ㄴ거지": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
-    "ef_오": "?????_ef_오", # imperative
+    "ef_오": "PRAGMATICMOOD_?????_ef_오", # imperative TODO
     "ef_아라": "PRAGMATICMOOD_imperative_eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
     "ef_어라": "PRAGMATICMOOD_imperative_eora/ara",
-    "ef_라"  : "PRAGMATICMOOD_imperative_ra", # imperative
-    "ef_으라": "PRAGMATICMOOD_imperative_ra", # imperative
+    "ef_라"  : "PRAGMATICMOOD_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
+    "ef_으라": "PRAGMATICMOOD_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
     "ef_을까": "PRAGMATICMOOD_interrogative_lkka", # interrogative, https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635 https://en.wiktionary.org/wiki/%EC%9D%84%EA%B9%8C
-    "ef_느냐": "PRAGMATICMOOD_formal_nonpolite_interrogative_냐", # interrogative formal non-polite (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4)
-    "ef_어": "PRAGMATICMOOD_indicative_informal_어", # indicative informal non-polite
     "ef_어요": "PRAGMATICMOOD_indicative_informal_어+POLITE_polite_요", # indicative informal polite
     "ef_다": "PRAGMATICMOOD_declarative_da", # declarative -da
     "ef_다.": "PRAGMATICMOOD_declarative_da", # a typo, declarative -da
@@ -70,11 +68,18 @@ morpheme_slots = {
     "ef_군": "PRAGMATICMOOD_mirative_gun", # ^ same mirative
     "ef_군요" : "PRAGMATICMOOD_mirative_gun+POLITE_polite_요",
 #    "ef_군요": "mirative+polite_요", # ^ same mirative with polite -yo
-    "ef_라고": "PRAGMATICMOOD_quotative", # quotative
-    "ef_라구": "PRAGMATICMOOD_quotative", # quotative
-    "ef_라니": "PRAGMATICMOOD_quotative", # contraction of quotative
+    #########################
+    # RAGO ##################
+    "ef_라고": "PRAGMATICMOOD_ef_quotative", # quotative
+    "ef_라구": "PRAGMATICMOOD_ef_quotative", # quotative
+    "ef_라니": "PRAGMATICMOOD_ef_quotative", # contraction of quotative
+    "jcr_라고" : "PRAGMATICMOOD_jcr_rago", # https://en.wiktionary.org/wiki/%EB%9D%BC%EA%B3%A0#Suffix
+    #########################
     "ef_자": "PRAGMATICMOOD_hortative_formal_nonpolite_자", # # Slot VI
-    "ef_냐": "PRAGMATICMOOD_formal_nonpolite_interrogative_냐", # interrogative
+    # NYA
+    "ef_냐": "PRAGMATICMOOD_formal_nonpolite_interrogative_nya", # interrogative. for adjectives https://en.wiktionary.org/wiki/%EA%B7%B8%EB%A5%B4%EB%8B%A4
+    "ef_느냐": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_formal_nonpolite_interrogative_nya", # interrogative formal non-polite (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4)
+    #
     "ef_소": "PRAGMATICMOOD_declarative_haoche_소", # declarative from outdated haoche style https://blog.lingodeer.com/the-definitive-guide-to-korean-speech-levels/
     "ef_ㄹ까": "PRAGMATICMOOD_interrogative_lkka", # interrogative "Should I do this for you?" https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635
     "ef_ㄹ까요": "PRAGMATICMOOD_interrogative_lkka+POLITE_polite_요", # interrogative -lkka, polite -yo
@@ -82,26 +87,21 @@ morpheme_slots = {
     "ef_죠": "PRAGMATICMOOD_ji+POLITE_polite_요", # same as -ji with -yo polite. Kawasaki Chapter 6.15.
     "ef_지요": "PRAGMATICMOOD_ji+POLITE_polite_요", # same as ^ -jyo
     "ef_나": "PRAGMATICMOOD_causal_interrogative_na", # casual interrogative https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjT1NPEj9DqAhXEGc0KHVZaDbsQFjAAegQIBhAB&url=https%3A%2F%2Fgobillykorean.com%2Fshop%2FFile%2Fget%2F%3Ffile%3DGo_Billy_Korean_Episode_28.pdf&usg=AOvVaw1Q1-UDawtJGqrhJ62jjstX
-    "ef_어야지": "PRAGMATICMOOD_one_should_do_something", # one should do something
     "ef_지마라": "PRAGMATICMOOD_negative_imperative_지마라", # negative imperative
     "ef_리요": "PRAGMATICMOOD_imperative_old_style", # imperative (but an older style)
     "ef_답니다": "PRAGMATICMOOD_답니다", # something like a quotative? https://forum.wordreference.com/threads/%EB%8B%B5%EB%8B%88%EB%8B%A4.2253519/
     "jxf_요": "POLITE_polite_요",
     "ef_요": "POLITE_polite_요",
-    "ef_니까": "CONNECTOR_nikka", # formal polite cause/reason -nikka https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
-    "ef_으니까": "CONNECTOR_eunikka", # formal polite cause/reason -eunikka
-    "ef_니까요": "CONNECTOR_nikka+POLITE_polite_요", # formal polite cause/reason -nikka, polite -yo
-    "ef_으니까요": "CONNECTOR_eunikka+POLITE_polite_요", # formal polite cause/reason -eunikka, polite -yo
-    "ef_고": "CONNECTOR_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 Kawasaki chapter 8.2 (...), 11.2 (quotative).
+    "ef_니까": "CONNECTOR_(eu)nikka", # formal polite cause/reason -nikka https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
+    "ef_으니까": "CONNECTOR_(eu)nikka", # formal polite cause/reason -eunikka
+    "ef_니까요": "CONNECTOR_(eu)nikka+POLITE_polite_요", # formal polite cause/reason -nikka, polite -yo
+    "ef_으니까요": "CONNECTOR_(eu)nikka+POLITE_polite_요", # formal polite cause/reason -eunikka, polite -yo
     "ef_구": "CONNECTOR_구", # can't tell what this is, some people say it's a different way to write -go
     "ef_야": "CONNECTOR_connective_condition_ya", # condition connective form, https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_데": "CONNECTOR_de", # contrast connective form https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_랴": "CONNECTOR_rya", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_으랴": "CONNECTOR_rya", # https://krdict.korean.go.kr/eng/dicSearch/SearchView?divSearch=defViewGlobal&ParaWordNo=80306&nationCode=6&ParaNationCode=6&nation=eng&captchaNumber=&comment_user_name=&commentTitle=&wordComment=&viewTypes=on 
     "ef_옵니다": "AUXILIARY_옵니다", # formal indicative "to come" (not a suffix, it's a new verb)
-    "ef_걸": "DERIVATION_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/
-    "etn_기" : "SYNTACTICMOOD_nominalizer_informal_nonpilote_gi",
-    "etn_ㅁ" : "SYNTACTICMOOD_nominalizer_formal_nonpolite_m",
     "ep_었었" : "TENSE/ASPECT_remote_past_었었",
     "ep_았었" : "TENSE/ASPECT_remote_past_었었",
     "ep_ㅆ었" : "TENSE/ASPECT_remote_past_었었",
@@ -110,9 +110,13 @@ morpheme_slots = {
     "ecs_면서" : "CONNECTOR_conjunctive_meyonseo",
     "ecs_서" : "CONNECTOR_conjunctive_seo", # Kawasaki chapter 8.3
     "ecs_아서" : "CONNECTOR_conjunctive_aseo",
-    "ecs_아야" : "CONNECTOR_conjunctive_aya",
+    "ecs_아야" : "CONNECTOR_conjunctive_aya", # https://en.wiktionary.org/wiki/%EC%96%B4%EC%95%BC Alternatuve 아야 and 어야 according to https://en.wiktionary.org/wiki/%EC%96%B4%EC%95%BC
     "ecs_어서" : "CONNECTOR_conjunctive_aseo",
-    "ecs_어야" : "CONNECTOR_conjunctive_aya",
+    "ecs_어야" : "CONNECTOR_conjunctive_aya", # https://en.wiktionary.org/wiki/%EC%96%B4%EC%95%BC
+    "ecx_어야" : "CONNECTOR_conjunctive_aya", # in order to https://keytokorean.com/grammar/%ec%95%84%ec%96%b4%ec%95%bc-do-a-so-you-can-do-b/ https://www.koreanwikiproject.com/wiki/%EC%95%84/%EC%96%B4_%2B_%EC%95%BC
+    "ecx_아야"  : "CONNECTOR_conjunctive_aya",
+    "ef_어야지": "PRAGMATICMOOD_one_should_do_something_어야지", # one should do something. This is an alternative of aya according to https://en.wiktionary.org/wiki/%EC%96%B4%EC%95%BC
+    "ef_아야지" : "PRAGMATICMOOD_one_should_do_something_어야지", # one should do something. This is an alternative of aya according to https://en.wiktionary.org/wiki/%EC%96%B4%EC%95%BC
     "ecs_이" : "CONNECTOR_connector_i",
     "ef_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka",
     "ep_셨" : "HONORIFIC_honorific_s+TENSE/ASPECT_past", # portmanteau honorific (SLOT II) + past  (https://en.wikipedia.org/wiki/Korean_verbs)
@@ -120,28 +124,28 @@ morpheme_slots = {
     "ep_았겠" : "TENSE/ASPECT_remote_past/future_eossget", # SLOT III
     "ep_겠" : "TENSE/ASPECT_assertive/strong-will_get",   # assertive (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4) (SLOT III). Kawasaki 8.10 states that 겠, ᄊ come in orsder determined by scope.
     "ep_ㅆ" : "TENSE/ASPECT_past", # 
-    "xsv_되" : "DERIVATION_되", # as a verb, this means 'to become'
+    "xsv_되" : "DERIVATION_denominal_되", # as a verb, this means 'to become'
     "xsv_하" : "DERIVATION_verb_하",  # The verb hada 'to do' as in 해결하려고	해결+하+려고	VERB	ncpa+xsv+ecx: https://en.wiktionary.org/wiki/%ED%95%B4%EA%B2%B0%ED%95%98%EB%8B%A4
     "xsn_뿐" : "DERIVATION_뿐", # derives something meaning "only X" https://en.wiktionary.org/wiki/%EB%BF%90#Particle 도시귀족뿐이었다 도시+귀족+뿐+이+었+다	VERB	ncn+ncn+xsn+jp+ep+e 'it was only Urban aristocracy'
     "xsn_들" : "DERIVATION_들", # https://en.wiktionary.org/wiki/%EB%93%A4#Particle
     "xsm_하" : "DERIVATION_adj_하", # the adjective hada 'have a quality' as in 필요하다	필요+하+다	VERB	ncps+xsm+ef 필요하다 https://en.wiktionary.org/wiki/%ED%95%84%EC%9A%94%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EB%B6%88%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4
     "xsm_스럽" : "DERIVATION_스럽", # seureop https://en.wiktionary.org/wiki/%EC%8A%A4%EB%9F%BD%EB%8B%A4 forms adjectives
+    "xsv_시키" : "DERIVATION_시키", # https://en.wiktionary.org/wiki/%EC%8B%9C%ED%82%A4%EB%8B%A4
+    "xsv_받"   : "DERIVATION_받", # e.g. https://en.wiktionary.org/wiki/%EC%A3%BC%EA%B3%A0%EB%B0%9B%EB%8B%A4
     "jxc_부터" : "PRAGMATICMOOD_buteo", #https://en.wiktionary.org/wiki/%EB%B6%80%ED%84%B0
     "jxc_라도" : "PRAGMATICMOOD_rado", #https://en.wiktionary.org/wiki/%EB%9D%BC%EB%8F%84
-    "jxc_도" : "PRAGMATICMOOD_do", # https://en.wiktionary.org/wiki/%EB%8F%84#Particle
+    "jxc_도" : "CONNECTOR_do", # https://en.wiktionary.org/wiki/%EB%8F%84#Particle
     "jxc_까지" : "PRAGMATICMOOD_까지",
-    "jcr_라고" : "PRAGMATICMOOD_rago", # https://en.wiktionary.org/wiki/%EB%9D%BC%EA%B3%A0#Suffix
-    "jcr_고" : "PRAGMATICMOOD_go",
     "jca_에서" : "PRAGMATICMOOD_eseo", # https://en.wiktionary.org/wiki/%EC%97%90%EC%84%9C
-    "jca_에" : "PRAGMATICMOOD_e",
-    "jca_로"  : "PRAGMATICMOOD_ro", # "by" https://en.wiktionary.org/wiki/%EB%A1%9C#Particle
-    "jca_로서"   : "PRAGMATICMOOD_roseo", # "by" according to Wiktionary
-    "jca_로써"   : "PRAGMATICMOOD_rosseo",   # "by" according to Wiktionary
-    "jca_보다"   : "PRAGMATICMOOD_boda", #https://en.wiktionary.org/wiki/%EB%B3%B4%EB%8B%A4#Particle
-    "ef_소" : "PRAGMATICMOOD_소",
+    "jca_에" : "CONNECTOR_e",
+    "jca_로"  : "CONNECTOR_ro", # "by" https://en.wiktionary.org/wiki/%EB%A1%9C#Particle
+    "jca_로서"   : "CONNECTOR_roseo", # "by" according to Wiktionary
+    "jca_로써"   : "CONNECTOR_rosseo",   # "by" according to Wiktionary
+    "jca_보다"   : "CONNECTOR_boda", #https://en.wiktionary.org/wiki/%EB%B3%B4%EB%8B%A4#Particle
+#    "ef_소" : "PRAGMATICMOOD_소",
     "ep_어야겠" : "TENSE/ASPECT_tense/aspect_have-to-do",
     "ep_었더" : "TENSE/ASPECT_a-type-of-past",
-    "ep_았" : "TENSE/ASPECT_past_eoss", # is this an allmorph of ss?
+    "ep_았" : "TENSE/ASPECT_past", # allmorph of ss. E.g. in this verb: https://en.wiktionary.org/wiki/%EB%B0%9B%EB%8B%A4#Korean
     "ep_았더" : "TENSE/ASPECT_past_...",
     "ep_아야겠" : "TENSE/ASPECT_need-to",
     "jxc_만" : "PRAGMATICMOOD_only",
@@ -153,17 +157,21 @@ morpheme_slots = {
     "ecs_지만" : "CONNECTOR_but_jiman", #https://en.wiktionary.org/wiki/%EC%A7%80%EB%A7%8C
     "ecs_게" : "CONNECTOR_so-that_ge", # https://en.wiktionary.org/wiki/%EA%B2%8C#Suffix
     "ecx_게" : "CONNECTOR_so-that_ge",
-    "ecs_고" : "CONNECTOR_and;that_go", # https://en.wiktionary.org/wiki/%EA%B3%A0#Suffix_2
     "ecs_나" : "CONNECTOR_but_na", # https://en.wiktionary.org/wiki/%EB%82%98#Suffix
     "ecs_듯이" : "CONNECTOR_deusi", # https://en.wiktionary.org/wiki/%EB%93%AF%EC%9D%B4#Suffix
-    "ecs_라면" : "PRAGMATICMOOD_imperative_ra+CONNECTOR_conditional_myeon", # https://en.wiktionary.org/wiki/%EB%A9%B4 . ra also plain-declarative/ ???
+    "ecs_라면" : "PRAGMATICMOOD_ra+CONNECTOR_conditional_myeon", # https://en.wiktionary.org/wiki/%EB%A9%B4 . ra also plain-declarative/ ???
     "ecx_려" : "CONNECTOR_intention_려",
     "ecs_고자" : "CONNECTOR_intention_고자", # example in Wiktionary
     "ecs_도록" : "CONNECTOR_in-order-to_dorok", # https://www.howtostudykorean.com/upper-intermediate-korean-grammar/unit-4-lessons-92-100/lesson-82/
     "ecs_러" : "CONNECTOR_in-order-to_reo", # https://en.wiktionary.org/wiki/%EB%9F%AC 
-    "ecs_어" : "CONNECTOR_and-then_eo", # https://en.wiktionary.org/wiki/%EC%96%B4#Suffix
+    "ef_어": "PRAGMATICMOOD_indicative_informal_어", # indicative informal non-polite
+    "ecs_어" : "CONNECTOR_infinitive_a/eo", # https://en.wiktionary.org/wiki/%EC%96%B4#Suffix   ecs is Etymology 4 (infinitive)
+    "ecs_아" : "CONNECTOR_infinitive_a/eo", # https://en.wiktionary.org/wiki/%EC%96%B4#Suffix
+    "ecx_어" : "CONNECTOR_infinitive_a/eo",# https://en.wiktionary.org/wiki/어
+    "ecx_아" : "CONNECTOR_infinitive_a/eo", # https://en.wiktionary.org/wiki/어
     "ecs_어도" : "CONNECTOR_even-if/although_eodo",
-    "ecs_지" : "CONNECTOR_ji", # https://en.wiktionary.org/wiki/%EC%A7%80#Suffix     
+    "ecs_지" : "CONNECTOR_ecs_ji", # https://en.wiktionary.org/wiki/%EC%A7%80#Suffix     
+    "ecx_지" : "CONNECTOR_ecx_ji",
     "ecs_자마자" : "CONNECTOR_as_soon_as",
     "ecs_자면" : "CONNECTOR_jamyeon", # https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002299413
     "ecs_면" : "CONNECTOR_conditional_myeon", # https://en.wiktionary.org/wiki/%EB%A9%B4
@@ -171,7 +179,13 @@ morpheme_slots = {
     "ecs_려면" : "CONNECTOR_if-you-want-려면", # https://www.howtostudykorean.com/upper-intermediate-korean-grammar/unit-4-lessons-92-100/lesson-96/
     "ecs_려고" : "CONNECTOR_intention_려고", # https://www.howtostudykorean.com/unit-2-lower-intermediate-korean-grammar/unit-2-lessons-26-33/lesson-32/
     "ecs_려" : "CONNECTOR_ryeo_려",
-    "ecc_고": "CONNECTOR_ecc_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 
+    # GO
+    "ecc_고": "CONNECTOR_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 
+    "ecx_고" : "CONNECTOR_go", # I want to https://www.howtostudykorean.com/unit1/unit-1-lessons-17-25-2/lesson-17/ Conjunctive ending (https://en.wikipedia.org/wiki/Korean_verbs)
+    "ef_고": "CONNECTOR_go", # https://en.wiktionary.org/wiki/%EA%B3%A0 Kawasaki chapter 8.2 (...), 11.2 (quotative).
+    "jcr_고" : "CONNECTOR_go", # the jcr version appears in ra+go https://en.wiktionary.org/wiki/%EB%9D%BC%EA%B3%A0#Suffix
+    "ecs_고" : "CONNECTOR_go", # https://en.wiktionary.org/wiki/%EA%B3%A0#Suffix_2
+    #
     "ecs_ㄹ수록" : "CONNECTOR_as-changes_ㄹ수록", #https://www.howtostudykorean.com/unit-6/lessons-126-133/lesson-132/
     "ecs_ㄹ수록" : "CONNECTOR_whether_ㄹ수록", # https://koreanwikiproject.com/wiki/(%EC%9C%BC)%E3%84%B9%EC%A7%80_%EB%AA%A8%EB%A5%B4%EA%B2%A0%EB%8B%A4
     "ecs_ㄹ지도" : "CONNECTOR_you-dont-know-if_ㄹ지도",
@@ -184,15 +198,23 @@ morpheme_slots = {
     "ecx_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
     "ef_ㄹ까" : "PRAGMATICMOOD_interrogative_lkka", # https://en.wiktionary.org/wiki/%E3%84%B9%EA%B9%8C
     "ecc_ㄹ까" : "CONNECTOR_weak-will_ㄹ까", # Kawasaki Chapter 6.13
-    "etm_은" : "PRAGMATICMOOD_topic_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
     "ef_단다" : "PRAGMATICMOOD_tanta", # https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002391173
     "ef_아" : "PRAGMATICMOOD_아", # https://en.wiktionary.org/wiki/%EC%95%84#Suffix_2
     "ef_에요" : "PRAGMATICMOOD_e+POLITE_polite_요",
+    "ef_걸": "NOMINALIZER_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/ https://en.wiktionary.org/wiki/%EA%B1%B8
+    "etn_기" : "NOMINALIZER_nominalizer_informal_nonpolite_gi",
+    "etn_ㅁ" : "NOMINALIZER_nominalizer_formal_nonpolite_m",
+    # NEUN
+    "etm_는" : "NOMINALIZER_present_determiner_는",
+    # EUL
+    "jco_을" : "NOMINALIZER_future_determiner_을", # https://en.wiktionary.org/wiki/%EC%9D%84#Suffix
+    "etm_을" : "NOMINALIZER_future_determiner_을",
+    # EUN
+    "jxt_은" : "NOMINALIZER_topic?past_determiner_은", # Also labeled etm. # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
+    "etm_은" : "NOMINALIZER_topic?past_determiner_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle. Also  https://en.wiktionary.org/wiki/%EB%82%B3%EB%8B%A4#Korean 낳은 past determiner is labeled pvg+etm
     "jcm_의" : "CASE_possessive_ui", # https://en.wiktionary.org/wiki/%EC%9D%98
-    "jco_을" : "CASE_admonial_eul", # https://en.wiktionary.org/wiki/%EC%9D%84#Suffix
-    "jxt_은" : "CASE_topic_은", # Also labeled etm. # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
     "jcs_이" : "CASE_i",
-    "pad_어떻" : "ROOT_어떻",
+    "pad_어떻" : "CONNECTOR_어떻",
     "ecs_는데" : "CONNECTOR_informal_nonpolite_contrast_neunde", #https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ecs_더니" : "CONNECTOR_informal_polite_deoni", # https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation
     "ef_네" : "PRAGMATICMOOD_exclamatory_ne", # https://en.wiktionary.org/wiki/%EB%84%A4#Suffix
@@ -297,12 +319,12 @@ def automatic_morpheme_meaning(grapheme, label):
             elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
                 slots.append("AUXILIARY_"+grapheme)
             elif label == "pvg" or label == "paa": # general verb or attributive adjective
-                slots.append("ROOT_"+grapheme) # TODO: why would a root appear later in an affix chain
+                slots.append("CONNECTOR_"+grapheme) # TODO: why would a root appear later in an affix chain
             elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
                 # not technically the root, but probably part of a noun / adj root that got turned into a verb
                 slots.append("DERIVATION_"+grapheme)
             elif label == "xsv": # verb derivational suffix
-                slots.append("VALENCY_"+grapheme)
+                slots.append("DERIVATION_"+grapheme)
             elif label == "etm" or label == "etn": # adnominalizer or nominalizer
                 slots.append("SYNTACTICMOOD_"+grapheme)
             elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
@@ -333,41 +355,41 @@ def automatic_morpheme_meaning(grapheme, label):
     assert len(slots) > 0, grapheme
     return slots 
 
-def morpheme_meaning(grapheme, label):
-    ret = morpheme_slots.get(label + "_" + grapheme)
-    if ret == None: 
-        if label == "px": # auxiliary verb
-            return "AUXILIARY_"+grapheme
-        elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
-            return "AUXILIARY_"+grapheme
-        elif label == "pvg" or label == "paa": # general verb or attributive adjective
-            return "ROOT"
-        elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
-            # not technically the root, but probably part of a noun / adj root that got turned into a verb
-            return "ROOT"
-        elif label == "xsv": # verb derivational suffix
-            return "VALENCY_"+grapheme
-        elif label == "etm" or label == "etn": # adnominalizer or nominalizer
-            return "SYNTACTICMOOD_"+grapheme
-        elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
-            return "TENSE/ASPECT"
-        elif label == "jcr": # quotative case particle
-            return "PRAGMATICMOOD_"+grapheme
-        elif label == "jca": # adverbial case particle (looks like mostly locative or instrumental)
-            return "PRAGMATICMOOD_"+grapheme
-        elif label == "jxc": # common auxiliary (looks like "only", "until", "up to")
-            return "PRAGMATICMOOD_"+grapheme
-        elif label == "ecc" or label == "ecs" or label == "ecx": # coordinate conjunction, conjunctive ending, auxiliary conjunction
-            return "CONNECTOR_"+grapheme
-        else:
-            return "UNKNOWN_"+grapheme
-    else:
-        return ret # label from dictionary morpheme_slots
-
-### Notes ###
-# - The corpus doesn't fully separate morphemes. In cases where a single morpheme from the corpus actually corresponds to multiple morphemes (like HONORIFIC + PAST), I've labeled it with the left-most morpheme's slot (HONORIFIC).
-
-### Issues ###
-# - doesn't make sense to me that case particles (usually for nouns) should indicate pragmatic mood
-# - doesn't make sense that adnominalizers / nominalizers indicate syntactic mood -- they're changing a verb into a different category
-#   - This doesn't matter if we're using verbsWithoutAdnominals
+#def morpheme_meaning(grapheme, label):
+#    ret = morpheme_slots.get(label + "_" + grapheme)
+#    if ret == None: 
+#        if label == "px": # auxiliary verb
+#            return "AUXILIARY_"+grapheme
+#        elif grapheme == "있" or grapheme == "없": # to have / not have, used to modify a main verb
+#            return "AUXILIARY_"+grapheme
+#        elif label == "pvg" or label == "paa": # general verb or attributive adjective
+#            return "ROOT"
+#        elif label ==  "xsn" or label == "xsm": # noun derivational suffix or adjective derivational suffix
+#            # not technically the root, but probably part of a noun / adj root that got turned into a verb
+#            return "ROOT"
+#        elif label == "xsv": # verb derivational suffix
+#            return "VALENCY_"+grapheme
+#        elif label == "etm" or label == "etn": # adnominalizer or nominalizer
+#            return "SYNTACTICMOOD_"+grapheme
+#        elif label == "ep": # pre-final ending marker, usually tense/aspect or honorific (in dictionary)
+#            return "TENSE/ASPECT"
+#        elif label == "jcr": # quotative case particle
+#            return "PRAGMATICMOOD_"+grapheme
+#        elif label == "jca": # adverbial case particle (looks like mostly locative or instrumental)
+#            return "PRAGMATICMOOD_"+grapheme
+#        elif label == "jxc": # common auxiliary (looks like "only", "until", "up to")
+#            return "PRAGMATICMOOD_"+grapheme
+#        elif label == "ecc" or label == "ecs" or label == "ecx": # coordinate conjunction, conjunctive ending, auxiliary conjunction
+#            return "CONNECTOR_"+grapheme
+#        else:
+#            return "UNKNOWN_"+grapheme
+#    else:
+#        return ret # label from dictionary morpheme_slots
+#
+#### Notes ###
+## - The corpus doesn't fully separate morphemes. In cases where a single morpheme from the corpus actually corresponds to multiple morphemes (like HONORIFIC + PAST), I've labeled it with the left-most morpheme's slot (HONORIFIC).
+#
+#### Issues ###
+## - doesn't make sense to me that case particles (usually for nouns) should indicate pragmatic mood
+## - doesn't make sense that adnominalizers / nominalizers indicate syntactic mood -- they're changing a verb into a different category
+##   - This doesn't matter if we're using verbsWithoutAdnominals
