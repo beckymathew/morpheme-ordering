@@ -126,7 +126,7 @@ def calculateTradeoffForWeights(weights):
    
 
 import os
-for iteration in range(1):
+for iteration in range(1000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
 
