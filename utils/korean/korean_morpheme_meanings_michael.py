@@ -34,12 +34,12 @@ morpheme_slots = {
     "ef_으리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC 
     "ef_으리라": "SYNTACTICMOOD_I_guess_ri+PRAGMATICMOOD_ra", # https://en.wiktionary.org/wiki/%EB%9D%BC Etymology 6
     "ef_리라": "SYNTACTICMOOD_I_guess_ri+PRAGMATICMOOD_ra", # https://en.wiktionary.org/wiki/%EB%9D%BC
-    "ef_니": "SYNTACTICMOOD_indicative_n", # allomorph of indicative
+    "ef_니": "SYNTACTICMOOD_indicative_n", # allomorph of indicative. TODO but also question marker: Yeon and Brown, p. 182 (section 4.3.6.2)
     "ef_시오": "PRAGMATICMOOD_formal_polite_imperative_시오", # subjunctive formal polite -si + imperative -o
     "ef_더군": "SYNTACTICMOOD_imperfective_deon+PRAGMATICMOOD_mirative_gun", # allomorph of imperfective -deon, mirative -gun
     "ef_는군": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_mirative_gun", # indicative -neun, mirative -gun
-    "ef_는가": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_interrogative_ka", # indicative -neun
-    "ef_ㄴ가": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_interrogative_ka", # indicative -n
+    "ef_는가": "PRAGMATICMOOD_interrogative_(neu)nka", # indicative -neun. Yeon and Brown, p. 183.
+    "ef_ㄴ가": "PRAGMATICMOOD_interrogative_(neu)nka", # indicative -n. Yeon and Brown, p. 183.
     "ef_ㄴ다": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_declarative_da", # indicative -n, declarative -da
     "ef_는다": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_declarative_da", # indicative -neun, declarative -da
 #    "ef_ㄴ지": "SYNTACTICMOOD", # indicative -n, of course / biased questions -ji
@@ -53,7 +53,7 @@ morpheme_slots = {
     "ef_는단다": "SYNTACTICMOOD_indicative_n+?_?", # indicative -neun
     "ef_ㄴ지라": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
     "ef_ㄴ거지": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
-    "ef_오": "PRAGMATICMOOD_?????_ef_오", # imperative TODO
+    "ef_오": "PRAGMATICMOOD_semiformal_오", # imperative TODO
     "ef_아라": "PRAGMATICMOOD_imperative_eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
     "ef_어라": "PRAGMATICMOOD_imperative_eora/ara",
     "ef_라"  : "PRAGMATICMOOD_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
@@ -76,7 +76,7 @@ morpheme_slots = {
     "jcr_라고" : "PRAGMATICMOOD_jcr_rago", # https://en.wiktionary.org/wiki/%EB%9D%BC%EA%B3%A0#Suffix
     #########################
     "ef_자": "PRAGMATICMOOD_hortative_formal_nonpolite_자", # # Slot VI
-    # NYA
+    # NYA. Yeon and Brown, section 4.3.6.2
     "ef_냐": "PRAGMATICMOOD_formal_nonpolite_interrogative_nya", # interrogative. for adjectives https://en.wiktionary.org/wiki/%EA%B7%B8%EB%A5%B4%EB%8B%A4
     "ef_느냐": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_formal_nonpolite_interrogative_nya", # interrogative formal non-polite (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4)
     #
