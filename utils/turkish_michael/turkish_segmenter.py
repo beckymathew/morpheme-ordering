@@ -22,25 +22,30 @@ def get_abstract_morphemes(labels):
     # although the link includes reflexive and ability, the corpus only has causative, passive, and causative-passive
     voice = label_dict.get("Voice")
     if voice == "CauPass":
-        morphs.append("Cau_t")
-        morphs.append("Pass_il")
+        morphs.append("VAL_Cau_tir")
+        morphs.append("VOICE_Pass_il")
     elif voice == "Cau":
-        morphs.append("Cau_t")
+        morphs.append("VAL_Cau_tir")
     elif voice == "Pass":
-        morphs.append("Pass_il")
+        morphs.append("VOICE_Pass_il")
     elif voice:
         morphs.append(voice)
 
     # potential mood comes before negative marker
+    polarity = label_dict.get("Polarity")
     mood = label_dict.get("Mood")
-    if mood == "Pot": # https://www.turkishexplained.com/negpot.htm, https://www.turkishexplained.com/cancant.htm   
-        morphs.append("Pot_bil")
-    
+    if mood == "Pot" and polarity == "Pos": # https://www.turkishexplained.com/negpot.htm, https://www.turkishexplained.com/cancant.htm   
+        morphs.append("MOOD_Pot_bil")
+
+
+
+
+
 
     # (2) Tense/Aspect/Mood/Polarity/... Maybe this can be split into multiple slots, I've written more on this in turkish-olmak.tsv.csv.
     # negative comes before indirect
     if label_dict.get("Polarity") == "Neg": # skip positive bc it's void
-        morphs.append("Neg_ma")
+        morphs.append("POLAR_Neg_ma")
 
 
     # TAM suffixes are in different slots if 3rd person plural
@@ -51,64 +56,89 @@ def get_abstract_morphemes(labels):
     evidential = "Indir" if label_dict.get("Evident") else "Dir"
     tense = label_dict.get("Tense")
     verbform = label_dict.get("VerbForm")
+    polite = label_dict.get("Polite")
     print(person, number, aspect, evidential, tense, verbform)
 #    return morphs
+
+
+
+
+
+
+
     if mood == "Imp": # zero marking
-        pass
-    elif verbform is None and mood == "Cnd":
-        return ["POT_TODO"]
+        if person == "2":
+           pass
+        elif person == "3":
+           morphs.append("Agr_SIN")           
+    elif verbform is None and polite == "Form":
+        morphs.append("POLITE_MAKTA")
     elif verbform is None and mood == "Opt":
-        return ["POT_TODO"]
+        if person == "1" and number == "Plur":
+            morphs.append("MOOD_OPT_1Pl_ELIM")
+        elif person == "1" and number == "Sing":
+            morphs.append("MOOD_OPT_1Pl_EYIM")
+        elif person == "3" and number == "Sing":
+            morphs.append("MOOD_OPT_2Sg_a")
 
-#Cau_t+TAM1_ACAK+Agr_IZ	&	sürdürelim	&	sür	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Pos|Tense=Pres|Voice=Cau	&	1  \\
-#Cau_t+TAM1_ACAK+Agr_IZ	&	saldıralım	&	sal	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Pos|Tense=Pres|Voice=Cau	&	1  \\
-#Cau_t+TAM1_ACAK	&	patlata	&	patla	&	Aspect=Perf|Mood=Opt|Number=Sing|Person=3|Polarity=Pos|Tense=Pres|Voice=Cau	&	2  \\
-#Neg_ma+TAM1_ACAK+Agr_IZ	&	yemeyelim	&	ye	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Neg|Tense=Pres	&	2  \\
-#Neg_ma+TAM1_ACAK+Agr_IZ	&	etmeyelim	&	et	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_ACAK+Agr_IZ	&	olmayalım	&	ol	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Neg|Tense=Pres	&	1  \\
-#Pass_il+TAM1_ACAK	&	bakıla	&	bak	&	Aspect=Perf|Mood=Opt|Number=Sing|Person=3|Polarity=Pos|Tense=Pres|Voice=Pass	&	2  \\
-#Pass_il+TAM1_ACAK	&	gömüle	&	göm	&	Aspect=Perf|Mood=Opt|Number=Sing|Person=3|Polarity=Pos|Tense=Pres|Voice=Pass	&	2  \\
-#Neg_ma+TAM1_ACAK+Agr_IM	&	doymayayım	&	doy	&	Aspect=Perf|Mood=Opt|Number=Sing|Person=1|Polarity=Neg|Tense=Pres	&	1  \\
-#TAM1_ACAK+Agr_IM	&	yazayım	&	yaz	&	Aspect=Perf|Mood=Opt|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	4  \\
-#TAM1_ACAK+Agr_IZ	&	bakalım	&	bak	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Pos|Tense=Pres	&	9  \\
-#TAM1_ACAK+Agr_IZ	&	gidelim	&	git	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Pos|Tense=Pres	&	7  \\
-#TAM1_ACAK+Agr_IZ	&	alalım	&	al	&	Aspect=Perf|Mood=Opt|Number=Plur|Person=1|Polarity=Pos|Tense=Pres	&	2  \\
-#Neg_ma+TAM1_ACAK	&	çalmaya	&	çal	&	Aspect=Perf|Mood=Opt|Number=Sing|Person=3|Polarity=Neg|Tense=Pres	&	1  \\
- 
 
-#Pass_il+TAM1_AR+Agr_IM	&	reddedilirsem	&	reddet	&	Aspect=Hab|Mood=Cnd|Number=Sing|Person=1|Polarity=Pos|Tense=Pres|Voice=Pass	&	1  \\
-#Neg_ma+TAM1_ACAK+Agr_SIN	&	i̇stemesen	&	iste	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_ACAK+Agr_SINIZ	&	olmasanız	&	ol	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_ACAK+Agr_SINIZ	&	konuşmasanız	&	konuş	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
-#Cau_t+TAM1_AR+3PL_LAR	&	sıkıştırırlarsa	&	sıkış	&	Aspect=Hab|Mood=Cnd|Number=Plur|Person=3|Polarity=Pos|Tense=Pres|Voice=Cau	&	1  \\
-#TAM1_ACAK+3PL_LAR	&	isteseler	&	iste	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=3|Polarity=Pos|Tense=Pres	&	1  \\
-#TAM1_ACAK+3PL_LAR	&	etseler	&	et	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=3|Polarity=Pos|Tense=Pres	&	1  \\
-#Cau_t+TAM1_ACAK	&	uzatsa	&	uza	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Polarity=Pos|Tense=Pres|Voice=Cau	&	1  \\
-#Cau_t+TAM1_ACAK	&	aksatsa	&	aksa	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Polarity=Pos|Tense=Pres|Voice=Cau	&	1  \\
-#Neg_ma+TAM1_AR+Agr_SINIZ	&	şarlamazsanız	&	şarla	&	Aspect=Hab|Mood=Cnd|Number=Plur|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_AR+Agr_SINIZ	&	keşfedemezseniz	&	keşfet	&	Aspect=Hab|Mood=CndPot|Number=Plur|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_ACAK+3PL_LAR	&	anlamasalar	&	anla	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=3|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_ACAK+3PL_LAR	&	bilmeseler	&	bil	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=3|Polarity=Neg|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_ACAK+3PL_LAR	&	ilgilenmeseler	&	ilgilen	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=3|Polarity=Neg|Tense=Pres	&	1  \\
-#TAM1_ACAK+Agr_SINIZ	&	kursanız	&	kur	&	Aspect=Perf|Mood=Cnd|Number=Plur|Person=2|Polarity=Pos|Tense=Pres	&	1  \\
-#Neg_ma+TAM1_IYOR+3PL_LAR	&	onamıyorlarsa	&	ona	&	Aspect=Prog|Mood=Cnd|Number=Plur|Person=3|Polarity=Neg|Polite=Infm|Tense=Pres	&	1  \\
-#TAM1_ACAK+Agr_SIN	&	görsen	&	gör	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=2|Polarity=Pos|Tense=Pres	&	2  \\
-#TAM1_ACAK+Agr_SIN	&	sorsan	&	sor	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=2|Polarity=Pos|Tense=Pres	&	1  \\
-#Pass_il+TAM1_ACAK	&	bağlansa	&	bağla	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Polarity=Pos|Tense=Pres|Voice=Pass	&	2  \\
-#Neg_ma+TAM1_ACAK+Agr_IM	&	olmasam	&	ol	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=1|Polarity=Neg|Tense=Pres	&	1  \\
-#TAM1_AR+Agr_SIN	&	i̇stersen	&	iste	&	Aspect=Hab|Mood=Cnd|Number=Sing|Person=2|Polarity=Pos|Tense=Pres	&	2  \\
-#TAM1_ACAK+Agr_IM	&	baksam	&	bak	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	2  \\
-#Neg_ma+TAM1_ACAK	&	değilse	&	değil	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Polarity=Neg|Tense=Pres	&	5  \\
-#TAM1_ACAK	&	olsa	&	ol	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	17  \\
-#TAM1_ACAK	&	varsa	&	var	&	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	4  \\
+# QUESTIOIN
+#TAM1_IYOR+Form	&	ulaşmakta	&	ulaş	&	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Form|Tense=Pres	&	1  \\	TODO
+#TAM1_IYOR+Form	&	oturmakta	&	otur	&	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Form|Tense=Pres	&	1  \\
+#TAM1_IYOR+Form	&	soymakta	&	soy	&	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Form|Tense=Pres	&	1  \\
+
+#TAM1_ACAK+Agr_IM	&	gitmeliyim	&	git	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	3  \\	TODO
+#TAM1_ACAK+Agr_IM	&	dönmeliyim	&	dön	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	2  \\
+#TAM1_ACAK+Agr_IM	&	anlatmalıyım	&	anlat	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	1  \\
+#POL_Neg_ma+TAM1_ACAK+Agr_IM	&	değilim	&	değil	&	Aspect=Perf|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres	&	14  \\	TODO
+
+#TAM1_ACAK	&	olmalı	&	ol	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	4  \\	TODO
+#TAM1_ACAK	&	olsa	&	ol	&	Aspect=Perf|Mood=Des|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	3  \\
+
+#TAM1_ACAK	&	konuşabilmeli	&	konuş	&	Aspect=Perf|Mood=NecPot|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	1  \\
+#POL_Neg_ma+TAM1_ACAK+Gen_dir	&	değildir	&	değil	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Neg|Tense=Pres	&	15  \\	TODO
+#Gen_dir	&	olacaktır	&	ol	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Pos|Tense=Fut	&	5  \\	TODO
+#Gen_dir	&	girecektir	&	gir	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Pos|Tense=Fut	&	1  \\
+#Gen_dir	&	çarpacaktır	&	çarp	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Pos|Tense=Fut	&	1  \\
+
+
+#
 
     elif verbform is None: # finite
       if evidential == "Dir":
-          if tense == "Pres":
+          if tense == "Pres" or tense=="Fut":
               pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
               pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_IZ", "Agr_SINIZ", None][pn-1]
-  
-              if aspect == "Hab":
+              if mood == "Nec":
+                  morphs.append("TAM1_MALI_Nec")
+                  if pn_ending is not None:
+                     morphs.append(pn_ending)
+                  if person == "3" and number == "Plur":
+                      morphs.append("3PL_LAR")
+
+              elif mood == "Cnd" and aspect == "Perf":
+                  pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+
+# TODO CndPot
+#POL_Neg_ma+TAM1_ACAK	&	bilemese	&	bil	&	Aspect=Perf|Mood=CndPot|Number=Sing|Person=3|Polarity=Neg|Tense=Pres	&	1  \\
+#POL_Neg_ma+TAM1_AR+Agr_SINIZ	&	keşfede=mez=seniz	&	keşfet	&	Aspect=Hab|Mood=CndPot|Number=Plur|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
+
+
+
+
+                  morphs.append("TAM1_SA_Cnd")
+                  if pn_ending is not None:
+                     morphs.append(pn_ending)
+                  if person == "3" and number == "Plur":
+                      morphs.append("3PL_LAR")
+              elif mood == "Cnd" and aspect == "Hab":
+                  morphs.append("TAM1_AR")
+                  if person == "3" and number == "Plur":
+                      morphs.append("3PL_LAR")
+                  morphs.append("TAM2_SA_Cnd")
+                  if pn_ending is not None:
+                     morphs.append(pn_ending)
+              elif aspect == "Hab":
                   morphs.append("TAM1_AR")
                   if pn_ending is not None:
                      morphs.append(pn_ending)
@@ -225,19 +255,15 @@ def get_abstract_morphemes(labels):
 #    if person in ["1","2"]: # skip 3SG because it's void
 #        morphs.append(person + number)
     
-    if label_dict.get("Polite") == "Form": # https://elon.io/learn-turkish/lesson/the-suffix-dir-formal-usage
-        morphs.append("Form")
-        # can't tell if this is correct bc couldn't find good sources
-        # there's only 7 verbs w this label in the notes, so here's my guess based on those 7
 
     if mood == "Gen": # copula
-        morphs.append("Gen_dir")
+        morphs.append("Gen_dir") # TODO lar can go after dir
 
     # Verbal nouns -- can't find a lot of examples of these that don't look exactly like the infinitive
     if label_dict.get("VerbForm") == "Vnoun":
         morphs.append("Vnoun_mak")
         if label_dict.get("Number[psor]") and label_dict.get("Person[psor]"):
-            morphs.append(label_dict.get("Number[psor]") + label_dict.get("Person[psor]"))
+            morphs.append("NUMPERS_"+label_dict.get("Number[psor]") + label_dict.get("Person[psor]"))
 
     return morphs
 

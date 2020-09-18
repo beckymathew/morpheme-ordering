@@ -134,7 +134,7 @@ def calculateTradeoffForWeights(weights):
     auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
     return auc, devSurprisalTable
    
-
+mostCorrect = 1e100 
 import os
 for iteration in range(1000):
   # Randomly select a morpheme whose position to update
@@ -145,13 +145,13 @@ for iteration in range(1000):
      coordinate = choice(itos)
 
   # This will store the minimal AOC found so far and the corresponding position
-  mostCorrect, mostCorrectValue = 1e100, None
+  mostCorrectValue = weights[coordinate]
 
   # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))]:
 
      # Stochastically exclude positions to save compute time
-     if random() < 0.9 and newValue != weights[coordinate]:
+     if random() < 0.5:
         continue
      print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
