@@ -18,7 +18,7 @@ def get_abstract_morphemes(labels):
     morphs = ["ROOT"]
 
     if label_dict.get("Voice") == "Cau":
-        morphs.append("Valence")
+        morphs.append("Cau_AT")
 
 
 
@@ -29,16 +29,15 @@ def get_abstract_morphemes(labels):
     number = label_dict.get("Number")
     mood = label_dict.get("Mood")
     if mood is not None and "Pot" in mood:
-        morphs.append("Mood")
+        morphs.append("Pot_HET")
 
     if label_dict.get("VerbForm") == "Inf":
-        morphs.append("Inf")
+        morphs.append("Inf_NI")
 
 
     if label_dict.get("VerbForm") == "Inf" and person is not None:
-      personNumber = int(person) + {"Sing" : 0, "Plur" : 3}[number]
-      byPerson = [["Agr"], ["Agr"], [], ["Agr"], ["Agr"], ["Agr"]]
-      morphs += byPerson[personNumber-1]
+      morphs.append(f"{person},{number},Ind")
+
     if mood == "Cnd,Pot":
         mood = "Cnd"
     if mood == "Pot":
@@ -52,31 +51,23 @@ def get_abstract_morphemes(labels):
     if label_dict.get("VerbForm") != "Inf":
       personNumber = int(person) + {"Sing" : 0, "Plur" : 3}[number]
       if mood=='Ind' and tense == "Pres" and definite == "Ind":
-          byPerson = [["Agr"], ["Agr"], [], ["Agr"], ["Agr"], ["Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += [f"{person},{number},{definite}"]
       elif mood == 'Ind' and tense == "Pres" and definite == "Def":
-          byPerson = [["Agr"], ["Agr"], ["Def"], ["Def", "Agr"], ["Def", "Agr"], ["Def", "Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += [f"{person},{number},{definite}"]
       elif mood == 'Ind' and tense == "Past" and definite == "Ind":
-          byPerson = [["Tense", "Agr"], ["Tense", "Agr"], ["Tense"], ["Tense",  "Agr"], ["Tense",  "Agr"], ["Tense",  "Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += ["Past_T", f"{person},{number},{definite}"]
       elif mood == 'Ind' and tense == "Past" and definite == "Def":
-          byPerson = [["Tense", "Agr"], ["Tense", "Agr"], ["Tense", "Def"], ["Tense",  "Agr"], ["Tense","Def",  "Agr"], ["Tense", "Def", "Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += ["Past_T", f"{person},{number},{definite}"]
       elif mood == 'Cnd' and definite == "Ind":
-          byPerson = [["Mood", "Agr"], ["Mood", "Agr"], ["Mood"], ["Mood",  "Agr"], ["Mood", "Agr"], ["Mood", "Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += ["Cnd_N", f"{person},{number},{definite}"]
       elif mood == 'Cnd' and definite == "Def":
-          byPerson = [["Mood", "Agr"], ["Mood", "Agr"], ["Mood", "Def"], ["Mood",  "Agr"], ["Mood", "Agr"], ["Mood", "Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += ["Cnd_N", f"{person},{number},{definite}"]
       elif mood == 'Subj' and definite == "Ind":
-          byPerson = [["Mood", "Agr"], ["Mood", "Agr"], ["Mood", "Agr"], ["Mood",  "Agr"], ["Mood", "Agr"], ["Mood", "Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += ["Pot_J", f"{person},{number},{definite}"]
       elif mood == 'Subj' and definite == "Def":
-          byPerson = [["Mood", "Agr"], ["Mood", "Agr"], ["Mood", "Agr"], ["Mood",  "Def"], ["Mood", "Def","Agr"], ["Mood", "Def","Agr"]]
-          morphs += byPerson[personNumber-1]
+          morphs += ["Pot_J", f"{person},{number},{definite}"]
       else:
-          assert False, (label_dict, mood, definite, tense)
+          assert False, label_dict
   
     
     return morphs

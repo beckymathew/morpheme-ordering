@@ -3,13 +3,12 @@
 import random
 import sys
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
-import os
 
 objectiveName = "LM"
-from corpus import CORPUS
+
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default=CORPUS)
+parser.add_argument("--language", dest="language", type=str, default="Hungarian-Szeged_2.6")
 parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
@@ -63,17 +62,16 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import turkish_segmenter_coarse
-import turkish_segmenter
+import hungarian_segmenter_coarse
+import hungarian_segmenter
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = turkish_segmenter.get_abstract_morphemes(labels)
+      morphs = hungarian_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = hungarian_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
-      assert len(morphs) == len(fine)
       lst_dict = []
       for i in range(len(fine)):
         morph_dict = {"fine": fine[i], "coarse": morphs[i]}
@@ -98,20 +96,20 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
-### splitting lemmas into morphemes -- each affix is a morpheme ###
-affixFrequencies = {}
+affixFrequency = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affixLemma = getRepresentation(affix)
-    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
+    affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
 
-itos = set() # set of affixes
+
+itos = set()
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
       itos.add(getRepresentation(affix))
-itos = sorted(list(itos)) # sorted list of verb affixes
-stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
+itos = sorted(list(itos))
+stoi = dict(list(zip(itos, range(len(itos)))))
 
 itos_ = itos[::]
 shuffle(itos_)
@@ -136,25 +134,26 @@ def calculateTradeoffForWeights(weights):
     auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
     return auc, devSurprisalTable
    
-mostCorrect = 1e100 
+
+import os
 for iteration in range(1000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while affixFrequencies.get(coordinate, 0) < 10 and random() < 0.95:
+  while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
      coordinate = choice(itos)
 
   # This will store the minimal AOC found so far and the corresponding position
-  mostCorrectValue = weights[coordinate]
+  mostCorrect, mostCorrectValue = 1e100, None
 
   # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))]:
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
 
-     # Stochastically exclude positions to save compute time
-     if random() < 0.5:
+     # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
+     if random() < 0.5 and newValue != weights[coordinate]:
         continue
-     print(newValue, mostCorrect, coordinate, affixFrequencies.get(coordinate,0))
+     print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
      weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
@@ -165,29 +164,27 @@ for iteration in range(1000):
      if resultingAOC < mostCorrect:
         mostCorrectValue = newValue
         mostCorrect = resultingAOC
+  assert mostCorrect < 1e99
   print(iteration, mostCorrect)
   weights[coordinate] = mostCorrectValue
   itos_ = sorted(itos, key=lambda x:weights[x])
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   print(weights)
   for x in itos_:
-     if affixFrequencies.get(x,0) < 10:
+     if affixFrequency.get(x,0) < 10:
        continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies.get(x,0)]]))
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequency.get(x,0)]]))
   if (iteration + 1) % 50 == 0:
      _, surprisals = calculateTradeoffForWeights(weights_)
 
      if os.path.exists(TARGET_DIR):
-      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
+       pass
      else:
        os.makedirs(TARGET_DIR)
-       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
+     with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+        print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+        for key in itos_:
+          print(key, weights[key], file=outFile)
   
 
 

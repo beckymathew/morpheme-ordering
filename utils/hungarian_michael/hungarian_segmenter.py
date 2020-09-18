@@ -73,7 +73,7 @@ def get_abstract_morphemes(labels):
           byPerson = [["Pot_J", "1sg_EK"], ["Pot_J", "2sg_EL"], ["Pot_J", "3sg_EN"], ["Pot_J",  "1pl_ENK"], ["Pot_J", "2pl_TEK"], ["Pot_J", "3pl_NEK"]]
           morphs += byPerson[personNumber-1]
       elif mood == 'Subj' and definite == "Def":
-          byPerson = [["Pot_J", "1sg_EM"], ["Pot_J", "2sg_ED"], ["Pot_J", "3sg_E"], ["Pot_J",  "1pl_UK"], ["Pot_J", "Def_I","2pl_TEK"], ["Pot_J", "Def_I","3pl_EK"]]
+          byPerson = [["Pot_J", "1sg_EM"], ["Pot_J", "2sg_ED"], ["Pot_J", "Def_I"], ["Pot_J",  "1pl_UK"], ["Pot_J", "Def_I","2pl_TEK"], ["Pot_J", "Def_I","3pl_EK"]]
           morphs += byPerson[personNumber-1]
       else:
           assert False, label_dict
