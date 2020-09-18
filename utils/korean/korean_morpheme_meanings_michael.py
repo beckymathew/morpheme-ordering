@@ -2,9 +2,11 @@
 morpheme_slots = {
     "jp_이": "DERIVATION_predicative_i", # predicative maker
     "ep_으시": "HONORIFIC_honorific_s", # Kawasaki chapter 7.2
-    "ef_십시오": "FORMALITY_formal_polite_p+PRAGMATICMOOD_formal_polite_imperative_시오", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation -si-psio where -si- is honorific, -psio is sentence-final imperative. The -si- doesn't really seem to be part of the affix: https://en.wiktionary.org/wiki/%ED%95%98%EB%8B%A4
-    "ef_세요": "HONORIFIC_honorific_s+POLITE_polite_요", # honorific informal polite imperative
-    "ef_세": "HONORIFIC_honorific_s",
+    "ef_십시오": "HONORIFIC_honorific_s+FORMALITY_formal_polite_p+PRAGMATICMOOD_formal_polite_imperative_시오", # honorific formal polite imperative https://en.wiktionary.org/wiki/%EA%B0%80%EB%8B%A4#Conjugation -si-psio where -si- is honorific, -psio is sentence-final imperative. The -si- doesn't really seem to be part of the affix: https://en.wiktionary.org/wiki/%ED%95%98%EB%8B%A4
+    "ef_세요": "HONORIFIC_honorific_s+PRAGMATICMOOD_indicative_informal_어+POLITE_polite_요", # honorific informal polite imperative. E.g. https://en.wiktionary.org/wiki/%EC%98%A4%EB%8B%A4#Korean
+    "ep_시": "HONORIFIC_honorific_s", # usually subjunctive, but sometimes is HONORIFIC. Kawasaki chapter 7.2
+    "ef_세": "HONORIFIC_honorific_s+PRAGMATICMOOD_indicative_informal_어",
+    "ef_시오" : "HONORIFIC_honorific_s+PRAGMATICMOOD_semiformal_오",
     "ef_으리오": "VALENCY_passive/causative_ri", # passative / causative https://en.wiktionary.org/wiki/%EB%A6%AC (barely occurs in the corpus)
     "ef_리오": "VALENCY_passive/causative_ri", # passative / causastive https://en.wiktionary.org/wiki/%EB%A6%AC (barely occurs in the corpus)
     "ef_ㄹ세": "UNKNOWN_ef_ㄹ세", # cf https://devr.tistory.com/318 for lsera
@@ -28,7 +30,6 @@ morpheme_slots = {
     "ef_ㅂ시오": "FORMALITY_formal_polite_p+PRAGMATICMOOD_formal_polite_imperative_시오", # -b is formal
     "ef_습니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_interrogative_ka", # -seub is formal, -kka is interrogative
     "ef_입니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # formal "to be"
-    "ep_시": "HONORIFIC_honorific_s", # usually subjunctive, but sometimes is HONORIFIC. Kawasaki chapter 7.2
     "ep_더": "SYNTACTICMOOD_imperfective_deon", # Lee & Robert: -te- Retrospective https://en.wiktionary.org/wiki/%EB%8D%94 Follows past tense marker, thus not TENSE?ASPECT here https://en.wiktionary.org/wiki/%EB%8D%94
     "ef_리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC
     "ef_으리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC 
@@ -54,10 +55,10 @@ morpheme_slots = {
     "ef_ㄴ지라": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
     "ef_ㄴ거지": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
     "ef_오": "PRAGMATICMOOD_semiformal_오", # imperative TODO
-    "ef_아라": "PRAGMATICMOOD_imperative_eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
-    "ef_어라": "PRAGMATICMOOD_imperative_eora/ara",
-    "ef_라"  : "PRAGMATICMOOD_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
-    "ef_으라": "PRAGMATICMOOD_ra", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
+    "ef_아라": "PRAGMATICMOOD_imperative_ra/eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
+    "ef_어라": "PRAGMATICMOOD_imperative_ra/eora/ara",
+    "ef_라"  : "PRAGMATICMOOD_imperative_ra/eora/ara", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
+    "ef_으라": "PRAGMATICMOOD_imperative_ra/eora/ara", # imperative https://en.wiktionary.org/wiki/%EB%9D%BC#Suffix_2
     "ef_을까": "PRAGMATICMOOD_interrogative_lkka", # interrogative, https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635 https://en.wiktionary.org/wiki/%EC%9D%84%EA%B9%8C
     "ef_어요": "PRAGMATICMOOD_indicative_informal_어+POLITE_polite_요", # indicative informal polite
     "ef_다": "PRAGMATICMOOD_declarative_da", # declarative -da
@@ -80,7 +81,7 @@ morpheme_slots = {
     "ef_냐": "PRAGMATICMOOD_formal_nonpolite_interrogative_nya", # interrogative. for adjectives https://en.wiktionary.org/wiki/%EA%B7%B8%EB%A5%B4%EB%8B%A4
     "ef_느냐": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_formal_nonpolite_interrogative_nya", # interrogative formal non-polite (table in https://en.wiktionary.org/wiki/%EC%9E%88%EB%8B%A4)
     #
-    "ef_소": "PRAGMATICMOOD_declarative_haoche_소", # declarative from outdated haoche style https://blog.lingodeer.com/the-definitive-guide-to-korean-speech-levels/
+    "ef_소": "PRAGMATICMOOD_declarative_so", # declarative from outdated haoche style https://blog.lingodeer.com/the-definitive-guide-to-korean-speech-levels/
     "ef_ㄹ까": "PRAGMATICMOOD_interrogative_lkka", # interrogative "Should I do this for you?" https://www.howtostudykorean.com/unit-3-intermediate-korean-grammar/unit-3-lessons-59-66/lesson-63/#635
     "ef_ㄹ까요": "PRAGMATICMOOD_interrogative_lkka+POLITE_polite_요", # interrogative -lkka, polite -yo
     "ef_지": "PRAGMATICMOOD_ji", # something like "of course" or a biased question. Wikipedia: Casual
