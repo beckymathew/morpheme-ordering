@@ -11,25 +11,27 @@ morpheme_slots = {
     "ef_리오": "VALENCY_passive/causative_ri", # passative / causastive https://en.wiktionary.org/wiki/%EB%A6%AC (barely occurs in the corpus)
     "ef_ㄹ세": "UNKNOWN_ef_ㄹ세", # cf https://devr.tistory.com/318 for lsera
     "ef_ㄹ걸": "UNKNOWN_ef_ㄹ걸", # future tense -l
-    "ef_ㄹ지어다": "TENSE/ASPECT_???", # future tense -l
+    "ef_ㄹ지어다": "UNKNOWN_ㄹ지어다", # future tense -l
     "ef_지어다": "PRAGMATICMOOD_지어다", # https://www.reddit.com/r/Korean/comments/di3d8z/help_me_understand_the_ending_%EC%9D%84%EC%A7%80%EC%96%B4%EB%8B%A4_please/
     "ef_ㄹ지": "TENSE/ASPECT_l+PRAGMATICMOOD_ji", # future tense -l   https://devr.tistory.com/320
-    "ef_ㄹ지라": "TENSE/ASPECT_l+?_???", # future tense -l
-    "ef_ㄹ쏘냐": "TENSE/ASPECT_l+?_???", # future tense -l
+    "ef_ㄹ지라": "UNKNOWN_ㄹ지라", # future tense -l
+    "ef_ㄹ쏘냐": "UNKNOWN_ㄹ쏘냐", # future tense -l
     "ef_쏘냐": "PRAGMATICMOOD_interrogative_쏘냐", # interrogative https://www.reddit.com/r/Korean/comments/aqytjr/what_does_%EB%91%90%EB%A0%A4%EC%9A%B8%EC%86%8C%EB%83%90_consist_of/
-    "ef_ㄹ지어라": "TENSE/ASPECT_l+?_???", # future tense -l
-    "ef_ㄹ텐데": "TENSE/ASPECT_l+?_???", # future tense -l
+    "ef_ㄹ지어라": "UNKNOWN_ㄹ지어라", # future tense -l
+    "ef_ㄹ텐데": "UNKNOWN_ㄹ텐데", # future tense -l
     "ef_텐데": "PRAGMATICMOOD_텐데", # expresses uncertainty and regret https://www.howtostudykorean.com/upper-intermediate-korean-grammar/unit-4-lessons-92-100/lesson-100/
     "ef_읍시다": "FORMALITY_formal_polite_p+PRAGMATICMOOD_hortative_formal_polite_sida", # -eub is formal
-    "ef_ㅂ디다": "FORMALITY_formal_polite_p+?_???", # -b is formal
+    "ef_ㅂ디다": "FORMALITY_formal_polite_p+UNKNOWN_디다", # -b is formal
     "ef_ㅂ시다": "FORMALITY_formal_polite_p+PRAGMATICMOOD_hortative_formal_polite_sida", # -b is formal
     "ef_ㅂ니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_interrogative_ka", # -b is formal, -kka is interrogative
     "ef_ㅂ니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # -b is formal
     "ef_습니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # -seub is formal
-    "ef_ㅂ시요": "FORMALITY_formal_polite_p+?_???", # -b is formal
+    "ef_ㅂ시요": "FORMALITY_formal_polite_p+PRAGMATICMOOD_formal_polite_imperative_시오", # -b is formal
     "ef_ㅂ시오": "FORMALITY_formal_polite_p+PRAGMATICMOOD_formal_polite_imperative_시오", # -b is formal
     "ef_습니까": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_interrogative_ka", # -seub is formal, -kka is interrogative
     "ef_입니다": "FORMALITY_formal_polite_p+SYNTACTICMOOD_formal_polite_ni+PRAGMATICMOOD_declarative_da", # formal "to be"
+    "ef_ㄹ런지요" : "CONNECTOR_ㄹ런지+POLITE_polite_요",
+    "ecs_ㄹ런지" : "CONNECTOR_ㄹ런지",
     "ep_더": "SYNTACTICMOOD_imperfective_deon", # Lee & Robert: -te- Retrospective https://en.wiktionary.org/wiki/%EB%8D%94 Follows past tense marker, thus not TENSE?ASPECT here https://en.wiktionary.org/wiki/%EB%8D%94
     "ef_리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC
     "ef_으리": "SYNTACTICMOOD_I_guess_ri", # "I guess..." https://en.wiktionary.org/wiki/%EB%A6%AC 
@@ -51,9 +53,9 @@ morpheme_slots = {
     "ef_ㄴ데": "SYNTACTICMOOD_indicative_n+CONNECTOR_connector_de", # indicative -n, contrast connector -de
     "ef_는지요": "SYNTACTICMOOD_indicative_n+PRAGMATICMOOD_ji+POLITE_polite_요", # indicative -neun, of course / biased question -ji, polite -yo
     "ef_ㄴ데요": "SYNTACTICMOOD_indicative_n+CONNECTOR_contrast_connector_de+POLITE_polite_요", # indicative -n, contrast connector -de, polite -yo
-    "ef_는단다": "SYNTACTICMOOD_indicative_n+?_?", # indicative -neun
-    "ef_ㄴ지라": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
-    "ef_ㄴ거지": "SYNTACTICMOOD_indicative_n+?_?", # indicative -n
+    "ef_는단다": "SYNTACTICMOOD_indicative_n+UNKNOWN_단다", # indicative -neun
+    "ef_ㄴ지라": "SYNTACTICMOOD_indicative_n+UNKNOWN_지라", # indicative -n
+    "ef_ㄴ거지": "SYNTACTICMOOD_indicative_n+UNKNOWN_거지", # indicative -n
     "ef_오": "PRAGMATICMOOD_semiformal_오", # imperative TODO
     "ef_아라": "PRAGMATICMOOD_imperative_ra/eora/ara",	# allomorph of 어라. https://en.wiktionary.org/wiki/%EC%95%84%EB%9D%BC https://en.wiktionary.org/wiki/%EC%96%B4%EB%9D%BC
     "ef_어라": "PRAGMATICMOOD_imperative_ra/eora/ara",
@@ -128,6 +130,8 @@ morpheme_slots = {
     "xsv_되" : "DERIVATION_denominal_되", # as a verb, this means 'to become'
     "xsv_하" : "DERIVATION_verb_하",  # The verb hada 'to do' as in 해결하려고	해결+하+려고	VERB	ncpa+xsv+ecx: https://en.wiktionary.org/wiki/%ED%95%B4%EA%B2%B0%ED%95%98%EB%8B%A4
     "xsn_뿐" : "DERIVATION_뿐", # derives something meaning "only X" https://en.wiktionary.org/wiki/%EB%BF%90#Particle 도시귀족뿐이었다 도시+귀족+뿐+이+었+다	VERB	ncn+ncn+xsn+jp+ep+e 'it was only Urban aristocracy'
+    "xsn_적" : "DERIVATION_적",
+    "xsn_들" : "DERIVATION_뿐",
     "xsn_들" : "DERIVATION_들", # https://en.wiktionary.org/wiki/%EB%93%A4#Particle
     "xsm_하" : "DERIVATION_adj_하", # the adjective hada 'have a quality' as in 필요하다	필요+하+다	VERB	ncps+xsm+ef 필요하다 https://en.wiktionary.org/wiki/%ED%95%84%EC%9A%94%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4 https://en.wiktionary.org/wiki/%EB%B6%88%EA%B0%80%EB%8A%A5%ED%95%98%EB%8B%A4
     "xsm_스럽" : "DERIVATION_스럽", # seureop https://en.wiktionary.org/wiki/%EC%8A%A4%EB%9F%BD%EB%8B%A4 forms adjectives
@@ -203,16 +207,21 @@ morpheme_slots = {
     "ef_아" : "PRAGMATICMOOD_아", # https://en.wiktionary.org/wiki/%EC%95%84#Suffix_2
     "ef_에요" : "PRAGMATICMOOD_e+POLITE_polite_요",
     "ef_걸": "NOMINALIZER_nominalization_gos-eul", # contraction of gos-eul which turns a verb into a noun, https://forum.wordreference.com/threads/%EB%8A%94-%EA%B1%B8.1999585/ https://en.wiktionary.org/wiki/%EA%B1%B8
+    ###########################
+    # Noun and Determiner Forms
     "etn_기" : "NOMINALIZER_nominalizer_informal_nonpolite_gi",
     "etn_ㅁ" : "NOMINALIZER_nominalizer_formal_nonpolite_m",
     # NEUN
     "etm_는" : "NOMINALIZER_present_determiner_는",
+    "etm_ㄴ" : "NOMINALIZER_past_determiner_ㄴ",
+    ###########################
     # EUL
     "jco_을" : "NOMINALIZER_future_determiner_을", # https://en.wiktionary.org/wiki/%EC%9D%84#Suffix
     "etm_을" : "NOMINALIZER_future_determiner_을",
+    "etm_ㄹ" : "NOMINALIZER_future_determiner_을",
     # EUN
-    "jxt_은" : "NOMINALIZER_topic?past_determiner_은", # Also labeled etm. # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
-    "etm_은" : "NOMINALIZER_topic?past_determiner_은", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle. Also  https://en.wiktionary.org/wiki/%EB%82%B3%EB%8B%A4#Korean 낳은 past determiner is labeled pvg+etm
+    "jxt_은" : "NOMINALIZER_past_determiner_ㄴ", # Also labeled etm. # https://en.wiktionary.org/wiki/%EC%9D%80#Particle
+    "etm_은" : "NOMINALIZER_past_determiner_ㄴ", # https://en.wiktionary.org/wiki/%EC%9D%80#Particle. Also  https://en.wiktionary.org/wiki/%EB%82%B3%EB%8B%A4#Korean 낳은 past determiner is labeled pvg+etm
     "jcm_의" : "CASE_possessive_ui", # https://en.wiktionary.org/wiki/%EC%9D%98
     "jcs_이" : "CASE_i",
     "pad_어떻" : "CONNECTOR_어떻",
@@ -260,7 +269,7 @@ morpheme_slots = {
 def automatic_morpheme_meaning(grapheme, label):
     slots = []
     politeFlag = False
-
+#    print(label + "_" + grapheme)
     ret = morpheme_slots.get(label + "_" + grapheme)
     if ret:
         slots.append(ret) # label from dictionary morpheme_slots
