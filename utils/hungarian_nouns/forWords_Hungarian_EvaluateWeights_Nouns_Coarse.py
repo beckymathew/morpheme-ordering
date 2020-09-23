@@ -2,17 +2,20 @@
 
 import random
 import sys
+from corpus import CORPUS
+from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from math import log, exp
+from corpusIterator_V import CorpusIterator_V
+from random import shuffle, randint, Random, choice
+
+
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Japanese_2.4")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 parser.add_argument("--model", dest="model", type=str)
-parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
-parser.add_argument("--gamma", dest="gamma", type=int, default=1)
-parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=15)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
 
@@ -22,11 +25,6 @@ args=parser.parse_args()
 print(args)
 
 
-assert args.alpha >= 0
-assert args.alpha <= 1
-assert args.delta >= 0
-assert args.gamma >= 1
-
 
 
 
@@ -34,74 +32,67 @@ assert args.gamma >= 1
 myID = args.idForProcess
 
 
-TARGET_DIR = "/u/scr/mhahn/deps/memory-need-ngrams-morphology/"
-
-
-
-posUni = set() 
-
-posFine = set() 
-
-
-def getRepresentation(lemma):
-    return lemma
-
-
-from math import log, exp
-from random import random, shuffle, randint, Random, choice
-
-header = ["index", "word", "lemma", "posUni", "posFine", "morph", "head", "dep", "_", "_"]
-
-from corpusIterator_V import CorpusIterator_V
-
-originalDistanceWeights = {}
-
-morphKeyValuePairs = set()
-
-vocab_lemmas = {}
 
 import hungarian_noun_segmenter_coarse
-def processVerb(verb):
+import hungarian_noun_segmenter
+# Translate a verb into an underlying morpheme
+def getRepresentation(lemma):
+    return lemma["coarse"]
+
+def getSurprisalRepresentation(lemma):
+    return lemma["fine"]
+def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
       morphs = hungarian_noun_segmenter_coarse.get_abstract_morphemes(labels)
-      morphs[0] = vb["lemma"] # replace "ROOT" w actual root
-      data.append(morphs)
+      fine = hungarian_noun_segmenter.get_abstract_morphemes(labels)
+      morphs[0] = vb["lemma"] # replace "ROOT" with actual root
+      fine[0] = vb["lemma"] # replace "ROOT" w actual root
+      lst_dict = []
+      for i in range(len(fine)):
+        morph_dict = {"fine": fine[i], "coarse": morphs[i]}
+        lst_dict.append(morph_dict)
+      data_.append(lst_dict)
 
+# Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
+corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
+
 pairs = set()
 counter = 0
-data = []
-for sentence in corpusTrain:
+data_train = []
+data_dev = []
+for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
+  for sentence in corpus:
     verb = []
     for line in sentence:
        if line["posUni"] == "NOUN":
           verb.append(line)
-          processVerb(verb)
+          processVerb(verb, data_)
           verb = []
 
 words = []
 
 
 affixFrequencies = {}
-for verbWithAff in data:
+for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
-      
+    affix = getRepresentation(affix)
+    affixFrequencies[affix] = affixFrequencies.get(affix, 0)+1
+
 
 itos = set()
-for verbWithAff in data:
-  for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    itos.add(affixLemma)
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      itos.add(getRepresentation(affix))
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
 itos_ = itos[::]
 shuffle(itos_)
-if args.model == "RANDOM":
+if args.model == "RANDOM": # Construct a random ordering of the morphemes
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
 else:
   weights = {}
@@ -132,8 +123,8 @@ def getCorrectOrderCount(weights):
    incorrectTypes = 0
    correctFullTypes = 0
    incorrectFullTypes = 0
-   for verb in data:
-      keyForThisVerb = " ".join([x for x in verb])
+   for verb in data_train:
+      keyForThisVerb = " ".join([getSurprisalRepresentation(x) for x in verb])
       hasSeenThisVerb = (keyForThisVerb in hasSeenType)
       hasMadeMistake = False
       for i in range(1, len(verb)):
