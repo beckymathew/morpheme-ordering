@@ -4,6 +4,9 @@ import random
 import sys
 from corpus import CORPUS
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from math import log, exp
+from corpusIterator_V import CorpusIterator_V
+from random import shuffle, randint, Random, choice
 
 objectiveName = "LM"
 
@@ -44,14 +47,16 @@ posUni = set()
 
 posFine = set() 
 
+import finnish_segmenter_coarse
+import finnish_segmenter
+
+
 def getRepresentation(lemma):
     return lemma["coarse"]
 
 def getSurprisalRepresentation(lemma):
     return lemma["fine"]
 
-from math import log, exp
-from random import random, shuffle, randint, Random, choice
 
 header = ["index", "word", "lemma", "posUni", "posFine", "morph", "head", "dep", "_", "_"]
 
@@ -63,8 +68,6 @@ morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
-import finnish_segmenter_coarse
-import finnish_segmenter
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
@@ -73,7 +76,7 @@ def processVerb(verb, data_):
           continue
       morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
       fine = finnish_segmenter.get_abstract_morphemes(labels)
-      morphs[0] = vb["lemma"] # replace "ROOT" w actual root
+      morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
       lst_dict = []
       for i in range(len(fine)):
@@ -99,11 +102,11 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
-affixFrequency = {}
+affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affixLemma = getRepresentation(affix)
-    affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
+    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0)+1
 
 
 itos = set()
@@ -145,7 +148,7 @@ for iteration in range(1000):
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
+  while affixFrequencies.get(coordinate, 0) < 10 and random.random() < 0.95:
      coordinate = choice(itos)
 
   # This will store the minimal AOC found so far and the corresponding position
@@ -157,7 +160,7 @@ for iteration in range(1000):
      # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
   #   if random() < 0.9 and newValue != weights[coordinate]:
    #     continue
-     print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
+     print(newValue, mostCorrect, coordinate, affixFrequencies.get(coordinate,0))
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
      weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
@@ -175,9 +178,9 @@ for iteration in range(1000):
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   print(weights)
   for x in itos_:
-     if affixFrequency.get(x,0) < 10:
+     if affixFrequencies.get(x,0) < 10:
        continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequency.get(x,0)]]))
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies.get(x,0)]]))
   if (iteration + 1) % 50 == 0:
      _, surprisals = calculateTradeoffForWeights(weights_)
 
