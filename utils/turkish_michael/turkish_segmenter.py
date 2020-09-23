@@ -75,11 +75,11 @@ def get_abstract_morphemes(labels):
         morphs.append("POLITE_MAKTA")
     elif verbform is None and mood == "Opt":
         if person == "1" and number == "Plur":
-            morphs.append("MOOD_OPT_1Pl_ELIM")
+            morphs.append("Agr_OPT_1Pl_ELIM")
         elif person == "1" and number == "Sing":
-            morphs.append("MOOD_OPT_1Pl_EYIM")
+            morphs.append("Agr_OPT_1Pl_EYIM")
         elif person == "3" and number == "Sing":
-            morphs.append("MOOD_OPT_2Sg_a")
+            morphs.append("Agr_OPT_2Sg_a")
 
 
 # QUESTIOIN
