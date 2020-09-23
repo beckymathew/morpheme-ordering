@@ -91,18 +91,18 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 words = []
 
 # Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
-affixFrequency = {}
+affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
-    affixFrequency[affix] = affixFrequency.get(affix, 0)+1
-
+    slot = getRepresentation(affix)
+    affixFrequencies[slot] = affixFrequencies.get(slot, 0) + 1
 
 itos = set()
-for verbWithAff in data_train:
- for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
-    itos.add(affix)
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      slot = getRepresentation(affix)
+      itos.add(slot)
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
@@ -123,8 +123,8 @@ elif args.model != "REAL": # Load the ordering from a file
         morpheme, weight = line.strip().split(" ")
         weights[morpheme] = int(weight)
 
-
 def calculateTradeoffForWeights(weights):
+    # Order the datasets based on the given weights
     train = []
     dev = []
     # Iterate through the verb forms in the two data partitions, and linearize as a sequence of underlying morphemes
