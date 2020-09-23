@@ -33,8 +33,8 @@ myID = args.idForProcess
 
 
 
-import turkish_noun_segmenter_coarse
-import turkish_noun_segmenter
+import finnish_noun_segmenter_coarse
+import finnish_noun_segmenter
 # Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
     return lemma["coarse"]
@@ -45,8 +45,8 @@ def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = turkish_noun_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = turkish_noun_segmenter.get_abstract_morphemes(labels)
+      morphs = finnish_noun_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = finnish_noun_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
       lst_dict = []

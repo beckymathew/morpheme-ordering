@@ -96,12 +96,11 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
-affixFrequency = {}
+affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affixLemma = getRepresentation(affix)
-    affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
-
+    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
 
 itos = set()
 for data_ in [data_train, data_dev]:
@@ -141,7 +140,7 @@ for iteration in range(1000):
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while affixFrequency.get(coordinate, 0) < 10 and random() < 0.95:
+  while affixFrequencies.get(coordinate, 0) < 10 and random() < 0.95:
      coordinate = choice(itos)
 
   # This will store the minimal AOC found so far and the corresponding position
@@ -153,7 +152,7 @@ for iteration in range(1000):
      # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
   #   if random() < 0.9 and newValue != weights[coordinate]:
    #     continue
-     print(newValue, mostCorrect, coordinate, affixFrequency.get(coordinate,0))
+     print(newValue, mostCorrect, coordinate, affixFrequencies.get(coordinate,0))
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
      weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
@@ -171,9 +170,9 @@ for iteration in range(1000):
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   print(weights)
   for x in itos_:
-     if affixFrequency.get(x,0) < 10:
+     if affixFrequencies.get(x,0) < 10:
        continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequency.get(x,0)]]))
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies.get(x,0)]]))
   if (iteration + 1) % 50 == 0:
      _, surprisals = calculateTradeoffForWeights(weights_)
 

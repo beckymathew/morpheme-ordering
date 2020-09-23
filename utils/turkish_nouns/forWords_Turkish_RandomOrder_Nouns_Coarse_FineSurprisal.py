@@ -51,11 +51,10 @@ import turkish_noun_segmenter_coarse
 import turkish_noun_segmenter
 # Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
-   return lemma["coarse"]
+    return lemma["coarse"]
 
 def getSurprisalRepresentation(lemma):
-   return lemma["fine"]
-   
+    return lemma["fine"]
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
@@ -90,18 +89,18 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 words = []
 
 # Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
-affixFrequency = {}
+affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affix = getRepresentation(affix)
-    affixFrequency[affix] = affixFrequency.get(affix, 0)+1
+    affixFrequencies[affix] = affixFrequencies.get(affix, 0)+1
 
 
 itos = set()
-for verbWithAff in data_train:
- for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
-    itos.add(affix)
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      itos.add(getRepresentation(affix))
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
