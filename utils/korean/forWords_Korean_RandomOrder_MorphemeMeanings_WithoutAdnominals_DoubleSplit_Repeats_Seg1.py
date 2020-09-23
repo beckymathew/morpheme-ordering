@@ -1,22 +1,31 @@
-# based on yWithMorphologySequentialStreamDropoutDev_Ngrams_Log.py
+# Estimate memory-surprisal tradeoff 
 
 import random
 import sys
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from math import log, exp
+from corpusIterator_V import CorpusIterator_V
+from random import shuffle, randint, Random, choice
 from frozendict import frozendict
+import copy
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--language", dest="language", type=str, default="Korean-Kaist_2.6")
+
+# May be REAL, RANDOM, REVERSE, or a pointer to a file containing an ordering grammar.
 parser.add_argument("--model", dest="model", type=str)
+
+# parameters for n-gram smoothing. See also estimateTradeoffHeldout.py
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=12)
+
+# An identifier for this run of this script.
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
-import random
 
 
 
@@ -29,16 +38,10 @@ assert args.alpha <= 1
 assert args.delta >= 0
 assert args.gamma >= 1
 
-
-
-
-
 myID = args.idForProcess
 
 
-TARGET_DIR = "results/"+__file__.replace(".py", "")
-
-
+TARGET_DIR = "estimates/"
 
 posUni = set()
 
@@ -58,6 +61,14 @@ originalDistanceWeights = {}
 morphKeyValuePairs = set()
 
 vocab_lemmas = {}
+
+
+def getRepresentation(lemma):
+   return lemma["coarse"]
+
+def getSurprisalRepresentation(lemma):
+   return lemma["fine"]
+
 
 import allomorphy
 # using label_grapheme version bc it's easier to see if the verb processing is correct
@@ -141,9 +152,8 @@ pairs = set()
 counter = 0
 data_train = []
 data_dev = []
-import copy
 for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
-   for sentence in corpus:
+  for sentence in corpus:
     verb = []
     for line in sentence:
         if line["posUni"] == "PUNCT":
@@ -178,100 +188,76 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
+# Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
 affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
-    slot = affix["coarse"]
+    slot = getRepresentation(affix)
     affixFrequencies[slot] = affixFrequencies.get(slot, 0) + 1
-    # affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0)+1
 
-itos = set() # all the first elems of outputs of getrepresentation
+itos = set()
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
-      slot = affix["coarse"]
-      itos.add(slot) # getRepresentation[0]
+      slot = getRepresentation(affix)
+      itos.add(slot)
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
-
+if args.model == "RANDOM": # Construct a random ordering of the morphemes
+  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+elif args.model in ["REAL", "REVERSE"]: # Measure tradeoff for real or reverse ordering of suffixes.
+  weights = None
+elif args.model != "REAL": # Load the ordering from a file
+  weights = {}
+  import glob
+  files = glob.glob(args.model)
+  assert len(files) == 1
+  with open(files[0], "r") as inFile:
+     next(inFile)
+     for line in inFile:
+        morpheme, weight = line.strip().split(" ")
+        weights[morpheme] = int(weight)
 
 def calculateTradeoffForWeights(weights):
     # Order the datasets based on the given weights
     train = []
     dev = []
+    # Iterate through the verb forms in the two data partitions, and linearize as a sequence of underlying morphemes
     for data, processed in [(data_train, train), (data_dev, dev)]:
       for verb in data:
          affixes = verb[1:]
-         affixes = sorted(affixes, key=lambda x: weights[x["coarse"]]) # take the weight of the first morpheme slot
-         for ch in [verb[0]] + affixes:
-            processed.append(ch["fine"]) # grapheme morpheme, label_grapheme morpheme, don't call getRepresentation if abstract slot
-         processed.append("EOS")
-         for _ in range(args.cutoff+2):
+         if args.model == "REAL": # Real ordering
+            _ = 0
+         elif args.model == "REVERSE": # Reverse affixes
+            affixes = affixes[::-1]
+         else: # Order based on weights
+            affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
+
+
+         for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
+            processed.append(getSurprisalRepresentation(ch))
+         processed.append("EOS") # Indicate end-of-sequence
+         for _ in range(args.cutoff+2): # Interpose a padding symbol between each pair of successive verb forms. There is no relation between successive verb forms, and adding padding prevents the n-gram models from "trying to learn" any spurious relations between successive verb forms.
            processed.append("PAD")
          processed.append("SOS") # start-of-sequence for the next verb form
-
+    
     # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
     auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-    return auc, devSurprisalTable
+
+
+    # Write results to a file
+    model = args.model
+    if "/" in model:
+        model = model[model.rfind("_"):-4]+"-OPTIM"
+    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model == "RANDOM" else model)+".txt"
+    print(outpath)
+    with open(outpath, "w") as outFile:
+       print(str(args), file=outFile)
+       print(" ".join(map(str,devSurprisalTable)), file=outFile)
+    return auc
    
-lastCoordinate = None
-mostCorrect = 1e100
-import os
-for iteration in range(1000):
-  # Randomly select a morpheme whose position to update
-  coordinate=choice(itos)
-
-  # Stochastically filter out rare morphemes
-  while (affixFrequencies[coordinate] < 100 and random() < 0.95) or coordinate == lastCoordinate:
-     coordinate = choice(itos)
-  lastCoordinate = coordinate
-
-  # This will store the minimal AOC found so far and the corresponding position
-  mostCorrectValue = weights[coordinate]
-
-  # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))]:
-     if random() < 0.3:
-         continue
-     print(newValue, "BestAUC:", mostCorrect, coordinate, affixFrequencies[coordinate])
-     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
-     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
-
-     # Calculate AOC for this updated assignment
-     resultingAOC, _ = calculateTradeoffForWeights(weights_)
-     print("Found", resultingAOC)
-     # Update variables if AOC is smaller than minimum AOC found so far
-     if resultingAOC < mostCorrect:
-        mostCorrectValue = newValue
-        mostCorrect = resultingAOC
-  print(iteration, mostCorrect)
-  weights[coordinate] = mostCorrectValue
-  itos_ = sorted(itos, key=lambda x:weights[x])
-  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-  print(weights)
-  for x in itos_:
-     if affixFrequencies[x] < 10:
-       continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))
-  if (iteration + 1) % 50 == 0:
-     _, surprisals = calculateTradeoffForWeights(weights_)
-
-     if os.path.exists(TARGET_DIR):
-      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
-     else:
-       os.makedirs(TARGET_DIR)
-       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
-  
-
-
-
+auc = calculateTradeoffForWeights(weights)
+print("AUC: ", auc)

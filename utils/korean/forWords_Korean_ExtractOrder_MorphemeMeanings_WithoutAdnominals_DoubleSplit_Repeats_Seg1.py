@@ -9,6 +9,9 @@ objectiveName = "LM"
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--language", dest="language", type=str, default="Korean-Kaist_2.6")
+
+
+# parameters for n-gram smoothing. See also estimateTradeoffHeldout.py
 parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
@@ -34,7 +37,6 @@ assert args.gamma >= 1
 myID = args.idForProcess
 
 
-TARGET_DIR = "/u/scr/mhahn/deps/memory-need-ngrams-morphology/"
 
 
 

@@ -1,2 +1,0 @@
-forWords_Hungarian_ExtractOrder_Fine.py: 1.0
-forWords_Hungarian_ExtractOrder_Coarse.py: 1.0
