@@ -81,6 +81,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
+# Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
 affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:

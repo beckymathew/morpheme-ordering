@@ -74,12 +74,11 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
-
 affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affix = getRepresentation(affix)
-    affixFrequencies[affix] = affixFrequencies.get(affix, 0)+1
+    affixFrequencies[affix] = affixFrequencies.get(affix, 0) + 1
 
 
 itos = set()

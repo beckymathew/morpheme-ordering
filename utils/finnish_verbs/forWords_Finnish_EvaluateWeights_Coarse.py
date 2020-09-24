@@ -52,6 +52,7 @@ def processVerb(verb, data_):
       fine = finnish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
+      assert len(morphs) == len(fine)
       lst_dict = []
       for i in range(len(fine)):
         morph_dict = {"fine": fine[i], "coarse": morphs[i]}
@@ -81,16 +82,15 @@ affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
     affix = getRepresentation(affix)
-    affixFrequencies[affix] = affixFrequencies.get(affix, 0)+1
+    affixFrequencies[affix] = affixFrequencies.get(affix, 0) + 1
 
-
-itos = set()
+itos = set() # set of affixes
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
       itos.add(getRepresentation(affix))
-itos = sorted(list(itos))
-stoi = dict(list(zip(itos, range(len(itos)))))
+itos = sorted(list(itos)) # sorted list of verb affixes
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)

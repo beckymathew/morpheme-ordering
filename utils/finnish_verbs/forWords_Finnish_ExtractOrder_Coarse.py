@@ -15,6 +15,7 @@ objectiveName = "LM"
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--language", dest="language", type=str, default=CORPUS)
+parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
 
@@ -27,14 +28,16 @@ print(args)
 
 
 
-
 myID = args.idForProcess
 
 
 
-import hungarian_noun_segmenter_coarse
-import hungarian_noun_segmenter
-# Translate a verb into an underlying morpheme
+
+
+import finnish_segmenter_coarse
+import finnish_segmenter
+
+
 def getRepresentation(lemma):
     return lemma["coarse"]
 
@@ -44,10 +47,13 @@ def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = hungarian_noun_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = hungarian_noun_segmenter.get_abstract_morphemes(labels)
+      if "VerbForm=Part" in labels or "VerbForm=Inf" in labels:
+          continue
+      morphs = finnish_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = finnish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
+      assert len(morphs) == len(fine)
       lst_dict = []
       for i in range(len(fine)):
         morph_dict = {"fine": fine[i], "coarse": morphs[i]}
@@ -66,34 +72,12 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "NOUN":
+       if line["posUni"] == "VERB":
           verb.append(line)
           processVerb(verb, data_)
           verb = []
 
-from collections import Counter
-import matplotlib.pyplot as plt
-
-def bar_num_morphs(data):
-    """
-    Produces a bar chart of the number of morphemes in the word list.
-
-    Params:
-     - data: A list of lists of verbs, where each inner list item is a lemma that has morphemes delimited by "+"
-
-    Returns:
-     - nothing, creates a PNG of a bar chart of the distribution of number of morphemes
-    """
-    hist = Counter()
-    for wd_list in data:
-         hist[len(wd_list)] += 1
-    plt.bar(hist.keys(), hist.values())
-    plt.savefig("visualize/nouns_coarse_num_morphs.png")
-
-bar_num_morphs(data_train)
-
 words = []
-
 
 affixFrequencies = {}
 for verbWithAff in data_train:

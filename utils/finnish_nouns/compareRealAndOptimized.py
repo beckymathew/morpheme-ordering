@@ -1,9 +1,11 @@
 import sys
 import os
 
+script = "forWords_Finnish_OptimizeOrder_Nouns_Coarse_FineSurprisal"
+
 with open("output/"+os.listdir("output/")[0], "r") as inFile:
     real = [x.split("\t")[0] for x in inFile.read().strip().split("\n")]
-with open("results/forWords_Hungarian_OptimizeOrder_Coarse_FineSurprisal/"+os.listdir("results/forWords_Hungarian_OptimizeOrder_Coarse_FineSurprisal/")[0], "r") as inFile:
+with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
     optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:]]
 print(real)
 print(optimized)
