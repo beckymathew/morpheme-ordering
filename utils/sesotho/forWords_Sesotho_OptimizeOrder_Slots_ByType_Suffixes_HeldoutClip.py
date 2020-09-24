@@ -185,8 +185,6 @@ names = {'ng' : "Negation", 'om' : "Object", 'sm' : "Subject", 'sr' : "Subject",
 def getSlot(x):
    if x == "sm":
       return "SUBJ"
-   elif x in ["t^", "m^"]:
-      return x
    elif x in names:
       return names[x]
    else:
@@ -229,7 +227,7 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
          suffixesResult += segmented
       else:
          suffixesResult.append(x)
-    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)
+    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)i
        continue
     dataChosen.append(suffixesResult)
     for affix in suffixesResult:
@@ -286,6 +284,7 @@ def calculateTradeoffForWeights(weights_sfx):
          prefixes = [x for x in verb if x[header["type1"]] == "pfx"]
          suffixes = [x for x in verb if x[header["type1"]] == "sfx"]
          v = [x for x in verb if x[header["type1"]] == "v"]
+ #        print(v)
          assert len(prefixes)+len(v)+len(suffixes)==len(verb)
   
          suffixes.sort(key=lambda x:weights_sfx[getSlot(getKey(x))])
@@ -494,6 +493,9 @@ for data_ in [data_train, data_dev]:
      # It is important to overwrite data[q] before continuing
      data_[q] = verb
      for word in verb:
+       if word[header["type1"]] == "v":
+          if "_" in word[header["lemma"]]:
+              word[header["lemma"]] = word[header["lemma"]].replace("t^p_", "")
        words.add(word[header["lemma"]])
 
 
@@ -502,6 +504,7 @@ itos_words = ["PAD", "SOS", "EOS"] + words
 stoi_words = dict(zip(itos_words, range(len(itos_words))))
 print(stoi_words)
 
+print(itos_sfx)
 
 
 
