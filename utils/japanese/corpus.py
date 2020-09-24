@@ -1,1 +1,1 @@
-CORPUS = "Japanese-GSD_2.6"
+CORPUS = "Japanese-GSD_2.4"

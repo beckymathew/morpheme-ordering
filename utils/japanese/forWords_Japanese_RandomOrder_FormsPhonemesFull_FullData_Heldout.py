@@ -1,21 +1,35 @@
-# based on yWithMorphologySequentialStreamDropoutDev_Ngrams_Log.py
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Estimate memory-surprisal tradeoff 
 
 import random
 import sys
-import romkan
+from corpus import CORPUS
+from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from math import log, exp
+from corpusIterator_V import CorpusIterator_V
+from random import shuffle, randint, Random, choice
+
+
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Japanese-GSD_2.4")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
+
+# May be REAL, RANDOM, REVERSE, or a pointer to a file containing an ordering grammar.
 parser.add_argument("--model", dest="model", type=str)
+
+# parameters for n-gram smoothing. See also estimateTradeoffHeldout.py
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=7)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=12)
+
+# An identifier for this run of this script.
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
-import random
 
 
 
@@ -28,10 +42,6 @@ assert args.alpha <= 1
 assert args.delta >= 0
 assert args.gamma >= 1
 
-
-
-
-
 myID = args.idForProcess
 
 
@@ -39,35 +49,40 @@ TARGET_DIR = "estimates/"
 
 
 
-posUni = set() 
-
-posFine = set() 
 
 
+def getRepresentation(lemma):
+   return lemma["coarse"]
 
-
-
+def getSurprisalRepresentation(lemma):
+   return lemma["fine"]
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
 
-header = ["index", "word", "lemma", "posUni", "posFine", "morph", "head", "dep", "_", "_"]
 
 from corpusIterator_V import CorpusIterator_V
 
-originalDistanceWeights = {}
-
-morphKeyValuePairs = set()
-
-vocab_lemmas = {}
 
 
+import japanese_segmenter_coarse
+import japanese_segmenter
 def processVerb(verb, data_):
     if len(verb) > 0:
       if "VERB" in [x["posUni"] for x in verb[1:]]:
         print([x["word"] for x in verb])
-      data_.append(verb)
+      morphs = [japanese_segmenter_coarse.get_abstract_morphemes(x["lemma"]) for x in verb]
+      fine = [japanese_segmenter.get_abstract_morphemes(x["lemma"]) for x in verb]
+      morphs[0] = verb[0]["lemma"]
+      fine[0] = verb[0]["lemma"]
+      assert len(morphs) == len(fine)
+      lst_dict = []
+      for i in range(len(fine)):
+        morph_dict = {"fine": fine[i], "coarse": morphs[i]}
+        lst_dict.append(morph_dict)
+      data_.append(lst_dict)
 
+# Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
 
@@ -76,8 +91,7 @@ counter = 0
 data_train = []
 data_dev = []
 for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
- for sentence in corpus:
-#    print(len(sentence))
+  for sentence in corpus:
     verb = []
     for line in sentence:
        if line["posUni"] == "PUNCT":
@@ -97,60 +111,36 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
        else:
           processVerb(verb, data_)
           verb = []
- print("len(data_)", len(data_))
- #quit()
- print(counter)
- #print(data)
- print(len(data_))
-
-#quit()
-import torch.nn as nn
-import torch
-from torch.autograd import Variable
-
-
-import numpy.random
-
-
-
-import torch.cuda
-import torch.nn.functional
-
 
 words = []
 
-affixFrequency = {}
-for verbWithAff in data_train:
-  for affix in verbWithAff[1:]:
-    affixLemma = affix["lemma"]
-    affixFrequency[affixLemma] = affixFrequency.get(affixLemma, 0)+1
+# Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
+affixFrequencies = {}
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      affixLemma = getRepresentation(affix)
+      affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
 
-
-itos = set()
-for verbWithAff in data_train:
-  for affix in verbWithAff[1:]:
-    affixLemma = affix["lemma"]
-    itos.add(affixLemma)
-itos = sorted(list(itos))
-stoi = dict(list(zip(itos, range(len(itos)))))
-
-
-print(itos)
-print(stoi)
+itos = set() # set of affixes
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      itos.add(getRepresentation(affix))
+itos = sorted(list(itos)) # sorted list of verb affixes
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
-if args.model == "RANDOM":
+if args.model == "RANDOM": # Construct a random ordering of the morphemes
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-#  weights['する'] = -1
-elif args.model in ["REAL", "REVERSE"]:
+elif args.model in ["REAL", "REVERSE"]: # Measure tradeoff for real or reverse ordering of suffixes.
   weights = None
-elif args.model != "REAL":
+elif args.model != "REAL": # Load the ordering from a file
   weights = {}
   import glob
   files = glob.glob(args.model)
   assert len(files) == 1
-  assert "_FormsPhonemesFull_" in files[0]
   with open(files[0], "r") as inFile:
      next(inFile)
      for line in inFile:
@@ -158,247 +148,42 @@ elif args.model != "REAL":
         weights[morpheme] = int(weight)
 
 
-
-
-raw2Hiragana = dict()
-
-with open("../data/extractedVerbs_hiragana.txt", "r") as inFileHiragana:
-    try:
-     for index in range(1000000):
-       tagged = next(inFileHiragana).strip().split("\t")
-       raw, tagged = tagged
-       raw2Hiragana[raw.strip()] = tagged.strip()
-    except StopIteration:
-       _ = 0
-with open("../data/extractedVerbs_hiragana_dev.txt", "r") as inFileHiragana:
-    try:
-     for index in range(1000000):
-       tagged = next(inFileHiragana).strip().split("\t")
-       raw, tagged = tagged
-       raw2Hiragana[raw.strip()] = tagged.strip()
-    except StopIteration:
-       _ = 0
-
-for data_ in [data_train, data_dev]:
-  for line in data_:
-   # print(" ".join([x["word"] for x in line]))
-    raw = " ".join([x["word"] for x in line])
-    hiragana = raw2Hiragana[raw].split(" ")
-  #  print(line)
-   # print(hiragana)
-    assert len(hiragana) == len(line)
-    for i in range(len(line)):
-      line[i]["hiragana"] = hiragana[i]
-
-cachedPhonemization = {}
-
-def phonemize(x):
-   if x not in cachedPhonemization:
-      phonemized = romkan.to_roma(x)
-      if max([ord(y) for y in phonemized]) > 200: # contains Kanji
-         cachedPhonemization[x] = x
-      else:
-        if x.endswith("っ"):
-          assert phonemized.endswith("xtsu")
-          phonemized = phonemized.replace("xtsu", "G") # G for `geminate'
-        phonemized = phonemized.replace("ch", "C")
-        phonemized = phonemized.replace("sh", "S")
-        phonemized = phonemized.replace("ts", "T")
-        cachedPhonemization[x] = phonemized
-   phonemized = cachedPhonemization[x]
-   return phonemized
-
-
 def calculateTradeoffForWeights(weights):
     train = []
     dev = []
+    # Iterate through the verb forms in the two data partitions, and linearize as a sequence of underlying morphemes
     for data, processed in [(data_train, train), (data_dev, dev)]:
       for verb in data:
          affixes = verb[1:]
-         if args.model == "REAL":
+         if args.model == "REAL": # Real ordering
             _ = 0
-         elif args.model == "REVERSE":
+         elif args.model == "REVERSE": # Reverse affixes
             affixes = affixes[::-1]
-         else:
-            affixes = sorted(affixes, key=lambda x:weights.get(x["lemma"], 0))
-         for ch in [verb[0]] + affixes:
-           for char in phonemize(ch["hiragana"]):
-             processed.append(char)
-         #    print(char)
-         processed.append("EOS")
-         for _ in range(args.cutoff+2):
+         else: # Order based on weights
+            affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
+
+
+         for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
+            processed.append(getSurprisalRepresentation(ch))
+         processed.append("EOS") # Indicate end-of-sequence
+         for _ in range(args.cutoff+2): # Interpose a padding symbol between each pair of successive verb forms. There is no relation between successive verb forms, and adding padding prevents the n-gram models from "trying to learn" any spurious relations between successive verb forms.
            processed.append("PAD")
-         processed.append("SOS")
-      
-    itos = list(set(train) | set(dev))
-      
+         processed.append("SOS") # start-of-sequence for the next verb form
     
-    dev = dev[::-1]
-    #dev = list(createStreamContinuous(corpusDev))[::-1]
-    
-    
-    #corpusTrain = CorpusIterator(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
-    #train = list(createStreamContinuous(corpusTrain))[::-1]
-    train = train[::-1]
-    
-    idev = range(len(dev))
-    itrain = range(len(train))
-    
-    idev = sorted(idev, key=lambda i:dev[i:i+20])
-    itrain = sorted(itrain, key=lambda i:train[i:i+20])
-    
-#    print(idev)
-    
-    idevInv = [x[1] for x in sorted(zip(idev, range(len(idev))), key=lambda x:x[0])]
-    itrainInv = [x[1] for x in sorted(zip(itrain, range(len(itrain))), key=lambda x:x[0])]
-    
-    assert idev[idevInv[5]] == 5
-    assert itrain[itrainInv[5]] == 5
-    
-    
-    
-    def getStartEnd(k):
-       start = [0 for _ in dev]
-       end = [len(train)-1 for _ in dev]
-       if k == 0:
-          return start, end
-       # Start is the FIRST train place that is >=
-       # End is the FIRST train place that is >
-       l = 0
-       l2 = 0
-       for j in range(len(dev)):
-         prefix = tuple(dev[idev[j]:idev[j]+k])
-         while l2 < len(train):
-            prefix2 = tuple(train[itrain[l2]:itrain[l2]+k])
-            if prefix <= prefix2:
-                 start[j] = l2
-                 break
-            l2 += 1
-         if l2 == len(train):
-            start[j] = l2
-         while l < len(train):
-            prefix2 = tuple(train[itrain[l]:itrain[l]+k])
-            if prefix < prefix2:
-                 end[j] = l
-                 break
-            l += 1
-         if l == len(train):
-            end[j] = l
-         start2, end2 = start[j], end[j]
-         assert start2 <= end2
-         if start2 > 0 and end2 < len(train):
-           assert prefix > tuple(train[itrain[start2-1]:itrain[start2-1]+k])
-           assert prefix <= tuple(train[itrain[start2]:itrain[start2]+k])
-           assert prefix >= tuple(train[itrain[end2-1]:itrain[end2-1]+k])
-           assert prefix < tuple(train[itrain[end2]:itrain[end2]+k])
-       return start, end
-    
-    
-    lastProbability = [None for _ in idev]
-    newProbability = [None for _ in idev]
-    
-    devSurprisalTable = []
-    for k in range(0,args.cutoff):
-#       print(k)
-       startK, endK = getStartEnd(k) # Possible speed optimization: There is some redundant computation here, could be reused from the previous iteration. But the algorithm is very fast already.
-       startK2, endK2 = getStartEnd(k+1)
-       cachedFollowingCounts = {}
-       for j in range(len(idev)):
-    #      print(dev[idev[j]])
-          if dev[idev[j]] in ["PAD", "SOS"]:
-             continue
-          start2, end2 = startK2[j], endK2[j]
-          devPref = tuple(dev[idev[j]:idev[j]+k+1])
-          if start2 > 0 and end2 < len(train):
-            assert devPref > tuple(train[itrain[start2-1]:itrain[start2-1]+k+1]), (devPref, tuple(train[itrain[start2-1]:itrain[start2-1]+k+1]))
-            assert devPref <= tuple(train[itrain[start2]:itrain[start2]+k+1]), (devPref, tuple(train[itrain[start2]:itrain[start2]+k+1]))
-            assert devPref >= tuple(train[itrain[end2-1]:itrain[end2-1]+k+1])
-            assert devPref < tuple(train[itrain[end2]:itrain[end2]+k+1])
-    
-          assert start2 <= end2
-    
-          countNgram = end2-start2
-          if k >= 1:
-             if idev[j]+1 < len(idevInv):
-               prefixIndex = idevInv[idev[j]+1]
-               assert dev[idev[prefixIndex]] == dev[idev[j]+1]
-       
-               prefixStart, prefixEnd = startK[prefixIndex], endK[prefixIndex]
-               countPrefix = prefixEnd-prefixStart
-               if countPrefix < args.gamma: # there is nothing to interpolate with, just back off
-                  assert k > 0
-                  newProbability[j] = lastProbability[j]
-               else:
-                  assert countPrefix >= countNgram, (countPrefix, countNgram)
-       
-                  following = set()
-                  if (prefixStart, prefixEnd) in cachedFollowingCounts:
-                      followingCount = cachedFollowingCounts[(prefixStart, prefixEnd)]
-                  else:
-                    for l in range(prefixStart, prefixEnd):
-                      if k < itrain[l]+1:
-                         following.add(train[itrain[l]-1])
-                         assert devPref[1:] == tuple(train[itrain[l]-1:itrain[l]+k])[1:], (k, itrain[l], l, devPref , tuple(train[itrain[l]-1:itrain[l]+k]))
-                    followingCount = len(following)
-                    cachedFollowingCounts[(prefixStart, prefixEnd)] = followingCount
-                  if followingCount == 0:
-                      newProbability[j] = lastProbability[j]
-                  else:
-                      #assert countNgram > 0
-                      probability = log(max(countNgram - args.alpha, 0.0) + args.alpha * followingCount * exp(lastProbability[j])) -  log(countPrefix)
-                      newProbability[j] = probability
-             else:
-                newProbability[j] = lastProbability[j]
-          elif k == 0:
-                  probability = log(countNgram + args.delta) - log(len(train) + args.delta * len(itos))
-                  newProbability[j] = probability
-       lastProbability = newProbability 
-       newProbability = [None for _ in idev]
-       assert all([x is None or x <=0 for x in lastProbability])
-       try:
-           lastProbabilityFiltered = [x for x in lastProbability if x is not None]
-           surprisal = - sum([x for x in lastProbabilityFiltered])/len(lastProbabilityFiltered)
-       except ValueError:
-           print("PROBLEM", file=sys.stderr)
-           print(lastProbability, file=sys.stderr)
-           surprisal = 1000
-       devSurprisalTable.append(surprisal)
-       print("Surprisal", surprisal, len(itos))
-    print(devSurprisalTable)
-    for k in range(len(devSurprisalTable)):
-        devSurprisalTable[k] = min(devSurprisalTable[:k+1])
-    mis = [devSurprisalTable[i] - devSurprisalTable[i+1] for i in range(len(devSurprisalTable)-1)]
-    tmis = [mis[x]*(x+1) for x in range(len(mis))]
-    #print(mis)
-    #print(tmis)
-    auc = 0
-    memory = 0
-    mi = 0
-    print(mis)
-    print(tmis)
-    for i in range(len(mis)):
-       mi += mis[i]
-       memory += tmis[i]
-       auc += mi * tmis[i]
-    print("MaxMemory", memory)
-    assert 7>memory
-    auc += mi * (7-memory)
-    print("AUC", auc)
-    #assert False
-  
-    if args.model.endswith(".tsv"):
-       model = args.model[args.model.rfind("_")+1:-4]
-    else:
-       model = args.model
-    outpath = TARGET_DIR+"/estimates-"+args.language+"_"+__file__+"_model_"+str(myID)+"_"+model+".txt"
+    # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
+    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
+
+
+    # Write results to a file
+    model = args.model
+    if "/" in model:
+        model = model[model.rfind("_"):-4]+"-OPTIM"
+    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model == "RANDOM" else model)+".txt"
     print(outpath)
     with open(outpath, "w") as outFile:
        print(str(args), file=outFile)
        print(" ".join(map(str,devSurprisalTable)), file=outFile)
-    
-    #
-    #
     return auc
    
-calculateTradeoffForWeights(weights)
-
+auc = calculateTradeoffForWeights(weights)
+print("AUC: ", auc)

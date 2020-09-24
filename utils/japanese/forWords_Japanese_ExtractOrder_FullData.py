@@ -49,7 +49,7 @@ def processVerb(verb, data_):
       if "VERB" in [x["posUni"] for x in verb[1:]]:
         print([x["word"] for x in verb])
       morphs = [japanese_segmenter_coarse.get_abstract_morphemes(x["lemma"]) for x in verb]
-      fine = [japanese_segmenter_coarse.get_abstract_morphemes(x["lemma"]) for x in verb]
+      fine = [japanese_segmenter.get_abstract_morphemes(x["lemma"]) for x in verb]
       morphs[0] = verb[0]["lemma"]
       fine[0] = verb[0]["lemma"]
       assert len(morphs) == len(fine)
@@ -71,11 +71,11 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
     verb = []
     for line in sentence:
        if line["posUni"] == "PUNCT":
-          processVerb(verb)
+          processVerb(verb, data_)
           verb = []
           continue
        elif line["posUni"] == "VERB":
-          processVerb(verb)
+          processVerb(verb, data_)
           verb = []
           verb.append(line)
        elif line["posUni"] == "AUX" and len(verb) > 0:
@@ -85,16 +85,17 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
           processVerb(verb, data_)
           verb = []
        else:
-          processVerb(verb)
+          processVerb(verb, data_)
           verb = []
 
 words = []
 
 affixFrequencies = {}
-for verbWithAff in data_train:
-  for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      affixLemma = getRepresentation(affix)
+      affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
 
 itos = set() # set of affixes
 for data_ in [data_train, data_dev]:

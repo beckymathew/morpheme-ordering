@@ -19,4 +19,4 @@ def get_abstract_morphemes(lemma):
        lemma = "TAM_yoo"
    else:
        lemma = lemma
-   return lemma
+   return lemma.split("_")[0]
