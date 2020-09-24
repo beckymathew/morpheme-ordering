@@ -11,11 +11,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--language", dest="language", type=str, default="Korean-Kaist_2.6")
 
 
-# parameters for n-gram smoothing. See also estimateTradeoffHeldout.py
-parser.add_argument("--alpha", dest="alpha", type=float, default=0.0)
-parser.add_argument("--gamma", dest="gamma", type=int, default=1)
-parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=15)
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 import random
 
@@ -25,10 +20,6 @@ args=parser.parse_args()
 print(args)
 
 
-assert args.alpha >= 0
-assert args.alpha <= 1
-assert args.delta >= 0
-assert args.gamma >= 1
 
 
 
@@ -40,9 +31,7 @@ myID = args.idForProcess
 
 
 
-posUni = set()
 
-posFine = set()
 
 def getRepresentation(lemma):
      return lemma
@@ -259,11 +248,11 @@ affixChains = defaultdict(int)
 for d in data:
    affixChains[tuple(d[1:])] += 1
 
-freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item[1])}
-with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-  for x in freqs.keys():
-     print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
-
+#freqs = {k: v for k, v in sorted(affixFrequencies.items(), key=lambda item: item[1])}
+#with open("output/"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+#  for x in freqs.keys():
+#     print("\t".join([str(y) for y in [x, freqs[x]]]), file=outFile)
+#
 
 def printErrors(weights):
    correct = 0
