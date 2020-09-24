@@ -146,7 +146,7 @@ def calculateMemorySurprisalTradeoff(train, dev, args):
     for k in range(len(devSurprisalTable)):
         devSurprisalTable[k] = min(devSurprisalTable[:k+1])
     mis = [devSurprisalTable[i] - devSurprisalTable[i+1] for i in range(len(devSurprisalTable)-1)]
-    print(mis)
+    print("MIs", mis)
     tmis = [mis[x]*(x+1) for x in range(len(mis))]
     #print(mis)
     #print(tmis)

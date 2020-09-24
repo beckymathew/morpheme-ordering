@@ -1,0 +1,9 @@
+0.3680142687277051
+0.3011325782811459
+0.356369982547993
+0.28309409888357256
+Psor_person Case 709
+Psor_number Case 709
+Number Case 360
+Number Psor_person 174
+Number Psor_number 174

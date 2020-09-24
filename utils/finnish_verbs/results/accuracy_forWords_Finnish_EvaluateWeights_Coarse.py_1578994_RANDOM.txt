@@ -1,0 +1,10 @@
+0.8054554812146165
+0.8226676253819881
+0.7595097210481826
+0.7960867515322961
+Voice Tense 1662
+Person.Number Clitic 241
+Tense Clitic 228
+Voice Mood 60
+Mood Clitic 48
+Voice Clitic 29

@@ -1,0 +1,18 @@
+5499 24.830737553809673 Namespace(alpha=1.0, cutoff=4, delta=1.0, gamma=1, idForProcess=7296050, language='Hungarian-Szeged_2.6', model=None) [4.927738431177643, 3.5472482219728105, 3.5472482219728105, 3.5472482219728105]
+2sg_ED 0
+1sg_EM 2
+1pl_ENK 4
+Cau_AT 6
+2sg_EL 8
+2pl_TEK 10
+Def_I 12
+3pl_EK 14
+Past_T 16
+1sg_EK 18
+Pot_HET 20
+3pl_NEK 22
+Inf_NI 24
+3sg_EN 26
+Cnd_N 28
+1pl_UK 30
+Pot_J 32
