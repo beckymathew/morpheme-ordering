@@ -1,0 +1,1 @@
+CORPUS = "Sesotho_Acqdiv"
