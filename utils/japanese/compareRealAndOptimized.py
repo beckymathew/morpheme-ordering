@@ -1,9 +1,11 @@
 import sys
 import os
 
+script = "forWords_Japanese_OptimizeOrder_MorphemeGrammar_Normalized_FullData_HeldoutClip"
+
 with open("output/"+os.listdir("output/")[0], "r") as inFile:
     real = [x.split("\t")[0] for x in inFile.read().strip().split("\n") if ord(x[0]) < 100]
-with open("results/forWords_Japanese_OptimizeOrder_MorphemeGrammar_Normalized_FullData_HeldoutClip/"+os.listdir("results/forWords_Japanese_OptimizeOrder_MorphemeGrammar_Normalized_FullData_HeldoutClip/")[0], "r") as inFile:
+with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
     optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:] if ord(x[0]) < 100]
 print(real)
 print(optimized)

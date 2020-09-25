@@ -1,0 +1,5 @@
+Valence	0	31	Valence
+Mood	2	234	Mood
+Tense	4	741	Tense
+Inf	6	165	NA
+Agr	8	930	Agreement
