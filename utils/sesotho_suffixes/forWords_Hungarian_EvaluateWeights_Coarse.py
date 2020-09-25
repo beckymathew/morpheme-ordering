@@ -272,6 +272,26 @@ affixFrequencies = suffixFrequency
 
 
 
+itos_ = itos[::]
+shuffle(itos_)
+if args.model == "RANDOM": # Construct a random ordering of the morphemes
+  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+else:
+  weights = {}
+  weights = {}
+  files = args.model
+  with open(files, "r") as inFile:
+     next(inFile)
+     for line in inFile:
+        if "extract" in files:
+           morpheme, weight, _ = line.strip().split("\t")
+        else:
+           morpheme, weight = line.strip().split(" ")
+        weights[morpheme] = int(weight)
+
+
+
+
 
 
 from collections import defaultdict
@@ -300,7 +320,7 @@ def getCorrectOrderCount(weights):
       suffixes = [x for x in verb if x[header["type1"]] == "sfx"]
       v = [x for x in verb if x[header["type1"]] == "v"]
       assert len(prefixes)+len(v)+len(suffixes)==len(verb)
-  
+#      print(len(suffixes), suffixes )
 
 
       for i in range(1, len(suffixes)):
@@ -331,6 +351,7 @@ def getCorrectOrderCount(weights):
               incorrectFullTypes += 1
       if not hasSeenThisVerb:
         hasSeenType.add(keyForThisVerb)
+   print(correct, incorrect, len(data_train), correctFull, incorrectFull)
    return correct/(correct+incorrect), correctFull/(correctFull+incorrectFull),correctTypes/(correctTypes+incorrectTypes), correctFullTypes/(correctFullTypes+incorrectFullTypes)
 
 result = getCorrectOrderCount(weights)
