@@ -42,7 +42,6 @@ from corpusIterator_V import CorpusIterator_V
 
 
 
-
 import hungarian_segmenter_coarse
 import hungarian_segmenter
 def processVerb(verb, data_):
@@ -78,7 +77,6 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
-### splitting lemmas into morphemes -- each affix is a morpheme ###
 affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
@@ -95,7 +93,7 @@ stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
-weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
+weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
 
 from collections import defaultdict
 affixChains = defaultdict(int)
