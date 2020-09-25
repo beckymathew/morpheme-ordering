@@ -100,7 +100,7 @@ def getNormalizedForm(word): # for prediction
 myID = args.idForProcess
 
 
-TARGET_DIR = "results/"+__file__.replace(".py", "")
+TARGET_DIR = "estimates/"
 
 words = []
 
