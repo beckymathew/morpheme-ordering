@@ -9,7 +9,7 @@ objectiveName = "LM"
 from corpus import CORPUS
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Korean-Kaist_2.6")
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
@@ -196,80 +196,37 @@ itos_ = itos[::]
 shuffle(itos_)
 weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
 
+def getRepresentation(x):
+      return x["coarse"]
+def getSurprisalRepresentation(x):
+      return x["fine"]
 
-def calculateTradeoffForWeights(weights):
-    # Order the datasets based on the given weights
-    train = []
-    dev = []
-    for data, processed in [(data_train, train), (data_dev, dev)]:
-      for verb in data:
-         affixes = verb[1:]
-         affixes = sorted(affixes, key=lambda x: weights[x["coarse"]]) # take the weight of the first morpheme slot
-         for ch in [verb[0]] + affixes:
-            processed.append(ch["fine"]) # grapheme morpheme, label_grapheme morpheme, don't call getRepresentation if abstract slot
-         processed.append("EOS")
-         for _ in range(args.cutoff+2):
-           processed.append("PAD")
-         processed.append("SOS") # start-of-sequence for the next verb form
+from collections import defaultdict
 
-    # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-    return auc, devSurprisalTable
-   
-lastCoordinate = None
-mostCorrect = 1e100
-import os
-for iteration in range(1000):
-  # Randomly select a morpheme whose position to update
-  coordinate=choice(itos)
+joints = {slot : defaultdict(int) for slot in itos}
+marginal_stem = {slot : defaultdict(int) for slot in itos}
+marginal_aff = {slot : defaultdict(int) for slot in itos}
 
-  # Stochastically filter out rare morphemes
-  while (affixFrequencies[coordinate] < 100 and random() < 0.95) or coordinate == lastCoordinate:
-     coordinate = choice(itos)
-  lastCoordinate = coordinate
+for verb in data_train:
+     stem = getSurprisalRepresentation(verb[0])
+     affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
+     for slot in affixesPerSlot:
+         joints[slot][(stem, affixesPerSlot[slot])] += 1
+         marginal_aff[slot][affixesPerSlot[slot]] += 1
+         marginal_stem[slot][stem] += 1
 
-  # This will store the minimal AOC found so far and the corresponding position
-  mostCorrectValue = weights[coordinate]
+from math import log
 
-  # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))]:
-     if random() < 0.3:
-         continue
-     print(newValue, "BestAUC:", mostCorrect, coordinate, affixFrequencies[coordinate])
-     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
-     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
-
-     # Calculate AOC for this updated assignment
-     resultingAOC, _ = calculateTradeoffForWeights(weights_)
-     print("Found", resultingAOC)
-     # Update variables if AOC is smaller than minimum AOC found so far
-     if resultingAOC < mostCorrect:
-        mostCorrectValue = newValue
-        mostCorrect = resultingAOC
-  print(iteration, mostCorrect)
-  weights[coordinate] = mostCorrectValue
-  itos_ = sorted(itos, key=lambda x:weights[x])
-  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-  print(weights)
-  for x in itos_:
-     if affixFrequencies[x] < 10:
-       continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))
-  if (iteration + 1) % 50 == 0:
-     _, surprisals = calculateTradeoffForWeights(weights_)
-
-     if os.path.exists(TARGET_DIR):
-      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
-     else:
-       os.makedirs(TARGET_DIR)
-       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-          for key in itos_:
-            print(key, weights[key], file=outFile)
-  
-
-
-
+for slot in itos:
+    total = sum([x for _, x in joints[slot].items()])
+    assert total == len(data_train)
+    totalMI = 0
+    jointProbs = 0
+    for stem, aff in joints[slot]:
+        jointProb = joints[slot][(stem, aff)] / total
+        jointProbs += jointProb
+        marginalStem = marginal_stem[slot][stem] / total
+        marginalAff = marginal_aff[slot][aff] / total
+        totalMI += (jointProb * (log(jointProb) - log(marginalStem) - log(marginalAff)))
+    print(slot, totalMI, jointProbs)
+       
