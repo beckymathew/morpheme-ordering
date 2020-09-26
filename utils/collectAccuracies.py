@@ -1,4 +1,4 @@
-directories = ["finnish_nouns", "turkish_nouns", "hungarian_nouns", "finnish_verbs","hungarian_verbs", "turkish_verbs", "korean", "japanese", "sesotho_pre", "sesotho_suff"]
+directories = ["finnish_nouns", "turkish_nouns", "hungarian_nouns", "finnish_verbs","hungarian_verbs", "turkish_verbs", "korean", "japanese", "sesotho_prefixes", "sesotho_suffixes"]
 import os
 import math
 def mean(x):
