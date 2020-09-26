@@ -28,24 +28,6 @@ print(args)
 
 
 # for ordering
-def getKey(word):
-  return word[header["lemma"]][:2]
-
-def getSegmentedFormsVerb(word):
-   if "/" not in word[header["lemma"]] and "." not in word[header["lemma"]]:
-     return [word]
-   elif "/" in word[header["lemma"]]:
-    lemmas = word[header["lemma"]].split("/")
-    words = [word[::] for _ in lemmas]
-    for i in range(len(lemmas)):
-      words[i][0] = "_"
-      words[i][1] = lemmas[i]
-      words[i][3] = "v" if i == 0 else "sfx"      
-#    print("SPLIT", words, word) # frequent: verb stem + past suffix merged
-    return words
-   else: # 
-    print("TODO", word)
-    assert False
 
 
 def getSegmentedForms(word): # return a list , preprocessing
@@ -61,26 +43,68 @@ def getSegmentedForms(word): # return a list , preprocessing
 
     word1[0] = "_"
     word2[0] = "_"
-    if lemmas[0] == "t^pf" and lemmas[1] == "m^in": # ~360 cases, mostly -e-. TODO think about the order of the morphemes in the allegedly merged morpheme.
-      _ = 0
-    elif word[header["analysis"]] == "REVERS.CAUS": # os (Doke and Mokofeng, section 345)
-      _ = 0
-    elif word[header["analysis"]] == "APPL.PRF": # ets (cf. Doke and Mokofeng, section 313?). Both APPL and PRF have relatively frequent suffix morphs of the form -ets- in the corpus.
-      _ = 0
-    elif word[header["analysis"]] == "PRF.CAUS": # dits. Also consider Doke and Mokofeng, section 369, rule 4.
-      _ = 0
-    elif word[header["analysis"]] == "DEP.PRF": #  e. DEP = participial mood (Doke and Mokofeng, section 431).
-      _ = 0
-    elif word[header["analysis"]] in ["PRF.PASS", "PRS.APPL", "cl.PRF", "IND.PRS", "PRF.REVERS", "NEG.PRF"]: # rare, together 10 data points
-      _ = 0
+    if lemmas[0].startswith("sm") and lemmas[1].startswith("t^"): # merger between subject and tense/aspect marker (> 100 cases in the corpus)
+        _ = 0
+    elif word[header["analysis"]] == "NEG.POT": #keke, kebe. Compare Doke and Mokofeng, section 424. Seems to be better treated as an auxiliary, as it is followed by subject prefixes in the corpus.
+       return None
+    elif word[header["analysis"]] == "almost.PRF": # batlile = batla+ile. This is an auxiliary, not a prefix. Doke and Mokofeng, section 575.
+       return None
+    elif word[header["analysis"]] == "POT.PRF": # kile. This seems to be a prefix, as it is followed by subject prefixes in the corpus.
+       return None
+    elif word[header["analysis"]] == "be.PRF": # bile . Better treated as an auxiliary, for the same reason.
+       return None
+    elif word[header["analysis"]] == "do.indeed.PRF": # hlile. Same
+       return None
+    elif word[header["analysis"]] == "fill.belly.PRF": # Occurs a single time, excluded.
+       return None
     else:
-#      print("SPLIT", word1, word2, word)
-      pass
+       print("SPLIT", word1, word2, word)
+       assert False
     return [word1, word2]
-   else: # 
-    print("TODO", word)
-    assert word[1] == "m..." # occurs 1 time
-    return None
+   elif word[header["lemma"]] == "a.name" or word[header["lemma"]] == "a.place": #  exclude these data
+     return None
+   elif word[header["lemma"]].startswith("t^p.om"):
+    # print(word)
+     lemma1 = word[1][:3]
+     lemma2 = word[1][4:]
+     #print(lemma2)
+     word1 = word[::]
+     word2 = word[::]
+     word1[1] = lemma1
+     word2[1] = lemma2
+ 
+     word1[0] = "_"
+     word2[0] = "_"
+     if lemma1.startswith("t^") and lemma2.startswith("om"):
+   #      print(word)
+         assert word[2].startswith("PRS")
+         return [word2]
+         _ = 0
+     else:
+        print("SPLIT", word1, word2, word)
+        assert False
+        return [word1, word2]
+   elif word[header["lemma"]].startswith("t^p.rf"):
+     lemma1 = word[1][:3]
+     lemma2 = word[1][4:]
+     #print(lemma2)
+     word1 = word[::]
+     word2 = word[::]
+     word1[1] = lemma1
+     word2[1] = lemma2
+ 
+     word1[0] = "_"
+     word2[0] = "_"
+     if lemma1.startswith("t^") and lemma2.startswith("rf"):
+         assert word[2].startswith("PRS")
+         return [word2]
+         _ = 0
+     else:
+        print("SPLIT", word1, word2, word)
+        assert False
+        return [word1, word2]
+   else: # exclude these data
+     return None
 
 def getNormalizedForm(word): # for prediction
 #   print(word)
@@ -158,14 +182,19 @@ with open("/u/scr/mhahn/CODE/acqdiv-database/csv/morphemes5.csv", "r") as inFile
 
 
 def getRepresentation(lemma):
-   return names[lemma[header["lemma"]][:2]]
+   key = lemma[header["lemma"]][:2]
+   if key not in names:
+     assert prefixFrequency[key] < 50, key
+     return "Other_"+key
+   else:
+      return names[key]
 
 def getSurprisalRepresentation(lemma):
    return lemma[header["lemma"]]
 
 
 from math import log, exp
-from random import random, shuffle, randint, Random, choice
+from random import shuffle, randint, Random, choice
 
 
 
@@ -182,16 +211,12 @@ data_dev = words[:int(0.05*len(words))]
 #data = words
 
                                                                          
-names = {'ng' : "Negation", 'om' : "Object", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective"}
+names = {'ng' : "Negation", 'om' : "Object/reflexive", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective", "if" : "Infinitive", "rf" : "Object/reflexive"}
 
-def getSlot(x):
-   if x == "sm":
-      return "SUBJ"
-   elif x in names:
-      return names[x]
-   else:
-#     print(x)
-     return x
+#defaultdict(<class 'int'>, {'SUBJ': 34567, 'Tense/aspect': 16019, 'Object': 7985, 'Subject': 738, 'Infinitive': 1018, 'rf': 768, '17': 32, 'Int/Rel': 212, 'Negation': 482, 'Valence': 1, 'Mood': 5, 'Other_copula': 36, '7': 5, 'wo': 16, 'di': 8, 'ij': 4, '9': 19, 'av': 11, '5': 11, 'lo': 5, '8': 1, '2a': 49, 'a.': 32, 'f^': 1, 'Other_locative': 3, '6': 7, '1s': 3, 'ht': 3, '10': 16, 'fi': 1, '1': 3, '3': 2, 'pr': 3, 'Other_possessive': 1, '2s': 1, '2': 10, 'pn': 1, '..': 1, 'wa': 1, '14': 1, 'st': 1, 'ei': 1, '9a': 1, 'cj': 1})
+
+#{'..': 0, '1': 2, '2': 4, 'Object': 6, 'if': 8, 'Mood': 10, '2a': 12, 'cj': 14, 'f^': 16, 'Negation': 18, '7': 20, 'Int/Rel': 22, '9a': 24, '3': 26, 'st': 28, 'Other_locative': 30, 'av': 32, '1s': 34, '10': 36, '8': 38, 'lo': 40, '2s': 42, 'wa': 44, 'ht': 46, 'Subject': 48, '17': 50, 'Other_copula': 52, 'SUBJ': 54, 'Other_possessive': 56, 'rf': 58, 'ei': 60, 'di': 62, 'pn': 64, 'ij': 66, 'Tense/aspect': 68, '9': 70, 'fi': 72, 'a.': 74, '14': 76, 'Valence': 78, 'pr': 80, '6': 82, '5': 84, 'wo': 86}
+
 
 
 #quit()
@@ -210,39 +235,84 @@ import torch.nn.functional
 
 from collections import defaultdict
 
-prefixFrequency = defaultdict(int)
-suffixFrequency = defaultdict(int)
 dataChosen_train = []
 dataChosen_dev = []
 for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_dev)]:
   for verbWithAff in data_:
-    suffixesResult = []
+    prefixesResult = []
     for x in verbWithAff:
-      if x[header["type1"]] == "sfx":
+      if x[header["type1"]] == "pfx":
          segmented = getSegmentedForms(x)
          if segmented is None:
-           suffixesResult = None
+           prefixesResult = None
            break
-         suffixesResult += segmented
-      elif x[header["type1"]] == "v":
-         segmented = getSegmentedFormsVerb(x)
-         suffixesResult += segmented
+         prefixesResult += segmented
       else:
-         suffixesResult.append(x)
-    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)i
+         prefixesResult.append(x)
+    if prefixesResult is None: # remove this datapoint (affects <20 datapoints)
        continue
-    dataChosen.append(suffixesResult)
-    for affix in suffixesResult:
-      affixLemma = getSlot(getKey(affix)) #[header[RELEVANT_KEY]]
-      if affix[header["type1"]] == "pfx":
-         prefixFrequency[affixLemma] += 1
-      elif affix[header["type1"]] == "sfx":
-         suffixFrequency[affixLemma] += 1
+    dataChosen.append(prefixesResult)
+ #   if "Tense/aspect" in slots and "Subject" in slots: # and slots.index("Tense/aspect") < slots.index("Subject"):
+#       print(slots, prefixesResult)
+
+   
 data_train = dataChosen_train
 data_dev = dataChosen_dev
 
 
-itos_pfx = sorted(list((prefixFrequency)))
+
+prefixFrequency = defaultdict(int)
+suffixFrequency = defaultdict(int)
+
+words = set()
+
+# For each verb form, select only the main verb form
+for data_ in [data_train, data_dev]:
+  for q in range(len(data_)):
+     verb = data_[q]
+  #   prefixes_keys = [getKey(x) for x in verb if x[header["type1"]] == "pfx"]
+  
+     segmentation = []
+     for j in range(len(verb)):
+        # subject prefix?
+        if ".SBJ" in verb[j][header["analysis"]]:
+           segmentation.append([])
+           segmentation[-1].append(verb[j])
+        else:
+           if len(segmentation) == 0:
+             segmentation.append([])
+           segmentation[-1].append(verb[j])
+     ###############################################################################   
+     # Restrict to the last verb, chopping off initial auxiliaries and their affixes
+     ###############################################################################
+  
+     verb = segmentation[-1]
+  
+     data_[q] = verb
+     for word in verb:
+       words.add(word[header["lemma"]])
+     for affix in verb:
+       affixLemma = getRepresentation(affix) #[header[RELEVANT_KEY]]
+       if affix[header["type1"]] == "pfx":
+          prefixFrequency[affixLemma] += 1
+       elif affix[header["type1"]] == "sfx":
+          suffixFrequency[affixLemma] += 1
+ 
+
+words = list(words)
+itos_words = ["PAD", "SOS", "EOS"] + words
+stoi_words = dict(zip(itos_words, range(len(itos_words))))
+print(stoi_words)
+
+
+
+
+
+
+
+
+
+itos_pfx = [x for x in sorted(list((prefixFrequency))) if prefixFrequency[x] > 0]
 stoi_pfx = dict(list(zip(itos_pfx, range(len(itos_pfx)))))
 
 itos_sfx = sorted(list((suffixFrequency)))
@@ -262,13 +332,20 @@ itos_sfx_ = itos_sfx[::]
 shuffle(itos_sfx_)
 weights_sfx = dict(list(zip(itos_sfx_, [2*x for x in range(len(itos_sfx_))])))
 
+
+
+
+
+
+
+
 ############################################################################################
 ############################################################################################
 
 
-itos = itos_sfx
-weights = weights_sfx
-affixFrequencies = suffixFrequency  
+itos = itos_pfx
+weights = weights_pfx
+affixFrequencies = prefixFrequency  
 
 
 
@@ -323,10 +400,10 @@ def getCorrectOrderCount(weights):
 #      print(len(suffixes), suffixes )
 
 
-      for i in range(1, len(suffixes)):
+      for i in range(1, len(prefixes)):
          for j in range(1, i):
-             weightI = weights[getRepresentation(suffixes[i])]
-             weightJ = weights[getRepresentation(suffixes[j])]
+             weightI = weights[getRepresentation(prefixes[i])]
+             weightJ = weights[getRepresentation(prefixes[j])]
              if weightI == weightJ:
                 continue
              if weightI > weightJ:
@@ -338,9 +415,8 @@ def getCorrectOrderCount(weights):
                if not hasSeenThisVerb:
                  incorrectTypes += 1
                hasMadeMistake = True
-#               print("MISTAKE", suffixes[i]["lemma"], weights[getRepresentation(suffixes[i]["lemma"])], suffixes[j], weights[getRepresentation(suffixes[j]["lemma"])], [x["lemma"] for x in suffixes])
-               errors[(getRepresentation(suffixes[j]), getRepresentation(suffixes[i]))] += 1
-      if len(suffixes) > 2:
+               errors[(getRepresentation(prefixes[j]), getRepresentation(prefixes[i]))] += 1
+      if len(prefixes) > 2:
         if not hasMadeMistake:
             correctFull += 1
             if not hasSeenThisVerb:

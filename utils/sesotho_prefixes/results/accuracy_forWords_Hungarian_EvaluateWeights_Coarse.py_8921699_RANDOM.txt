@@ -1,0 +1,12 @@
+0.975223675154852
+0.9752591894439209
+0.9582309582309583
+0.9578184916915211
+Negation Object/reflexive 90
+Negation Tense/aspect 7
+Int/Rel Object/reflexive 6
+Other_wo Other_di 1
+Int/Rel Infinitive 1
+Other_17 Int/Rel 1
+Other_ij Object/reflexive 1
+Infinitive Tense/aspect 1

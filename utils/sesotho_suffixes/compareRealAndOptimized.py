@@ -4,9 +4,9 @@ import os
 script = "forWords_Sesotho_OptimizeOrder_Slots_ByType_Suffixes_HeldoutClip"
 
 with open("output/"+os.listdir("output/")[0], "r") as inFile:
-    real = [x.split("\t")[0] for x in inFile.read().strip().split("\n") if "Other" not in x and x.index("\t") > 2]
+    real = [x.split("\t")[0] for x in inFile.read().strip().split("\n") if ord(x[0]) < 100]
 with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
-    optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:] if "Other" not in x]
+    optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:] if ord(x[0]) < 100]
 print(real)
 print(optimized)
 assert len(real) == len(optimized)

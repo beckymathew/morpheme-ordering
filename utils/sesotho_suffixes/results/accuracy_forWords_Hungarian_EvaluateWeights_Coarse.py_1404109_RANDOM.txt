@@ -1,0 +1,11 @@
+0.4406468210216832
+0.4156599552572707
+0.44849537037037035
+0.41808747220163084
+Mood Int/Rel 982
+Voice Mood 370
+Tense/aspect Int/Rel 102
+Voice Int/Rel 48
+Valence Int/Rel 16
+Voice Tense/aspect 3
+Voice Valence 1

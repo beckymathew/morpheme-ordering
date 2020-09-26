@@ -1,0 +1,16 @@
+0.026611608167010782
+0.01932139491046183
+0.039721539721539724
+0.03067746058798466
+Tense/aspect Object/reflexive 4068
+Negation Object/reflexive 90
+Infinitive Object/reflexive 58
+Other_copula Object/reflexive 8
+Negation Tense/aspect 7
+Int/Rel Object/reflexive 6
+Int/Rel Infinitive 1
+Tense/aspect Other_wo 1
+Other_2 Object/reflexive 1
+Other_copula Other_17 1
+Other_ij Object/reflexive 1
+Infinitive Tense/aspect 1

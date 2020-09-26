@@ -1,0 +1,15 @@
+0.001470047776552738
+0.0
+0.0023148148148148147
+0.0
+Mood Int/Rel 982
+Tense/aspect Mood 852
+Voice Mood 370
+Valence Mood 265
+Tense/aspect Int/Rel 102
+Tense/aspect Voice 52
+Voice Int/Rel 48
+Valence Tense/aspect 21
+Valence Int/Rel 16
+Valence Voice 7
+Mood Other_locative 2

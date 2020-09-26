@@ -1,0 +1,10 @@
+0.9944941500344116
+0.9943449575871819
+0.990990990990991
+0.9906263314870047
+Other_copula Infinitive 13
+Negation Tense/aspect 7
+Other_wo Other_di 1
+Int/Rel Infinitive 1
+Other_17 Int/Rel 1
+Infinitive Tense/aspect 1

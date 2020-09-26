@@ -1,0 +1,11 @@
+0.044276210139940354
+0.03463713477851084
+0.07084357084357085
+0.05837239028547082
+Tense/aspect Object/reflexive 4068
+Tense/aspect Infinitive 89
+Tense/aspect Int/Rel 4
+Tense/aspect Negation 2
+Other_wo Other_di 1
+Int/Rel Infinitive 1
+Tense/aspect Other_ij 1
