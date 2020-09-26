@@ -1,10 +1,11 @@
-0.39654538772510106
+0.388460124954061
 0.3713646532438479
-0.4045138888888889
+0.3929398148148148
 0.37064492216456635
 Tense/aspect Mood 852
 Voice Mood 370
 Valence Mood 265
 Tense/aspect Int/Rel 102
 Tense/aspect Voice 52
-Voice Valence 1
+Valence Int/Rel 16
+Valence Voice 7

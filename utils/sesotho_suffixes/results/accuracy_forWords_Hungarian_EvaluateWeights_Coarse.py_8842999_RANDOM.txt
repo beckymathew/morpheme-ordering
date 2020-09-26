@@ -1,8 +1,0 @@
-0.9900771775082691
-0.9883668903803132
-0.9849537037037037
-0.9814677538917717
-Valence Tense/aspect 21
-Voice Tense/aspect 3
-Mood Other_locative 2
-Voice Valence 1
