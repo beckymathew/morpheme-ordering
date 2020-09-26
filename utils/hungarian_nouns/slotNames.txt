@@ -1,0 +1,4 @@
+Number	0	892	Number
+Psor_person	2	1238	Possessive_Person
+Psor_number	4	1238	Possessive_Number
+Case	6	2200	Case

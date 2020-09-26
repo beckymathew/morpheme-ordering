@@ -23,14 +23,16 @@ def get_abstract_morphemes(labels):
     psor_person = label_dict.get("Person[psor]")
     psor_number = label_dict.get("Number[psor]")
     if psor_person and not psor_person == "None" and psor_number and not psor_number =="None":
-        morphs.append("Psor_person")
-        morphs.append("Psor_number")
-    
+        morphs.append("Possessor")
+
+    if label_dict.get("Number[psed]") and label_dict.get("Number[psed]") != "None":
+        morphs.append("Possessed")
+
     case = label_dict.get("Case")
 
     if case and not case == "Nom":
         morphs.append("Case")
-    
+
     return morphs
     # plural, possessor person, possessor number, case (other than nominative)
     # TODO: possessed number is almost always None

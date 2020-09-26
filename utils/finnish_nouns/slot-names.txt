@@ -1,0 +1,4 @@
+Derivation	0	5994	Derivation
+Number	2	11007	Number
+Case	4	33403	Case
+Possessor	6	2143	Possessor
