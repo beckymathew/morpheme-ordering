@@ -3,9 +3,14 @@ import os
 
 script = "forWords_Korean_OptimizeOrder_MorphemeMeaning_Split_First_DoubleSplit_Repeats_Seg1"
 
+with open("slot-names.txt", "r") as inFile:
+    slotNames = [x.split("\t") for x in inFile.read().strip().split("\n")]
+slotNames = {x[0] : x[3] for x in slotNames}
+print(slotNames)
 
 with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
     optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:]]
+optimized = [x for x in optimized if slotNames[x] != "NA"]
 
 with open("universal_alignment.txt", "r") as inFile:
     alignment = [x.split("\t") for x in inFile.read().strip().split("\n")]
@@ -30,7 +35,7 @@ with open("visualize/comparison-opt-uni.tex", "w") as outFile:
    for i in range(len(universal)):
        print("\\node[rectangle,text width=1.2cm,anchor=base] (A"+str(i+1)+") at (4,"+str(-i/2.0-1)+") {"+universal[i]+"};", file=outFile)
    for i in range(len(optimized)):
-       print("\\node[rectangle,text width=1.2cm,anchor=base] (B"+str(i+1)+") at (1,"+str(-i/2.0-1)+") {"+optimized[i]+"};", file=outFile)
+       print("\\node[rectangle,text width=1.2cm,anchor=base] (B"+str(i+1)+") at (1,"+str(-i/2.0-1)+") {"+slotNames[optimized[i]]+"};", file=outFile)
    for i in range(len(optimized)):
        aligned = alignment[optimized[i]]
        print(aligned)

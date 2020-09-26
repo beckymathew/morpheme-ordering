@@ -191,7 +191,7 @@ for iteration in range(1000):
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   if lastMostCorrect == 1.0:
       break
-
+print(weights)
 with open("output/extracted_"+args.language+"_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
   for x in itos_:
      print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]), file=outFile)
