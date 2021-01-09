@@ -35,7 +35,7 @@ def get_abstract_morphemes(labels):
     polarity = label_dict.get("Polarity")
     mood = label_dict.get("Mood")
     if mood == "Pot" and polarity == "Pos": # https://www.turkishexplained.com/negpot.htm, https://www.turkishexplained.com/cancant.htm   
-        morphs.append("MOOD_Pot_bil")
+        morphs.append("MOOD_Pot_ebil")
 
 
 
