@@ -2,7 +2,7 @@
 Agr_IM	Im
 Agr_IZ	Iz
 Agr_K	k
-Agr_OPT_1Pl_ELIM	Alim
+Agr_OPT_1Pl_ELIM	AlIm
 Agr_OPT_1Pl_EYIM	AyIm
 Agr_OPT_2Sg_a	A
 Agr_SIN	sIn
@@ -18,7 +18,7 @@ NUMPERS_Sing3	?
 POLAR_Neg_ma	mA
 POLITE_MAKTA	mAktA
 TAM1_ACAK	AcAk
-TAM1_AR	Ir
+TAM1_AR	Ar
 TAM1_IYOR	Iyor
 TAM1_MALI_Nec	mAlI
 TAM1_MIS1	mIş
@@ -27,6 +27,6 @@ TAM1_TI	dI
 TAM2_DU	dI
 TAM2_MIS2	mIş
 TAM2_SA_Cnd	sA
-VAL_Cau_tir	dIr
+VAL_Cau_tir	tIr
 VOICE_Pass_il	Il
 Vnoun_mak	mAk

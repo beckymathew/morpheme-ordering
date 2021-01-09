@@ -42,12 +42,6 @@ def get_abstract_morphemes(labels):
 
 
 
-    # (2) Tense/Aspect/Mood/Polarity/... Maybe this can be split into multiple slots, I've written more on this in turkish-olmak.tsv.csv.
-    # negative comes before indirect
-    if label_dict.get("Polarity") == "Neg": # skip positive bc it's void
-        morphs.append("POLAR_Neg_ma")
-
-
     # TAM suffixes are in different slots if 3rd person plural
     # Note: Nonpast tense is not labeled bc it's void
     person = label_dict.get("Person")
@@ -57,17 +51,42 @@ def get_abstract_morphemes(labels):
     tense = label_dict.get("Tense")
     verbform = label_dict.get("VerbForm")
     polite = label_dict.get("Polite")
-    print(person, number, aspect, evidential, tense, verbform)
+    #print(person, number, aspect, evidential, tense, verbform)
 #    return morphs
 
+    # (2) Tense/Aspect/Mood/Polarity/... Maybe this can be split into multiple slots, I've written more on this in turkish-olmak.tsv.csv.
+    # negative comes before indirect
+    if label_dict.get("Polarity") == "Neg": # skip positive bc it's void
+     if aspect=="Perf" and mood in ["Ind", "Gen"] and polarity=="Neg" and tense=="Pres":
+         pass # zero polarity and TAM marking in this case
+     else:
+        morphs.append("POLAR_Neg_ma")
 
 
+    if aspect=="Hab" and mood == "Pot" and number=="Sing" and person=="3" and polarity=="Neg" and tense=="Past" and voice=="Pass":
+        morphs.append("MOOD_TODO_zdI")
 
+
+    if mood == "Pot" and polarity == "Pos" and aspect=="Hab" and tense == "Past":
+      morphs.append("MOOD_TODO_lerdi")
+      pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+      pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_IZ", "Agr_SINIZ", None][pn-1]
+      if pn_ending is not None:
+         morphs.append(pn_ending)
 
 
 
     if mood == "Imp": # zero marking
-        if person == "2":
+        # -in, -iniz, -sin, -sinler
+     if label_dict.get("Polarity") == "Neg":
+        if person == "2" and aspect == "Perf" and number == "Plur" and tense == "Pres":
+           morphs.append("MOOD_TODO_yIn")
+        elif person == "3" and aspect == "Perf" and number == "Sing" and tense == "Pres":
+           morphs.append("MOOD_TODO_sIn")
+     else:
+        if person == "2" and number == "Plur":
+           morphs.append("MOOD_TODO_In")
+        elif person == "2":
            pass
         elif person == "3":
            morphs.append("Agr_SIN")           
@@ -80,30 +99,14 @@ def get_abstract_morphemes(labels):
             morphs.append("Agr_OPT_1Pl_EYIM")
         elif person == "3" and number == "Sing":
             morphs.append("Agr_OPT_2Sg_a")
-
-
-# QUESTIOIN
-#TAM1_IYOR+Form	&	ulaşmakta	&	ulaş	&	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Form|Tense=Pres	&	1  \\	TODO
-#TAM1_IYOR+Form	&	oturmakta	&	otur	&	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Form|Tense=Pres	&	1  \\
-#TAM1_IYOR+Form	&	soymakta	&	soy	&	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Form|Tense=Pres	&	1  \\
-
-#TAM1_ACAK+Agr_IM	&	gitmeliyim	&	git	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	3  \\	TODO
-#TAM1_ACAK+Agr_IM	&	dönmeliyim	&	dön	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	2  \\
-#TAM1_ACAK+Agr_IM	&	anlatmalıyım	&	anlat	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=1|Polarity=Pos|Tense=Pres	&	1  \\
-#POL_Neg_ma+TAM1_ACAK+Agr_IM	&	değilim	&	değil	&	Aspect=Perf|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres	&	14  \\	TODO
-
-#TAM1_ACAK	&	olmalı	&	ol	&	Aspect=Perf|Mood=Nec|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	4  \\	TODO
-#TAM1_ACAK	&	olsa	&	ol	&	Aspect=Perf|Mood=Des|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	3  \\
-
-#TAM1_ACAK	&	konuşabilmeli	&	konuş	&	Aspect=Perf|Mood=NecPot|Number=Sing|Person=3|Polarity=Pos|Tense=Pres	&	1  \\
-#POL_Neg_ma+TAM1_ACAK+Gen_dir	&	değildir	&	değil	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Neg|Tense=Pres	&	15  \\	TODO
-#Gen_dir	&	olacaktır	&	ol	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Pos|Tense=Fut	&	5  \\	TODO
-#Gen_dir	&	girecektir	&	gir	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Pos|Tense=Fut	&	1  \\
-#Gen_dir	&	çarpacaktır	&	çarp	&	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Polarity=Pos|Tense=Fut	&	1  \\
-
-
-#
-
+    elif aspect=="Perf" and mood in ["Ind", "Gen"] and polarity=="Neg" and tense=="Pres":
+       if person is not None:
+         pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+         pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_IZ", "Agr_SINIZ", None][pn-1]
+         if pn_ending is not None:
+            morphs.append(pn_ending)
+         if person == "3" and number == "Plur":
+             morphs.append("3PL_LAR")
     elif verbform is None: # finite
       if evidential == "Dir":
           if tense == "Pres" or tense=="Fut":
@@ -118,26 +121,43 @@ def get_abstract_morphemes(labels):
 
               elif mood == "Cnd" and aspect == "Perf":
                   pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
-
-# TODO CndPot
-#POL_Neg_ma+TAM1_ACAK	&	bilemese	&	bil	&	Aspect=Perf|Mood=CndPot|Number=Sing|Person=3|Polarity=Neg|Tense=Pres	&	1  \\
-#POL_Neg_ma+TAM1_AR+Agr_SINIZ	&	keşfede=mez=seniz	&	keşfet	&	Aspect=Hab|Mood=CndPot|Number=Plur|Person=2|Polarity=Neg|Tense=Pres	&	1  \\
-
-
-
-
                   morphs.append("TAM1_SA_Cnd")
                   if pn_ending is not None:
                      morphs.append(pn_ending)
                   if person == "3" and number == "Plur":
                       morphs.append("3PL_LAR")
               elif mood == "Cnd" and aspect == "Hab":
+                  pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
                   morphs.append("TAM1_AR")
                   if person == "3" and number == "Plur":
                       morphs.append("3PL_LAR")
                   morphs.append("TAM2_SA_Cnd")
                   if pn_ending is not None:
                      morphs.append(pn_ending)
+              elif aspect == "Hab" and tense == "Pres" and polarity == "Neg":
+                 morphs.append("TAM1_TODO_Az") # This suffix always directly follows the negative -mA-
+                 if person == "3" and number == "Plur":
+                     morphs.append("3PL_LAR")
+                 if pn_ending is not None:
+                    morphs.append(pn_ending)
+
+# TODO the following forms match this description but don't have the Az suffix:
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! bilmeezim   &       bilmem  &       bil     &       Aspect=Hab|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       4  \\
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! içmeezim    &       içmem   &       iç      &       Aspect=Hab|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       3  \\
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! anlamayazım &       anlamam &       anla    &       Aspect=Hab|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       2  \\
+
+# TODO Az vs Ar suffix
+#POLAR_Neg_ma+TAM1_AR+TAM2_SA_Cnd        &       !!! olmaırsa    &       olmazsa &       ol      &       Aspect=Hab|Mood=Cnd|Number=Sing|Person=3|Polarity=Neg|Tense=Pres        &       2  \\
+#POLAR_Neg_ma+TAM1_AR+TAM2_SA_Cnd        &       !!! gelmeirse   &       gelmezse        &       gel     &       Aspect=Hab|Mood=Cnd|Number=Sing|Person=3|Polarity=Neg|Tense=Pres        &       1  \\
+
+
+# Also consider Az suffix here
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! bilmeezim   &       bilmem  &       bil     &       Aspect=Hab|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       4  \\
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! içmeezim    &       içmem   &       iç      &       Aspect=Hab|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       3  \\
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! yapmayazım  &       yapamam &       yap     &       Aspect=Hab|Mood=Pot|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       2  \\
+#POLAR_Neg_ma+TAM1_TODO_Az+Agr_IM        &       !!! anlamayazım &       anlamam &       anla    &       Aspect=Hab|Mood=Ind|Number=Sing|Person=1|Polarity=Neg|Tense=Pres        &       2  \\
+
+
               elif aspect == "Hab":
                   morphs.append("TAM1_AR")
                   if pn_ending is not None:
@@ -172,6 +192,21 @@ def get_abstract_morphemes(labels):
                   morphs.append("TAM2_DU")
                   if pn_ending is not None:
                       morphs.append(pn_ending)
+              elif aspect == "Hab" and tense == "Pres" and polarity == "Neg":
+                 morphs.append("TAM1_TODO_Az") # This suffix always directly follows the negative -mA-
+                 if person == "3" and number == "Plur":
+                     morphs.append("3PL_LAR")
+                 morphs.append("TAM2_TODO_dI")
+                 if pn_ending is not None:
+                    morphs.append(pn_ending)
+              elif aspect == "Hab" and tense == "Past" and polarity == "Neg":
+                 morphs.append("TAM1_TODO_Az") # This suffix always directly follows the negative -mA-
+                 if person == "3" and number == "Plur":
+                     morphs.append("3PL_LAR")
+                 morphs.append("TAM2_TODO_dI")
+                 if pn_ending is not None:
+                    morphs.append(pn_ending)
+                     
       elif evidential == "Indir":
           pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
           pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_IZ", "Agr_SINIZ", None][pn-1]
@@ -196,65 +231,35 @@ def get_abstract_morphemes(labels):
               morphs.append("TAM2_MIS2")
               if pn_ending is not None:
                  morphs.append(pn_ending)
+    if tense == "Pqp":
+        morphs.append("TAM1_TODO_mIş")
+        if person == "3" and number == "Plur":
+            morphs.append("3PL_LAR")
+        morphs.append("TAM2_TODO_tI")
+        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+        if pn_ending is not None:
+           morphs.append(pn_ending)
+    elif tense == "Fut,Past" and label_dict.get("Evident", None) == "Nfh":
+        morphs.append("TAM1_ACAK")
+        if person == "3" and number == "Plur":
+            morphs.append("3PL_LAR")
+        morphs.append("TAM2_TODO_mIş")
+        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+        if pn_ending is not None:
+           morphs.append(pn_ending)
+    elif tense == "Fut,Past":
+        morphs.append("TAM1_ACAK")
+        if person == "3" and number == "Plur":
+            morphs.append("3PL_LAR")
+        morphs.append("TAM2_TODO_tI")
+        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+        if pn_ending is not None:
+           morphs.append(pn_ending)
 
 
-#    if person == "3" and number == "Plur": 
-#        if aspect == "Perf":
-#            # (4) A second Tense/Aspect/Mood/... suffix slot
-#            if label_dict.get("Evident"):
-#                morphs.append("Indirect")
-#            else:
-#                if label_dict.get("Tense") == "Past":
-#                    morphs.append("Past")
-#                elif label_dict.get("Tense") == "Pqp":
-#                    morphs.append("Pqp")
-#            
-#            if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
-#                morphs.append(mood) 
-#            elif mood == "DesPot":
-#                morphs.append("Des")
-#                morphs.append("Pot")
-#
-#            # (3) A special suffix -lar- for 3rd person plural
-#            morphs.append("3Plur")
-#        else:
-#            if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
-#                morphs.append(mood) 
-#            elif mood == "DesPot":
-#                morphs.append("Des")
-#                morphs.append("Pot")
-#
-#            # (3) A special suffix -lar- for 3rd person plural
-#            morphs.append("3Plur")
-#
-#            # (4) A second Tense/Aspect/Mood/... suffix slot
-#            if label_dict.get("Evident"):
-#                morphs.append("Indirect")
-#            else:
-#                if label_dict.get("Tense") == "Past":
-#                    morphs.append("Past")
-#                elif label_dict.get("Tense") == "Pqp":
-#                    morphs.append("Pqp")
-#    else:
-#        if label_dict.get("Evident"):
-#            morphs.append("Indirect")
-#        else:
-#            if label_dict.get("Tense") == "Past":
-#                morphs.append("Past")
-#            elif label_dict.get("Tense") == "Pqp":
-#                    morphs.append("Pqp")
-#
-#        if mood in ["Cnd", "Opt", "Imp", "Des", "Nec"]: # https://turkishexplained.com/conditional.htm, https://turkishteatime.com/turkish-grammar-guide/subjunctive/, https://www.turkishexplained.com/imperative.htm, https://fluentinturkish.com/grammar/turkish-verb-moods, https://turkishlesson.tr.gg/Necessitative.htm
-#            morphs.append(mood) 
-#        elif mood == "DesPot":
-#            morphs.append("Des")
-#            morphs.append("Pot")
-#
-#    # (5) Person/Number agreement (might be split into Person+Number in the 2nd person, I've written more in turkish-olmak.tsv.csv)
-#    # Person and Number are not systematically separate morphemes, so I have them labeled in a single morpheme here
-#    if person in ["1","2"]: # skip 3SG because it's void
-#        morphs.append(person + number)
-    
 
     if mood == "Gen": # copula
         morphs.append("Gen_dir") # TODO lar can go after dir

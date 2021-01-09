@@ -19,7 +19,7 @@ import random
 
 
 args=parser.parse_args()
-print(args)
+#print(args)
 
 
 assert args.alpha >= 0
@@ -66,7 +66,7 @@ def getVowelHarmonyForm(x):
                else:
                    phon = "Ir"
             else: 
-               phon = morphemesToPhonologicalForm[x[i]["fine"]]
+               phon = morphemesToPhonologicalForm.get(x[i]["fine"], x[i]["fine"].split("_")[-1])
 #            print("phon", phon)
             surface = ""
             for c in phon:
@@ -158,7 +158,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 words = []
 
 data = data_train+data_dev
-print(data[:5])
+#print(data[:5])
 ### splitting lemmas into morphemes -- each affix is a morpheme ###
 affixFrequencies = {}
 for verbWithAff in data:
@@ -187,6 +187,29 @@ def assimilation(x):
     x = x.replace("eiyordu", "iyordu")
     x = x.replace("aıyordu", "ıyordu")
     x = x.replace("aıyorum", "ıyorum")
+    x = x.replace("duum", "dum")
+    x = x.replace("diim", "dim")
+    x = x.replace("düüm", "düm")
+    x = x.replace("dıım", "dım")
+    x = x.replace("iril", "il")
+    x = x.replace("tisin", "tin")
+    x = x.replace("dusun", "dun")
+    x = x.replace("aıl", "an")
+    x = x.replace("lılı", "lını")
+    x = x.replace("tırıl", "tıl")
+    x = x.replace("tiril", "til")
+    x = x.replace("türül", "tül")
+    x = x.replace("tiim", "tim")
+    x = x.replace("eili", "eni")
+    x = x.replace("eile", "ene")
+    x = x.replace("yeer", "yer")
+    x = x.replace("yee", "yiye")
+    x = x.replace("liim", "liyim")
+    x = x.replace("türür", "tür")
+    x = x.replace("seim", "sem")
+    x = x.replace("saım", "sam")
+    x = x.replace("eiy", "iy")
+    x = x.replace("meez", "mez")
     return x
 
 from collections import defaultdict
@@ -196,8 +219,20 @@ for d in data:
    d["original"][0]["predicted"] = assimilation("".join([x["fine_vowels"] for x in predicted]))
    affixChains[tuple([y["fine"] for y in d["parsed"][1:]])].append(d["original"])
 
+def ignoreDiffs(x):
+    x = x.replace("t", "T")
+    x = x.replace("d", "T")
+    x = x.replace("ğ", "K")
+    x = x.replace("k", "K")
+    x = x.replace("eye", "E")
+    x = x.replace("ee", "E")
+    x = x.replace("ıı", "I")
+    x = x.replace("ı", "I")
+    return x
+
 def prettyPrint(code, line, count):
-    print("\t&\t".join(["+".join(code), ("!!! " if line[1][0]["predicted"] != line[0] else "# ")+line[1][0]["predicted"], line[0], line[1][0]["lemma"], line[1][0]["morph"], str(count)])+"  \\\\")
+#  if ignoreDiffs(line[1][0]["predicted"]) != ignoreDiffs(line[0]):
+    print("\t&\t".join(["+".join(code), ("!!! " if ignoreDiffs(line[1][0]["predicted"]) != ignoreDiffs(line[0]) else "# ")+line[1][0]["predicted"], line[0], line[1][0]["lemma"], line[1][0]["morph"], str(count)])+"  \\\\")
 
 for x in sorted(list(affixChains), key=lambda x:len(affixChains[x]))[:]:
     chains = [("&".join([y["word"] for y in z]), z) for z in affixChains[x]]
