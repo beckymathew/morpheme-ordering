@@ -74,7 +74,16 @@ def getVowelHarmonyForm(x):
                     lastVowel = c
             result.append({"fine_vowels" : x[i]["fine"], "coarse" : x[i]["coarse"]})
         else:
-            phon = morphemesToPhonologicalForm[x[i]["fine"]]
+            if x[i]["fine"] == "TAM1_AR":
+               soFar = "".join([x["fine_vowels"] for x in result])
+               if i == 1 and x[0]["fine"] in ["ol", "al", "gel", "ver", "gör", "bil", "kal", "bul", "dur", "san", "Ol", "var", "vur"]:
+                   phon = "Ir"
+               elif len([None for x in soFar if x in vowels]) <= 1:
+                   phon = "Ar"
+               else:
+                   phon = "Ir"
+            else: 
+               phon = morphemesToPhonologicalForm[x[i]["fine"]]
 #            print("phon", phon)
             surface = ""
             for c in phon:
@@ -96,6 +105,8 @@ def getVowelHarmonyForm(x):
                         assert False, (c, phon, surface)
                 else:
                     surface += c
+                if surface[-1] in vowels:
+                    lastVowel = surface[-1]
 #            print(phon, "-->", surface)
             result.append({"fine_vowels" : surface, "coarse" : x[i]["coarse"]})
 #    print(result)

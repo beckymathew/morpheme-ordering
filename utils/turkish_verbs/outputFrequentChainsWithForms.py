@@ -28,13 +28,73 @@ assert args.delta >= 0
 assert args.gamma >= 1
 
 
-
+morphemesToPhonologicalForm = {}
+with open("morphemes.txt", "r") as inFile:
+   for line in inFile:
+       if len(line) < 3:
+           continue
+       line = line.strip().split("\t")
+       morphemesToPhonologicalForm[line[0]] = line[1]
 
 
 myID = args.idForProcess
 
 
 TARGET_DIR = "/u/scr/mhahn/deps/memory-need-ngrams-morphology/"
+
+
+
+vowels = "aeiouöüı"
+
+def getVowelHarmonyForm(x):
+ #   print(x)
+    result = []
+    lastVowel = None
+    for i in range(len(x)):
+        if i == 0:
+            for c in  x[i]["fine"]:
+                if c in vowels:
+                    lastVowel = c
+            result.append({"fine_vowels" : x[i]["fine"], "coarse" : x[i]["coarse"]})
+        else:
+            if x[i]["fine"] == "TAM1_AR":
+               soFar = "".join([x["fine_vowels"] for x in result])
+               if i == 1 and x[0]["fine"] in ["ol", "al", "gel", "ver", "gör", "bil", "kal", "bul", "dur", "san", "Ol", "var", "vur"]:
+                   phon = "Ir"
+               elif len([None for x in soFar if x in vowels]) <= 1:
+                   phon = "Ar"
+               else:
+                   phon = "Ir"
+            else: 
+               phon = morphemesToPhonologicalForm[x[i]["fine"]]
+#            print("phon", phon)
+            surface = ""
+            for c in phon:
+                if c == "A":
+                    if lastVowel in "aouı":
+                       surface += "a"
+                    else:
+                       surface += "e"
+                elif c == "I":
+                    if lastVowel in "aı":
+                       surface += "ı"
+                    elif lastVowel in "ei":
+                       surface += "i"
+                    elif lastVowel in "ou":
+                       surface += "u"
+                    elif lastVowel in "öü":
+                       surface += "ü"
+                    else:
+                        assert False, (c, phon, surface)
+                else:
+                    surface += c
+                if surface[-1] in vowels:
+                    lastVowel = surface[-1]
+#            print(phon, "-->", surface)
+            result.append({"fine_vowels" : surface, "coarse" : x[i]["coarse"]})
+#    print(result)
+    return result
+
 
 
 
@@ -116,13 +176,28 @@ itos_ = itos[::]
 shuffle(itos_)
 weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # TODO: why?? mhahn: this amounts to a random assignment from affixes to even integers
 
+
+def assimilation(x):
+    x = x.replace("aa", "aya")
+#    x = x.replace("ee", "e")
+#    x = x.replace("ıı", "ı")
+#    x = x.replace("uu", "i")
+    x = x.replace("ki", "ği")
+#    x = x.replace("eiy", "iy")
+    x = x.replace("eiyordu", "iyordu")
+    x = x.replace("aıyordu", "ıyordu")
+    x = x.replace("aıyorum", "ıyorum")
+    return x
+
 from collections import defaultdict
 affixChains = defaultdict(list)
 for d in data:
+   predicted = getVowelHarmonyForm(d["parsed"])
+   d["original"][0]["predicted"] = assimilation("".join([x["fine_vowels"] for x in predicted]))
    affixChains[tuple([y["fine"] for y in d["parsed"][1:]])].append(d["original"])
 
 def prettyPrint(code, line, count):
-    print("\t&\t".join(["+".join(code), line[0], line[1][0]["lemma"], line[1][0]["morph"], str(count)])+"  \\\\")
+    print("\t&\t".join(["+".join(code), ("!!! " if line[1][0]["predicted"] != line[0] else "# ")+line[1][0]["predicted"], line[0], line[1][0]["lemma"], line[1][0]["morph"], str(count)])+"  \\\\")
 
 for x in sorted(list(affixChains), key=lambda x:len(affixChains[x]))[:]:
     chains = [("&".join([y["word"] for y in z]), z) for z in affixChains[x]]
