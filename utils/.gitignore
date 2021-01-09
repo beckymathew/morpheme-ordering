@@ -1,3 +1,5 @@
 paths.py
 estimates/
 accuracy_forWords*EvaluateWeights*.py_*.txt
+results/accuracy*.txt
+

@@ -40,7 +40,6 @@ def getSegmentedFormsVerb(word):
       words[i][0] = "_"
       words[i][1] = lemmas[i]
       words[i][3] = "v" if i == 0 else "sfx"      
-#    print("SPLIT", words, word) # frequent: verb stem + past suffix merged
     return words
    else: # 
     print("TODO", word)
@@ -164,7 +163,7 @@ def getSurprisalRepresentation(lemma):
 
 
 from math import log, exp
-from random import random, shuffle, randint, Random, choice
+from random import shuffle, randint, Random, choice
 
 
 
@@ -225,11 +224,27 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
          suffixesResult += segmented
       elif x[header["type1"]] == "v":
          segmented = getSegmentedFormsVerb(x)
+         for i, l in enumerate(segmented):
+            l.append(f"SPLIT_{i}")
          suffixesResult += segmented
       else:
          suffixesResult.append(x)
-    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)i
+    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)
        continue
+    splitTense = [i for i in suffixesResult if "sfx" in i and "SPLIT" in i[-1] and "t^" in i[1]] # It can happen that a tense suffix is marked as fused with the stem, but belongs further back as a morpheme.
+    if len(splitTense) > 0 and len([x for x in suffixesResult if "sfx" in x]) > 2:
+       j = suffixesResult.index(splitTense[0])
+       nextMorpheme = suffixesResult[j+1]
+       if nextMorpheme[1].startswith("m^"):
+            pass
+       else: #if nextMorpheme[1].startswith("p"): In almost all cases where this happens, the next morpheme is a passive suffix
+         suffixesResult[j], suffixesResult[j+1] = suffixesResult[j+1], suffixesResult[j]
+    tense = [i for i in range(len(suffixesResult)) if "sfx" in suffixesResult[i] and "t^" in suffixesResult[i][1]]
+    voice = [i for i in range(len(suffixesResult)) if "sfx" in suffixesResult[i] and "p" in suffixesResult[i][1]]
+    if len(tense) > 0 and len(voice) > 0:
+       if tense[0] < voice[0]:
+           print(suffixesResult)
+
     dataChosen.append(suffixesResult)
     for affix in suffixesResult:
       affixLemma = getSlot(getKey(affix)) #[header[RELEVANT_KEY]]
@@ -278,6 +293,7 @@ from collections import defaultdict
 def getCorrectOrderCount(weights):
    correct = 0
    incorrect = 0
+   errors = defaultdict(int)
 
    for vb in data_train:
       prefixes = [x for x in vb if x[header["type1"]] == "pfx"]
@@ -295,8 +311,16 @@ def getCorrectOrderCount(weights):
              if weightI > weightJ:
                correct+=1
              elif suffixes[i] != suffixes[j]:
+               errors[(suffixes[i], suffixes[j])] += 1
                incorrect+=1
-   return correct/(correct+incorrect)
+#               if (suffixes[i], suffixes[j]) == ('Mood', 'Derivation'):
+#                  print(vb)
+#                  if random.random() < 0.1:
+#                   quit()
+###               if (suffixes[i], suffixes[j]) == ('Mood', 'Voice'):
+# #                 print(vb)
+#              
+   return correct/(correct+incorrect), errors
 
 mostCorrect = 0
 lastImprovement = -1
@@ -305,23 +329,23 @@ for iteration in range(1000):
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while random() < 0.8 and affixFrequencies[coordinate] < 50 and iteration < 100: 
+  while (random.random() < 0.95 and affixFrequencies[coordinate] < 50 and iteration < 100) or affixFrequencies[coordinate] == 0: 
      coordinate = choice(itos)
 
   mostCorrectValue = weights[coordinate]
 
   # Iterate over possible new positions
   for newValue in [-1] + [2*x+1 for x in range(len(itos))]:
-     if random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
+     if random.random() < 0.8 and newValue != weights[coordinate] and iteration < 50:
          continue
      weights_ = {x : y for x,y in weights.items()}
      weights_[coordinate] = newValue
-     correctCount = getCorrectOrderCount(weights_)
+     correctCount, errors = getCorrectOrderCount(weights_)
      if correctCount > mostCorrect:
         mostCorrectValue = newValue
         mostCorrect = correctCount
         lastImprovement = iteration
-  print(iteration, mostCorrect)
+  print(iteration, mostCorrect, coordinate)
   if iteration - lastImprovement > 100:
      break
 
@@ -331,7 +355,8 @@ for iteration in range(1000):
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   #assert getCorrectOrderCount(weights, None, None) == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
   #assert mostCorrect == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
-  if iteration % 100 == 0:
+  if iteration % 5 == 0:
+     print(errors)
      for x in itos_:
       if affixFrequencies[x] >= 50:
         print("\t".join([str(y) for y in [x, weights[x], affixFrequencies[x]]]))

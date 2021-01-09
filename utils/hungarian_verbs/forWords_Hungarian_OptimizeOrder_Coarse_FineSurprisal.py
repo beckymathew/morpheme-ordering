@@ -2,14 +2,16 @@
 
 import random
 import sys
+from corpus import CORPUS
 from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
 
 objectiveName = "LM"
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--language", dest="language", type=str, default="Hungarian-Szeged_2.6")
-parser.add_argument("--model", dest="model", type=str)
+parser.add_argument("--language", dest="language", type=str, default=CORPUS)
+
+# May be REAL, RANDOM, REVERSE, or a pointer to a file containing an ordering grammar.
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
@@ -39,15 +41,14 @@ TARGET_DIR = "results/"+__file__.replace(".py", "")
 
 
 
-posUni = set() 
 
-posFine = set() 
+
 
 def getRepresentation(lemma):
-    return lemma["coarse"]
+   return lemma["coarse"]
 
 def getSurprisalRepresentation(lemma):
-    return lemma["fine"]
+   return lemma["fine"]
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -56,9 +57,6 @@ header = ["index", "word", "lemma", "posUni", "posFine", "morph", "head", "dep",
 
 from corpusIterator_V import CorpusIterator_V
 
-originalDistanceWeights = {}
-
-morphKeyValuePairs = set()
 
 vocab_lemmas = {}
 
@@ -78,6 +76,7 @@ def processVerb(verb, data_):
         lst_dict.append(morph_dict)
       data_.append(lst_dict)
 
+# Load both training (for fitting n-gram model) and held-out dev (for evaluating cross-entropy) data
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
 
@@ -96,20 +95,21 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 words = []
 
+# Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
 affixFrequencies = {}
-for verbWithAff in data_train:
-  for affix in verbWithAff[1:]:
-    affixLemma = getRepresentation(affix)
-    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      affixLemma = getRepresentation(affix)
+      affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
 
-
-itos = set()
+itos = set() # set of affixes
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
       itos.add(getRepresentation(affix))
-itos = sorted(list(itos))
-stoi = dict(list(zip(itos, range(len(itos)))))
+itos = sorted(list(itos)) # sorted list of verb affixes
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)

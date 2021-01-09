@@ -170,7 +170,7 @@ def getSurprisalRepresentation(lemma):
 
 
 from math import log, exp
-from random import random, shuffle, randint, Random, choice
+from random import shuffle, randint, Random, choice
 
 
 
@@ -231,11 +231,27 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
          suffixesResult += segmented
       elif x[header["type1"]] == "v":
          segmented = getSegmentedFormsVerb(x)
+         for i, l in enumerate(segmented):
+            l.append(f"SPLIT_{i}")
          suffixesResult += segmented
       else:
          suffixesResult.append(x)
-    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)i
+    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)
        continue
+    splitTense = [i for i in suffixesResult if "sfx" in i and "SPLIT" in i[-1] and "t^" in i[1]] # It can happen that a tense suffix is marked as fused with the stem, but belongs further back as a morpheme.
+    if len(splitTense) > 0 and len([x for x in suffixesResult if "sfx" in x]) > 2:
+       j = suffixesResult.index(splitTense[0])
+       nextMorpheme = suffixesResult[j+1]
+       if nextMorpheme[1].startswith("m^"):
+            pass
+       else: #if nextMorpheme[1].startswith("p"): In almost all cases where this happens, the next morpheme is a passive suffix
+         suffixesResult[j], suffixesResult[j+1] = suffixesResult[j+1], suffixesResult[j]
+    tense = [i for i in range(len(suffixesResult)) if "sfx" in suffixesResult[i] and "t^" in suffixesResult[i][1]]
+    voice = [i for i in range(len(suffixesResult)) if "sfx" in suffixesResult[i] and "p" in suffixesResult[i][1]]
+    if len(tense) > 0 and len(voice) > 0:
+       if tense[0] < voice[0]:
+           print(suffixesResult)
+
     dataChosen.append(suffixesResult)
     for affix in suffixesResult:
       affixLemma = getSlot(getKey(affix)) #[header[RELEVANT_KEY]]
@@ -307,23 +323,23 @@ def calculateTradeoffForWeights(weights):
    
 
 import os
-for iteration in range(1000):
+
+mostCorrect = 1e100
+for iteration in range(10000):
   # Randomly select a morpheme whose position to update
   coordinate=choice(itos)
 
   # Stochastically filter out rare morphemes
-  while affixFrequencies.get(coordinate, 0) < 10 and random() < 0.95:
+  while affixFrequencies.get(coordinate, 0) < 50 and iteration < 200:
+     coordinate = choice(itos)
+  while affixFrequencies.get(coordinate, 0) < 5:
      coordinate = choice(itos)
 
-  # This will store the minimal AOC found so far and the corresponding position
-  mostCorrect, mostCorrectValue = 1e100, None
+  mostCorrectCoordinate = weights[coordinate]
 
   # Iterate over possible new positions
-  for newValue in [-1] + [2*x+1 for x in range(len(itos))] + [weights[coordinate]]:
+  for newValue in [random.choice([-1] + [2*x+1 for x in range(len(itos))])]:
 
-     # Stochastically exclude positions to save compute time (no need to do this when the number of slots is small)
-     if random() < 0.9 and newValue != weights[coordinate]:
-        continue
      print(newValue, mostCorrect, coordinate, affixFrequencies.get(coordinate,0))
      # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
      weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
@@ -332,15 +348,16 @@ for iteration in range(1000):
      resultingAOC, _ = calculateTradeoffForWeights(weights_)
 
      # Update variables if AOC is smaller than minimum AOC found so far
-     if resultingAOC < mostCorrect:
-        mostCorrectValue = newValue
-        mostCorrect = resultingAOC
+  if resultingAOC < mostCorrect:
+     print("Accept", coordinate, newValue)
+     weights[coordinate] = newValue
+     mostCorrect = resultingAOC
+  else:
+     print("Reject")
   assert mostCorrect < 1e99
   print(iteration, mostCorrect)
-  weights[coordinate] = mostCorrectValue
   itos_ = sorted(itos, key=lambda x:weights[x])
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-  print(weights)
   for x in itos_:
      if affixFrequencies.get(x,0) < 10:
        continue
