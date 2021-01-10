@@ -102,7 +102,6 @@ posUni = set()
 
 posFine = set()
 
-# TODO: update this for Korean
 def getRepresentation(lemma):
     return lemma["coarse"]
 
@@ -132,6 +131,7 @@ def processVerb(verb, data_):
       fine = turkish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" w actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
+      assert len(morphs) == len(fine)
       lst_dict = []
       for i in range(len(fine)):
         morph_dict = {"fine": fine[i], "coarse": morphs[i]}
