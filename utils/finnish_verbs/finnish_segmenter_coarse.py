@@ -29,12 +29,14 @@ def get_abstract_morphemes(labels):
         morphs.append("Voice")
 
     if tense:
-        morphs.append("Tense")
-
-    if mood not in ["Ind", None]: 
-        morphs.append("Mood")
+        assert mood in ["Ind", None], label_dict
+        morphs.append("TAM")
+    elif mood not in ["Ind", None]: 
+        morphs.append("TAM")
 
     if person and number:
+        morphs.append("Person.Number")
+    elif voice == "Pass":
         morphs.append("Person.Number")
     
 #    if verbform not in ["Inf", None]: # TODO: not certain where to put this
