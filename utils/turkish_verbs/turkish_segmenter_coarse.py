@@ -63,20 +63,20 @@ def get_abstract_morphemes(labels):
         morphs.append("POLAR_Neg_ma")
 
 
-    if aspect=="Hab" and mood == "Pot" and number=="Sing" and person=="3" and polarity=="Neg" and tense=="Past" and voice=="Pass":
-        morphs.append("MOOD_TODO_zdI")
+#    if aspect=="Hab" and mood == "Pot" and number=="Sing" and person=="3" and polarity=="Neg" and tense=="Past" and voice=="Pass":
+ #       morphs.append("MOOD_TODO_zdI")
 
 
     if mood == "Pot" and polarity == "Pos" and aspect=="Hab" and tense == "Past":
-      morphs.append("MOOD_TODO_lerdi")
+      morphs.append("TAM1_AR") # van Schaaik, section 20.5 (`Present-2'): -(I/E)r and -mE-z
       pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
       pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_IZ", "Agr_SINIZ", None][pn-1]
+      if person == "3" and number == "Plur":
+          morphs.append("3PL_LAR")
+      morphs.append("TAM2_DU") # van Schaaik, section 24.1.3
       if pn_ending is not None:
          morphs.append(pn_ending)
-
-
-
-    if mood == "Imp": # zero marking
+    elif mood == "Imp": # zero marking
         # -in, -iniz, -sin, -sinler
      if label_dict.get("Polarity") == "Neg": #Negative imperative
         if person == "2" and aspect == "Perf" and number == "Plur" and tense == "Pres":
@@ -91,7 +91,7 @@ def get_abstract_morphemes(labels):
         elif person == "3":
            morphs.append("Agr_SIN") # van Schaaik, section 18.1. Plural would add -lAr, but doesn't appear in the corpus.
     elif verbform is None and polite == "Form":
-        morphs.append("POLITE_MAKTA") # van Schaaik, section 20.6 (`Present-3'), belongs to TAM1 slot.
+        morphs.append("TAM1_MAKTA") # van Schaaik, section 20.6 (`Present-3'), belongs to TAM1 slot.
     elif verbform is None and mood == "Opt":
         if person == "1" and number == "Plur":
             morphs.append("Agr_OPT_1Pl_ELIM") # van Schaaik, section 19.1
@@ -107,6 +107,33 @@ def get_abstract_morphemes(labels):
             morphs.append(pn_ending)
          if person == "3" and number == "Plur":
              morphs.append("3PL_LAR")
+    elif tense == "Pqp":
+        morphs.append("TAM1_MIS1") # van Schaaik, section 20.3 (`Past-1')
+        if person == "3" and number == "Plur":
+            morphs.append("3PL_LAR")
+        morphs.append("TAM2_DU") # van Schaaik, section 24.1.3
+        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+        if pn_ending is not None:
+           morphs.append(pn_ending)
+    elif tense == "Fut,Past" and label_dict.get("Evident", None) == "Nfh":
+        morphs.append("TAM1_ACAK") # van Schaaik, section 20.2 (`Future')
+        if person == "3" and number == "Plur":
+            morphs.append("3PL_LAR")
+        morphs.append("TAM2_MIS2") # van Schaaik, section 24.2 (`Reportative and Inferential')
+        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+        if pn_ending is not None:
+           morphs.append(pn_ending)
+    elif tense == "Fut,Past":
+        morphs.append("TAM1_ACAK") # van Schaaik, section 20.2 (`Future')
+        if person == "3" and number == "Plur":
+            morphs.append("3PL_LAR")
+        morphs.append("TAM2_DU") # van Schaaik, section 24.1.3
+        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
+        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
+        if pn_ending is not None:
+           morphs.append(pn_ending)
     elif verbform is None: # finite
       if evidential == "Dir":
           if tense == "Pres" or tense=="Fut":
@@ -154,7 +181,10 @@ def get_abstract_morphemes(labels):
                   if person == "3" and number == "Plur":
                       morphs.append("3PL_LAR")
               elif aspect == "Perf":
-                  morphs.append("TAM1_ACAK") # van Schaaik, section 20.2 (`Future')
+                  if mood == "CndPot":
+                     morphs.append("TAM1_SA_Cnd") # van Schaaik, section 22.2
+                  else:
+                     morphs.append("TAM1_ACAK") # van Schaaik, section 20.2 (`Future')
                   if pn_ending is not None:
                      morphs.append(pn_ending)
                   if person == "3" and number == "Plur":
@@ -218,34 +248,6 @@ def get_abstract_morphemes(labels):
               morphs.append("TAM2_MIS2") # van Schaaik, section 24.2 (`Reportative and Inferential')
               if pn_ending is not None:
                  morphs.append(pn_ending)
-    if tense == "Pqp":
-        morphs.append("TAM1_MIS1") # van Schaaik, section 20.3 (`Past-1')
-        if person == "3" and number == "Plur":
-            morphs.append("3PL_LAR")
-        morphs.append("TAM2_DU") # van Schaaik, section 24.1.3
-        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
-        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
-        if pn_ending is not None:
-           morphs.append(pn_ending)
-    elif tense == "Fut,Past" and label_dict.get("Evident", None) == "Nfh":
-        morphs.append("TAM1_ACAK") # van Schaaik, section 20.2 (`Future')
-        if person == "3" and number == "Plur":
-            morphs.append("3PL_LAR")
-        morphs.append("TAM2_MIS2") # van Schaaik, section 24.2 (`Reportative and Inferential')
-        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
-        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
-        if pn_ending is not None:
-           morphs.append(pn_ending)
-    elif tense == "Fut,Past":
-        morphs.append("TAM1_ACAK") # van Schaaik, section 20.2 (`Future')
-        if person == "3" and number == "Plur":
-            morphs.append("3PL_LAR")
-        morphs.append("TAM2_DU") # van Schaaik, section 24.1.3
-        pn = int(person) + {"Sing" : 0, "Plur" : 3}[number]
-        pn_ending = ["Agr_IM", "Agr_SIN", None, "Agr_K", "Agr_SINIZ", None][pn-1]
-        if pn_ending is not None:
-           morphs.append(pn_ending)
-
 
 
     if mood == "Gen": # copula

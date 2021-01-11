@@ -236,7 +236,7 @@ def prettyPrint(code, line, count):
 
 for x in sorted(list(affixChains), key=lambda x:len(affixChains[x]))[:]:
     chains = [("&".join([y["word"] for y in z]), z) for z in affixChains[x]]
-    chains = [x for x in chains if "VerbForm" not in str(x)]
+#    chains = [x for x in chains if "VerbForm" not in str(x)]
     chainsCount = defaultdict(int)
     for z, _ in chains:
         chainsCount[z] += 1

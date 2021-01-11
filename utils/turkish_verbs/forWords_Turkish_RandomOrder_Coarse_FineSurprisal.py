@@ -84,6 +84,8 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
     verb = []
     for line in sentence:
        if line["posUni"] == "VERB":
+          if 'VerbForm=Vnoun' in line["morph"]:
+               continue
           verb.append(line)
           processVerb(verb, data_)
           verb = []
