@@ -1,6 +1,8 @@
 features = {}
 features["Voice"] = "Voice"		
+features["Gender"] = "Agr"		
 features["Number"] = "Agr"		
+features["Animacy"] = "Other"		
 features["Clitic"] = "Emb"		
 features["VerbForm"] = "Emb"		
 features["InfForm"] = "Emb"		
@@ -10,6 +12,7 @@ features["Person[psor]"] = "Possessive"
 features["Evident"] = "Evidential"	
 features["Tense"] = "TAM"	
 features["Mood"] = "TAM"	
+features["VerbType"] = "TAM"	
 features["Aspect"] = "TAM"	
 features["Polite"] = "Politeness"
 features["Polarity"] = "Polarity"	
@@ -25,7 +28,7 @@ features["Definite"] = "Other"
 
 from collections import defaultdict
 
-def get_abstract_morphemes(labels):
+def get_abstract_morphemes(labels, only=None):
     """
     Takes the string of UD labels for a Turkish verb and returns a list of abstract morphemes.
     Parameters:
@@ -39,15 +42,23 @@ def get_abstract_morphemes(labels):
     label_pairs = labels.split("|")
     label_dict = {}
     for pair in label_pairs:
-        k, v = pair.split("=")
+        if pair == "_":
+           continue
+        try:
+            k, v = pair.split("=")
+        except ValueError:
+           print("MORPH", pair, labels)
+           assert False
         label_dict[k] = v
 
     morphs = ["ROOT"]
 
     perFeature = defaultdict(list)
     for key, val in label_dict.items():
-        perFeature[features[key]].append(key+"_"+val)
+        perFeature[features.get(key, "Other")].append(key+"_"+val)
     for feat in sorted(list(perFeature)):
+        if only is not None and feat != only:
+          continue
         form = "|".join(sorted(perFeature[feat]))
         if form == "Polarity_Pos":
             continue
