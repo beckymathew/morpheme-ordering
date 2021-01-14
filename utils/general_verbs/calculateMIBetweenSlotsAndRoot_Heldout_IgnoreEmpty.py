@@ -83,6 +83,15 @@ def processVerb(verb, data_):
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
 corpusDev = CorpusIterator_V(args.language,"dev", storeMorph=True).iterator(rejectShortSentences = False)
 
+
+import random
+corpusTotal = list(corpusTrain) + list(corpusDev)
+random.shuffle(corpusTotal)
+
+corpusTrain = corpusTotal[int(0.1*len(corpusTotal)):]
+corpusDev = corpusTotal[:int(0.1*len(corpusTotal))]
+
+
 pairs = set()
 counter = 0
 data_train = []
@@ -123,6 +132,9 @@ joints = {slot : defaultdict(int) for slot in itos}
 marginal_stem = {slot : defaultdict(int) for slot in itos}
 marginal_aff = {slot : defaultdict(int) for slot in itos}
 
+numberOfValuesObservedForStemAndSlot_cached = {}
+
+print("Now collecting counts")
 
 overallCountsPerSlot = defaultdict(int)
 for verb in data_train:
@@ -135,16 +147,25 @@ for verb in data_train:
          overallCountsPerSlot[slot] += 1
          marginal_aff[slot][affixesPerSlot[slot]] += 1
          marginal_stem[slot][stem] += 1
+         if (slot, stem) not in numberOfValuesObservedForStemAndSlot_cached:
+            numberOfValuesObservedForStemAndSlot_cached[(slot, stem)] = set()
+         numberOfValuesObservedForStemAndSlot_cached[(slot, stem)].add(affixesPerSlot[slot])
 
 from math import log
 
 
-
+print("Now evaluating")
 
 unigramSurprisalPerSlot = {slot : 0 for slot in joints}
 bigramSurprisalPerSlot = {slot : 0 for slot in joints}
 countPerSlot = {slot : 0 for slot in joints}
+
+c=0
+
 for verb in data_dev:
+     c += 1
+     if c % 1000 == 0:
+         print(c/len(data_dev))
      stem = getSurprisalRepresentation(verb[0])
      affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
      for slot in affixesPerSlot:
@@ -156,7 +177,7 @@ for verb in data_dev:
          unigramSurprisal = -log(unigramProb)
          assert unigramSurprisal >= 0, unigramSurprisal
         # bigram surprisal of that suffix
-         numberOfValuesObservedForStemAndSlot = len([x for x in joints[slot] if x[0] == stem and joints[slot][x] > 0])
+         numberOfValuesObservedForStemAndSlot = len(numberOfValuesObservedForStemAndSlot_cached.get((slot, stem), []))
          if marginal_stem[slot][stem] > 0:
             bigramSurprisal = -log(max(joints[slot][(stem, affixesPerSlot[slot])] - 1.0, 0.0) + 1.0*numberOfValuesObservedForStemAndSlot * unigramProb) + log(marginal_stem[slot][stem])
             assert bigramSurprisal >= 0, bigramSurprisal
