@@ -1,31 +1,8 @@
 features = {}
-features["Voice"] = "Voice"		
-features["Gender"] = "Agr"		
-features["Number"] = "Agr"		
-features["Animacy"] = "Other"		
-features["Clitic"] = "Emb"		
-features["VerbForm"] = "Emb"		
-features["InfForm"] = "Emb"		
-features["PartForm"] = "Emb"		
+features["Number"] = "Number"
+features["Case"] = "Case"
 features["Number[psor]"] = "Possessive"	
 features["Person[psor]"] = "Possessive"	
-features["Evident"] = "Evidential"	
-features["Tense"] = "TAM"	
-features["Mood"] = "TAM"	
-features["VerbType"] = "TAM"	
-features["Aspect"] = "TAM"	
-features["Polite"] = "Politeness"
-features["Polarity"] = "Polarity"	
-features["Case"] = "Case"
-features["Person"] = "Agr"
-features["Degree"] = "Degree"
-features["Connegative"] = "Connegative"
-features["Style"] = "Style"
-features["Abbr"] = "Abbr"
-features["Typo"] = "Typo"
-features["Derivation"] = "Other"
-features["Definite"] = "Other"
-
 from collections import defaultdict
 
 def get_abstract_morphemes(labels, only=None):
@@ -62,8 +39,8 @@ def get_abstract_morphemes(labels, only=None):
         form = "|".join(sorted(perFeature[feat]))
         if form == "Polarity_Pos":
             continue
-        if feat not in ["Voice", "Agr", "TAM"]:
-            continue
+      #  if feat not in ["Voice", "Agr", "TAM"]:
+     #       continue
         morphs.append(feat)
     return morphs
 

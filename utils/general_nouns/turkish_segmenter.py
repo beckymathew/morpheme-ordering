@@ -1,31 +1,11 @@
+warningCache = set()
+
+
 features = {}
-features["Voice"] = "Voice"		
-features["Gender"] = "Agr"		
-features["Number"] = "Agr"		
-features["Animacy"] = "Other"		
-features["Clitic"] = "Emb"		
-features["VerbForm"] = "Emb"		
-features["InfForm"] = "Emb"		
-features["PartForm"] = "Emb"		
+features["Number"] = "Number"
+features["Case"] = "Case"
 features["Number[psor]"] = "Possessive"	
 features["Person[psor]"] = "Possessive"	
-features["Evident"] = "Evidential"	
-features["Tense"] = "TAM"	
-features["Mood"] = "TAM"	
-features["VerbType"] = "TAM"	
-features["Aspect"] = "TAM"	
-features["Polite"] = "Politeness"
-features["Polarity"] = "Polarity"	
-features["Case"] = "Case"
-features["Person"] = "Agr"
-features["Degree"] = "Degree"
-features["Connegative"] = "Connegative"
-features["Style"] = "Style"
-features["Abbr"] = "Abbr"
-features["Typo"] = "Typo"
-features["Derivation"] = "Other"
-features["Definite"] = "Other"
-
 from collections import defaultdict
 
 def get_abstract_morphemes(labels, only=None):
@@ -55,6 +35,9 @@ def get_abstract_morphemes(labels, only=None):
 
     perFeature = defaultdict(list)
     for key, val in label_dict.items():
+        if key not in features and key not in warningCache:
+           print(key)
+           warningCache.add(key)
         perFeature[features.get(key, "Other")].append(key+"_"+val)
     for feat in sorted(list(perFeature)):
         if only is not None and feat != only:
@@ -62,14 +45,15 @@ def get_abstract_morphemes(labels, only=None):
         form = "|".join(sorted(perFeature[feat]))
         if form == "Polarity_Pos":
             continue
-        if feat not in ["Voice", "Agr", "TAM"]:
-            continue
-        morphs.append(feat)
+    #    if feat not in ["Voice", "Agr", "TAM"]:
+     #       continue
+        morphs.append(form)
+#    print(morphs)
     return morphs
 
     # TODO: interrogative
     # Tense=Pqp? Seems to be indirect? Usually looks like mıştı but I don't know if it's mış+tı
-    #   Pqp tense is miş-ti, which maybe could be broken down into
+    #   Pqp tense is miş-ti, which maybe could be broken down into Pqp+Past
     # Mood: Ind, Cnd, Imp, Pot, Gen, Opt, Des, DesPot, Nec
     #   Gen comes after TAM suffix ?
     #   Indicative is default?
