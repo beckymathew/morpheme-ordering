@@ -92,6 +92,8 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
     verb = []
     for line in sentence:
        if line["posUni"] == "VERB":
+          if 'VerbForm=Vnoun' in line["morph"]:
+               continue
           verb.append(line)
           processVerb(verb, data_)
           verb = []
@@ -117,58 +119,78 @@ itos_ = itos[::]
 shuffle(itos_)
 weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))]))) # abstract slot
 
-from collections import defaultdict
 
-joints = {slot : defaultdict(int) for slot in itos}
-marginal_stem = {slot : defaultdict(int) for slot in itos}
-marginal_aff = {slot : defaultdict(int) for slot in itos}
+def calculateTradeoffForWeights(weights):
+    # Order the datasets based on the given weights
+    train = []
+    dev = []
+    for data, processed in [(data_train, train), (data_dev, dev)]:
+      for verb in data:
+         affixes = verb[1:]
+         affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0)) 
+         for ch in [verb[0]] + affixes:
+            processed.append(getSurprisalRepresentation(ch))
+         processed.append("EOS")
+         for _ in range(args.cutoff+2):
+           processed.append("PAD")
+         processed.append("SOS")
 
+    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
+    return auc, devSurprisalTable
+   
+mostCorrect = 1e100 
+for iteration in range(1000):
+  # Randomly select a morpheme whose position to update
+  coordinate=choice(itos)
 
-overallCountsPerSlot = defaultdict(int)
-for verb in data_train:
-     stem = getSurprisalRepresentation(verb[0])
-     affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
-     for slot in affixesPerSlot:
-         joints[slot][(stem, affixesPerSlot[slot])] += 1
-         overallCountsPerSlot[slot] += 1
-         marginal_aff[slot][affixesPerSlot[slot]] += 1
-         marginal_stem[slot][stem] += 1
+  # Stochastically filter out rare morphemes
+  while affixFrequencies.get(coordinate, 0) < 10 and random() < 0.95:
+     coordinate = choice(itos)
 
-from math import log
+  # This will store the minimal AOC found so far and the corresponding position
+  mostCorrectValue = weights[coordinate]
 
+  # Iterate over possible new positions
+  for newValue in [-1] + [2*x+1 for x in range(len(itos))]:
 
+     # Stochastically exclude positions to save compute time
+     #if random() < 0.5:
+     #   continue
+     print(newValue, mostCorrect, coordinate, affixFrequencies.get(coordinate,0))
+     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
+     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
 
+     # Calculate AOC for this updated assignment
+     resultingAOC, _ = calculateTradeoffForWeights(weights_)
 
-unigramSurprisalPerSlot = {slot : 0 for slot in joints}
-bigramSurprisalPerSlot = {slot : 0 for slot in joints}
-countPerSlot = {slot : 0 for slot in joints}
-for verb in data_dev:
-     stem = getSurprisalRepresentation(verb[0])
-     affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
-     for slot in affixesPerSlot:
-         value = affixesPerSlot[slot]
-         # unigram surprisal of that suffix
-         unigramProb = (marginal_aff[slot][value] + 0.5) / (overallCountsPerSlot[slot] + len(marginal_aff[slot]) * 0.5)
-         unigramSurprisal = -log(unigramProb)
-         assert unigramSurprisal >= 0, unigramSurprisal
-        # bigram surprisal of that suffix
-         numberOfValuesObservedForStemAndSlot = len([x for x in joints[slot] if x[0] == stem and joints[slot][x] > 0])
-         if marginal_stem[slot][stem] > 0:
-            bigramSurprisal = -log(max(joints[slot][(stem, affixesPerSlot[slot])] - 1.0, 0.0) + 1.0*numberOfValuesObservedForStemAndSlot * unigramProb) + log(marginal_stem[slot][stem])
-            assert bigramSurprisal >= 0, bigramSurprisal
-         else:
-            bigramSurprisal = unigramSurprisal
-         unigramSurprisalPerSlot[slot] += unigramSurprisal
-         bigramSurprisalPerSlot[slot] += bigramSurprisal
-         countPerSlot[slot] += 1
+     # Update variables if AOC is smaller than minimum AOC found so far
+     if resultingAOC < mostCorrect:
+        mostCorrectValue = newValue
+        mostCorrect = resultingAOC
+  print(iteration, mostCorrect)
+  weights[coordinate] = mostCorrectValue
+  itos_ = sorted(itos, key=lambda x:weights[x])
+  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+  print(weights)
+  for x in itos_:
+     if affixFrequencies.get(x,0) < 10:
+       continue
+     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies.get(x,0)]]))
+  if (iteration + 1) % 50 == 0:
+     _, surprisals = calculateTradeoffForWeights(weights_)
 
-        
-with open(f"results/{__file__}.tsv", "a") as outFile:
- for slot in itos:
-    mostCommonAffixes = "&".join([str(x) for x in sorted(marginal_aff[slot].items(), key=lambda x:-x[1])[:5]])
-    print(slot, (unigramSurprisalPerSlot[slot] - bigramSurprisalPerSlot[slot])/countPerSlot[slot], countPerSlot[slot], mostCommonAffixes)
-    print("\t".join([str(x) for x in [args.language, slot, (unigramSurprisalPerSlot[slot] - bigramSurprisalPerSlot[slot])/countPerSlot[slot], countPerSlot[slot], mostCommonAffixes]]), file=outFile)
-
+     if os.path.exists(TARGET_DIR):
+      with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+          for key in itos_:
+            print(key, weights[key], file=outFile)
+     else:
+       os.makedirs(TARGET_DIR)
+       with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
+          print(iteration, mostCorrect, str(args), surprisals, file=outFile)
+          for key in itos_:
+            print(key, weights[key], file=outFile)
+  
 
 
 

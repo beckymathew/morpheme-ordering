@@ -123,52 +123,26 @@ joints = {slot : defaultdict(int) for slot in itos}
 marginal_stem = {slot : defaultdict(int) for slot in itos}
 marginal_aff = {slot : defaultdict(int) for slot in itos}
 
-
-overallCountsPerSlot = defaultdict(int)
 for verb in data_train:
      stem = getSurprisalRepresentation(verb[0])
      affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
      for slot in affixesPerSlot:
          joints[slot][(stem, affixesPerSlot[slot])] += 1
-         overallCountsPerSlot[slot] += 1
          marginal_aff[slot][affixesPerSlot[slot]] += 1
          marginal_stem[slot][stem] += 1
 
 from math import log
 
-
-
-
-unigramSurprisalPerSlot = {slot : 0 for slot in joints}
-bigramSurprisalPerSlot = {slot : 0 for slot in joints}
-countPerSlot = {slot : 0 for slot in joints}
-for verb in data_dev:
-     stem = getSurprisalRepresentation(verb[0])
-     affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
-     for slot in affixesPerSlot:
-         value = affixesPerSlot[slot]
-         # unigram surprisal of that suffix
-         unigramProb = (marginal_aff[slot][value] + 0.5) / (overallCountsPerSlot[slot] + len(marginal_aff[slot]) * 0.5)
-         unigramSurprisal = -log(unigramProb)
-         assert unigramSurprisal >= 0, unigramSurprisal
-        # bigram surprisal of that suffix
-         numberOfValuesObservedForStemAndSlot = len([x for x in joints[slot] if x[0] == stem and joints[slot][x] > 0])
-         if marginal_stem[slot][stem] > 0:
-            bigramSurprisal = -log(max(joints[slot][(stem, affixesPerSlot[slot])] - 1.0, 0.0) + 1.0*numberOfValuesObservedForStemAndSlot * unigramProb) + log(marginal_stem[slot][stem])
-            assert bigramSurprisal >= 0, bigramSurprisal
-         else:
-            bigramSurprisal = unigramSurprisal
-         unigramSurprisalPerSlot[slot] += unigramSurprisal
-         bigramSurprisalPerSlot[slot] += bigramSurprisal
-         countPerSlot[slot] += 1
-
-        
-with open(f"results/{__file__}.tsv", "a") as outFile:
- for slot in itos:
-    mostCommonAffixes = "&".join([str(x) for x in sorted(marginal_aff[slot].items(), key=lambda x:-x[1])[:5]])
-    print(slot, (unigramSurprisalPerSlot[slot] - bigramSurprisalPerSlot[slot])/countPerSlot[slot], countPerSlot[slot], mostCommonAffixes)
-    print("\t".join([str(x) for x in [args.language, slot, (unigramSurprisalPerSlot[slot] - bigramSurprisalPerSlot[slot])/countPerSlot[slot], countPerSlot[slot], mostCommonAffixes]]), file=outFile)
-
-
-
-
+for slot in itos:
+    total = sum([x for _, x in joints[slot].items()])
+    assert total == len(data_train)
+    totalMI = 0
+    jointProbs = 0
+    for stem, aff in joints[slot]:
+        jointProb = joints[slot][(stem, aff)] / total
+        jointProbs += jointProb
+        marginalStem = marginal_stem[slot][stem] / total
+        marginalAff = marginal_aff[slot][aff] / total
+        totalMI += (jointProb * (log(jointProb) - log(marginalStem) - log(marginalAff)))
+    print(slot, totalMI, jointProbs)
+       

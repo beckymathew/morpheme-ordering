@@ -129,6 +129,8 @@ for verb in data_train:
      stem = getSurprisalRepresentation(verb[0])
      affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
      for slot in affixesPerSlot:
+         if affixesPerSlot[slot] == "":
+           continue
          joints[slot][(stem, affixesPerSlot[slot])] += 1
          overallCountsPerSlot[slot] += 1
          marginal_aff[slot][affixesPerSlot[slot]] += 1
@@ -146,6 +148,8 @@ for verb in data_dev:
      stem = getSurprisalRepresentation(verb[0])
      affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
      for slot in affixesPerSlot:
+         if affixesPerSlot[slot] == "":
+           continue
          value = affixesPerSlot[slot]
          # unigram surprisal of that suffix
          unigramProb = (marginal_aff[slot][value] + 0.5) / (overallCountsPerSlot[slot] + len(marginal_aff[slot]) * 0.5)

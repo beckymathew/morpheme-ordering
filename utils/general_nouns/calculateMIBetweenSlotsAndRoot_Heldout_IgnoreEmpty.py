@@ -78,6 +78,7 @@ def processVerb(verb, data_):
       for i in range(len(fine)):
         morph_dict = {"fine": fine[i], "coarse": morphs[i]}
         lst_dict.append(morph_dict)
+      lst_dict.append({"coarse" : "Function", "fine" :  vb["dep"]})
       data_.append(lst_dict)
 
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
@@ -91,7 +92,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "VERB":
+       if line["posUni"] == "NOUN":
           verb.append(line)
           processVerb(verb, data_)
           verb = []
@@ -129,6 +130,8 @@ for verb in data_train:
      stem = getSurprisalRepresentation(verb[0])
      affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
      for slot in affixesPerSlot:
+         if affixesPerSlot[slot] == "":
+           continue
          joints[slot][(stem, affixesPerSlot[slot])] += 1
          overallCountsPerSlot[slot] += 1
          marginal_aff[slot][affixesPerSlot[slot]] += 1
@@ -146,6 +149,8 @@ for verb in data_dev:
      stem = getSurprisalRepresentation(verb[0])
      affixesPerSlot = {slot : "+".join([getSurprisalRepresentation(x) for x in verb[1:] if getRepresentation(x) == slot]) for slot in itos}
      for slot in affixesPerSlot:
+         if affixesPerSlot[slot] == "":
+           continue
          value = affixesPerSlot[slot]
          # unigram surprisal of that suffix
          unigramProb = (marginal_aff[slot][value] + 0.5) / (overallCountsPerSlot[slot] + len(marginal_aff[slot]) * 0.5)

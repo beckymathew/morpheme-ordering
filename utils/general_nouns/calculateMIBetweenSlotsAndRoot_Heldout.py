@@ -78,6 +78,7 @@ def processVerb(verb, data_):
       for i in range(len(fine)):
         morph_dict = {"fine": fine[i], "coarse": morphs[i]}
         lst_dict.append(morph_dict)
+      lst_dict.append({"coarse" : "Function", "fine" :  vb["dep"]})
       data_.append(lst_dict)
 
 corpusTrain = CorpusIterator_V(args.language,"train", storeMorph=True).iterator(rejectShortSentences = False)
@@ -91,7 +92,7 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "VERB":
+       if line["posUni"] == "NOUN":
           verb.append(line)
           processVerb(verb, data_)
           verb = []
