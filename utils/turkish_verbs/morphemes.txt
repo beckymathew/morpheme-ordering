@@ -16,7 +16,7 @@ NUMPERS_Sing1	?
 NUMPERS_Sing2	?
 NUMPERS_Sing3	?
 POLAR_Neg_ma	mA
-POLITE_MAKTA	mAktA
+TAM1_MAKTA	mAktA
 TAM1_ACAK	AcAk
 TAM1_AR	Ar
 TAM1_IYOR	Iyor
@@ -30,3 +30,5 @@ TAM2_SA_Cnd	sA
 VAL_Cau_tir	tIr
 VOICE_Pass_il	Il
 Vnoun_mak	mAk
+TAM1_mIştI	mIştI
+MOOD_Imperative_In	In
