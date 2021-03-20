@@ -1,5 +1,0 @@
-Voice	0	1722	Voice
-Tense	2	10951	Tense
-Mood	4	844	Mood
-Person.Number	6	9458	Agreement
-Clitic	8	280	NA

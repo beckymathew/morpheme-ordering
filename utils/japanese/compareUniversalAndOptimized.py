@@ -16,7 +16,7 @@ with open("universal_alignment.txt", "r") as inFile:
 alignment = {x[0] : x[3] for x in alignment}
 print(alignment)
 
-universal = ["Valence", "Voice", "Aspect", "Tense", "Mood", "Agreement"]
+universal = ["Valence", "Voice", "TAM", "Agreement"]
 
 print(optimized)
 ioptim = dict(list(zip(optimized, range(len(optimized)))))
