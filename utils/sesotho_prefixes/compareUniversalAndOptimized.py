@@ -4,14 +4,14 @@ import os
 script = "forWords_Sesotho_OptimizeOrder_Slots_ByType_Suffixes_HeldoutClip"
 
 with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
-    optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:] if "Other" not in x]
+    optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:] if "Other" not in x][::-1] # Reverse because these are prefixes
 
 with open("universal_alignment.txt", "r") as inFile:
     alignment = [x.split("\t") for x in inFile.read().strip().split("\n")]
 alignment = {x[0] : x[3] for x in alignment}
 print(alignment)
 
-universal = ["Valence", "Voice", "Aspect", "Tense", "Mood", "Agreement"]
+universal = ["Valence", "Voice", "TAM", "Agreement"]
 
 print(optimized)
 ioptim = dict(list(zip(optimized, range(len(optimized)))))

@@ -25,7 +25,7 @@ el	42	0	NA
 op	48	0	NA
 kn	50	0	NA
 pu	52	0	NA
-Tense/aspect	54	11841	Aspect,Tense
+Tense/aspect	54	11841	TAM
 Other_wo	56	2	NA
 tr	58	0	NA
 sl	60	0	NA
