@@ -5,7 +5,7 @@ import subprocess
 import sys
 import glob
 
-optimized = glob.glob("results/forWords_Turkish_OptimizeOrder_Coarse_FineSurprisal/optim*")
+optimized = glob.glob("results/*/optim*")
 
 for o in optimized:
   subprocess.call([PYTHON, "forWords_Celex_EvaluateWeights_MorphemeGrammar_FullData.py", "--model="+o])

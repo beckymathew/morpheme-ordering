@@ -5,9 +5,9 @@ import subprocess
 import sys
 import glob
 
-optimized = glob.glob("results/forWords_Turkish_OptimizeOrder_Coarse_FineSurprisal/optim*")
+optimized = glob.glob("results/*/optim*")
 
 for o in optimized:
-  subprocess.call([PYTHON, "forWords_Turkish_EvaluateWeights_Coarse.py", "--model="+o])
-  subprocess.call([PYTHON, "forWords_Turkish_RandomOrder_Coarse_FineSurprisal.py", "--model="+o])
+  subprocess.call([PYTHON, "forWords_Hungarian_EvaluateWeights_Nouns_Coarse.py", "--model="+o])
+  subprocess.call([PYTHON, "forWords_Hungarian_RandomOrder_Nouns_Coarse_FineSurprisal.py", "--model="+o])
 

@@ -14,7 +14,7 @@ def process(x):
       else:
           return f"{mean(x)} ({sd(x)})"
 with open("output/accuracies.tex", "w") as outFile:
-  for d in directories:
+  for dCount, d in enumerate(directories):
     path = d+"/results/"
     files = [x for x in os.listdir(path) if x.startswith("accuracy")]
     accuracies = {"Optimized" : [], "Baseline" : []}
@@ -32,7 +32,22 @@ with open("output/accuracies.tex", "w") as outFile:
     betterThan = sum([1 if x[0]<=meanOptimized else 0  for x in accuracies["Baseline"]])
     total = len(accuracies["Baseline"])
     lower, higher = statsmodels.stats.proportion.proportion_confint(betterThan, total, method="jeffreys")
-    print(f" & {d.replace('_', ' ')} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)} & [{round(lower,2)}, {round(higher, 2)}]  \\\\", file=outFile)                
-    print(f" & {d.replace('_', ' ')} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)} & [{round(lower,2)}, {round(higher, 2)}]  \\\\")                
+    if dCount == 0:
+       firstColumn = "\multirow{3}{*}{Nouns}"
+    elif dCount == 3:
+       firstColumn = "\multirow{7}{*}{Verbs}"
+    else:
+       firstColumn = ""
+    rowName = d[:d.index("_")] if "_" in d else d
+    rowName = rowName[0].upper() + rowName[1:]
+    if "prefi" in d:
+      rowName += " (P)"
+    elif "suffi" in d:
+      rowName += " (S)"
+    if total == 0:
+       total = 0.0000001 
+    # if the noun portion is over, print htis:  \hline
+    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)} & [{round(lower,2)}, {round(higher, 2)}]  \\\\", file=outFile)                
+    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)} & [{round(lower,2)}, {round(higher, 2)}]  \\\\")                
 #    print(f" & {d.replace('_', ' ')} & {opt_pairs} & {bas_pairs} & {opt_full} & {bas_full} & {opt_full_types} & {bas_full_types} \\\\")                
 
