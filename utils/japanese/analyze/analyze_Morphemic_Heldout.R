@@ -19,21 +19,22 @@ data$Type = ifelse(data$Model %in% c("REAL", "RANDOM", "REVERSE"), as.character(
 data$Type = ifelse(data$Type %in% c("REAL"), "Real", as.character(data$Type))
 data$Type = ifelse(data$Type %in% c("RANDOM"), "Random", as.character(data$Type))
 data$Type = ifelse(data$Type %in% c("REVERSE"), "Reverse", as.character(data$Type))
+data$Type = ifelse(data$Model %in% c("UNIV"), "Universals", as.character(data$Type))
 
-data_ = data %>% filter(Type %in% c("Real", "Random", "Optimized", "Reverse"))
+data_ = data %>% filter(Type %in% c("Real", "Random", "Optimized", "Reverse", "Universals"))
 
 randomAUCs = data %>% filter(Type == "Random")
 meanAUCs = data %>% filter(Type == "Real") %>% group_by(Type) %>% summarise(AUC = mean(AUC)) %>% mutate(Quantile = round(mean(AUC < randomAUCs$AUC), 2), ConfIntLower = round((binom.test(sum(AUC<randomAUCs$AUC), nrow(randomAUCs))$conf.int[[1]]),2), ConfIntUpper = round((binom.test(sum(AUC<randomAUCs$AUC), nrow(randomAUCs))$conf.int[[2]]),2))
 
 barWidth = (max(data$AUC) - min(data$AUC))/30
 
-plot = ggplot(data_, aes(x=AUC, fill=Type, color=Type))
+plot = ggplot(data_, aes(x=AUC, color=Type))
 plot = plot + theme_classic()
 plot = plot + xlab("Area under Curve") + ylab("Density")
 plot = plot + theme(text=element_text(size=30))
-plot = plot + geom_density(data= data_%>%filter(Type == "Random"), aes(y=..scaled..)) 
-plot = plot + geom_bar(data = data_ %>% filter(!(Type %in% c("Random"))) %>% group_by(Type) %>% summarise(AUC=mean(AUC)) %>% mutate(y=1),  aes(y=y, group=Type), width=barWidth, stat="identity", position = position_dodge()) + scale_colour_manual(values=SCALE) + scale_fill_manual(values=SCALE)
-plot = plot + geom_label(data=meanAUCs, aes(x=AUC, y=1, label=paste(Quantile, " [", ConfIntLower, ", ", ConfIntUpper, "]"), group=Type), color="black", fill="white")
+plot = plot + geom_density(data= data_%>%filter(Type %in% c("Universals", "Random")), aes(y=..scaled..), size=2) 
+plot = plot + geom_bar(data = data_ %>% filter(!(Type %in% c("Universals", "Random"))) %>% group_by(Type) %>% summarise(AUC=mean(AUC)) %>% mutate(y=1),  aes(y=y, group=Type, fill=Type), width=barWidth, stat="identity", position = position_dodge()) # + scale_colour_manual(values=SCALE) + scale_fill_manual(values=SCALE)
+plot = plot + geom_label(data=meanAUCs, aes(x=AUC, y=1, label=paste(Quantile, " [", ConfIntLower, ", ", ConfIntUpper, "]"), group=Type), color="black", fill="white") + theme (legend.position = "none")
 ggsave(plot, file=paste("suffixes-byMorphemes-auc-hist-heldout-Coarse-FineSurprisal-optimized.pdf", sep=""), height=4, width=8)
 
 

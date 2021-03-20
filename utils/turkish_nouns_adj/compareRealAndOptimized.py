@@ -1,7 +1,7 @@
 import sys
 import os
 
-universal_colors = {"Number" : "orange", "Possessor" : "green", "Case" : "blue", "Agreement" : "purple", "NA" : None}
+universal_colors = {"Number" : "orange", "Possessor" : None, "Case" : "blue", "Agreement" : "purple", "NA" : None}
 
 with open("slot-names.txt", "r") as inFile:
     slotNames = [x.split("\t") for x in inFile.read().strip().split("\n")]

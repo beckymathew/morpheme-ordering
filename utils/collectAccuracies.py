@@ -17,11 +17,11 @@ with open("output/accuracies.tex", "w") as outFile:
   for dCount, d in enumerate(directories):
     path = d+"/results/"
     files = [x for x in os.listdir(path) if x.startswith("accuracy")]
-    accuracies = {"Optimized" : [], "Baseline" : []}
+    accuracies = {"Optimized" : [], "Baseline" : [], "Universals" : []}
     for f in files:
         with open(path+"/"+f, "r") as inFile:
             resu = inFile.read().strip().split("\n")
-            accuracies["Baseline" if "RANDOM" in f else "Optimized"].append([float(x) for x in resu[:4]])
+            accuracies["Baseline" if "RANDOM" in f else ("Universals" if "UNIV" in f else "Optimized")].append([float(x) for x in resu[:4]])
     bas_pairs = process([x[0] for x in accuracies["Baseline"]])
     bas_full = process([x[1] for x in accuracies["Baseline"]])
     bas_full_types = process([x[3] for x in accuracies["Baseline"]])
@@ -29,6 +29,9 @@ with open("output/accuracies.tex", "w") as outFile:
     opt_full = process([x[1] for x in accuracies["Optimized"]])
     opt_full_types = process([x[3] for x in accuracies["Optimized"]])
     meanOptimized = mean([x[0] for x in accuracies["Optimized"]])
+    betterThan_u = sum([1 if x[0]<=meanOptimized else 0  for x in accuracies["Universals"]])
+    total_u = len(accuracies["Universals"])+0.00001
+    lower_u, higher_u = statsmodels.stats.proportion.proportion_confint(betterThan_u, total_u, method="jeffreys")
     betterThan = sum([1 if x[0]<=meanOptimized else 0  for x in accuracies["Baseline"]])
     total = len(accuracies["Baseline"])
     lower, higher = statsmodels.stats.proportion.proportion_confint(betterThan, total, method="jeffreys")
@@ -47,7 +50,9 @@ with open("output/accuracies.tex", "w") as outFile:
     if total == 0:
        total = 0.0000001 
     # if the noun portion is over, print htis:  \hline
-    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)} & [{round(lower,2)}, {round(higher, 2)}]  \\\\", file=outFile)                
-    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)} & [{round(lower,2)}, {round(higher, 2)}]  \\\\")                
+    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)}  [{round(lower,2)}, {round(higher, 2)}]  & {round(betterThan_u/total_u,2)}  [{round(lower_u,2)}, {round(higher_u, 2)}]  \\\\", file=outFile)                
+    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)}  [{round(lower,2)}, {round(higher, 2)}]  & {round(betterThan_u/total_u,2)}  [{round(lower_u,2)}, {round(higher_u, 2)}]  \\\\")                
+    if dCount == 2:
+      print("\\hline", file=outFile)
 #    print(f" & {d.replace('_', ' ')} & {opt_pairs} & {bas_pairs} & {opt_full} & {bas_full} & {opt_full_types} & {bas_full_types} \\\\")                
 

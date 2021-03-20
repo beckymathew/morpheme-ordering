@@ -1,7 +1,7 @@
 import sys
 import os
 
-universal_colors = {"Number" : "orange", "Possessor" : "green", "Case" : "blue", "Agreement" : "purple", "NA" : None}
+universal_colors = {"Number" : "orange", "Possessor" : None, "Case" : "blue", "Agreement" : "purple", "NA" : None}
 
 script = "forWords_Finnish_OptimizeOrder_Nouns_Coarse_FineSurprisal"
 def getName(q):
