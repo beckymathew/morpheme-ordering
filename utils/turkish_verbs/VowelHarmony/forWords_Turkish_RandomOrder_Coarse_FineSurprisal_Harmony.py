@@ -42,26 +42,94 @@ assert args.alpha <= 1
 assert args.delta >= 0
 assert args.gamma >= 1
 
+
+morphemesToPhonologicalForm = {}
+with open("morphemes.txt", "r") as inFile:
+   for line in inFile:
+       if len(line) < 3:
+           continue
+       line = line.strip().split("\t")
+       morphemesToPhonologicalForm[line[0]] = line[1]
+
+
 myID = args.idForProcess
 
 
 TARGET_DIR = "estimates/"
 
-import finnish_noun_segmenter_coarse
-import finnish_noun_segmenter
+import turkish_segmenter_coarse
+import turkish_segmenter
 
+
+vowels = "aeiouöüı"
+
+def getVowelHarmonyForm(x):
+ #   print(x)
+    result = []
+    lastVowel = None
+    for i in range(len(x)):
+        if i == 0:
+            for c in  x[i]["fine"]:
+                if c in vowels:
+                    lastVowel = c
+            result.append({"fine_vowels" : x[i]["fine"], "coarse" : x[i]["coarse"]})
+        else:
+            if x[i]["fine"] == "TAM1_AR":
+               soFar = "".join([x["fine_vowels"] for x in result])
+               if i == 1 and x[0]["fine"] in ["ol", "al", "gel", "ver", "gör", "bil", "kal", "bul", "dur", "san", "Ol", "var", "vur"]:
+                   phon = "Ir"
+               elif len([None for x in soFar if x in vowels]) <= 1:
+                   phon = "Ar"
+               else:
+                   phon = "Ir"
+            else: 
+               phon = morphemesToPhonologicalForm[x[i]["fine"]]
+#            print("phon", phon)
+            surface = ""
+            for c in phon:
+                if c == "A":
+                    if lastVowel in "aouı":
+                       surface += "a"
+                    else:
+                       surface += "e"
+                elif c == "I":
+                    if lastVowel in "aı":
+                       surface += "ı"
+                    elif lastVowel in "ei":
+                       surface += "i"
+                    elif lastVowel in "ou":
+                       surface += "u"
+                    elif lastVowel in "öü":
+                       surface += "ü"
+                    else:
+                        assert False, (c, phon, surface)
+                else:
+                    surface += c
+                if surface[-1] in vowels:
+                    lastVowel = surface[-1]
+#            print(phon, "-->", surface)
+            result.append({"fine_vowels" : surface, "coarse" : x[i]["coarse"]})
+#    print(result)
+    return result
+
+
+
+
+
+
+# Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    return lemma["coarse"]
 
 def getSurprisalRepresentation(lemma):
-   return lemma["fine"]
+   return lemma["fine_vowels"]
 
 def processVerb(verb, data_):
     # assumption that each verb is a single word
    for vb in verb:
       labels = vb["morph"]
-      morphs = finnish_noun_segmenter_coarse.get_abstract_morphemes(labels)
-      fine = finnish_noun_segmenter.get_abstract_morphemes(labels)
+      morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = turkish_segmenter.get_abstract_morphemes(labels)
       morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
       lst_dict = []
@@ -82,7 +150,9 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "NOUN" or line["posUni"] == "ADJ":
+       if line["posUni"] == "VERB":
+          if 'VerbForm=Vnoun' in line["morph"]:
+               continue
           verb.append(line)
           processVerb(verb, data_)
           verb = []
@@ -90,18 +160,18 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 words = []
 
 # Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
-affixFrequency = {}
+affixFrequencies = {}
 for verbWithAff in data_train:
   for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
-    affixFrequency[affix] = affixFrequency.get(affix, 0)+1
-
+    slot = getRepresentation(affix)
+    affixFrequencies[slot] = affixFrequencies.get(slot, 0) + 1
 
 itos = set()
-for verbWithAff in data_train:
- for affix in verbWithAff[1:]:
-    affix = getRepresentation(affix)
-    itos.add(affix)
+for data_ in [data_train, data_dev]:
+  for verbWithAff in data_:
+    for affix in verbWithAff[1:]:
+      slot = getRepresentation(affix)
+      itos.add(slot)
 itos = sorted(list(itos))
 stoi = dict(list(zip(itos, range(len(itos)))))
 
@@ -122,8 +192,8 @@ elif args.model != "REAL": # Load the ordering from a file
         morpheme, weight = line.strip().split(" ")
         weights[morpheme] = int(weight)
 
-
 def calculateTradeoffForWeights(weights):
+    # Order the datasets based on the given weights
     train = []
     dev = []
     # Iterate through the verb forms in the two data partitions, and linearize as a sequence of underlying morphemes
@@ -138,7 +208,8 @@ def calculateTradeoffForWeights(weights):
             affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
 
 
-         for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
+#         for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
+         for ch in getVowelHarmonyForm([verb[0]] + affixes):
             processed.append(getSurprisalRepresentation(ch))
          processed.append("EOS") # Indicate end-of-sequence
          for _ in range(args.cutoff+2): # Interpose a padding symbol between each pair of successive verb forms. There is no relation between successive verb forms, and adding padding prevents the n-gram models from "trying to learn" any spurious relations between successive verb forms.

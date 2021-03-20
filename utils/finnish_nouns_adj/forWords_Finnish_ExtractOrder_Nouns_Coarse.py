@@ -80,7 +80,7 @@ data = []
 for sentence in corpusTrain:
     verb = []
     for line in sentence:
-       if line["posUni"] == "NOUN":
+       if line["posUni"] == "NOUN" or line["posUni"] == "ADJ":
           verb.append(line)
           processVerb(verb)
           verb = []
