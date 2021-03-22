@@ -14,6 +14,7 @@ def process(x):
       else:
           return f"{mean(x)} ({sd(x)})"
 with open("output/accuracies.tex", "w") as outFile:
+ with open("output/accuracies.tsv", "w") as outTSV:
   for dCount, d in enumerate(directories):
     path = d+"/results/"
     files = [x for x in os.listdir(path) if x.startswith("accuracy")]
@@ -22,6 +23,10 @@ with open("output/accuracies.tex", "w") as outFile:
         with open(path+"/"+f, "r") as inFile:
             resu = inFile.read().strip().split("\n")
             accuracies["Baseline" if "RANDOM" in f else ("Universals" if "UNIV" in f else "Optimized")].append([float(x) for x in resu[:4]])
+    for c in ["Universals", "Baseline", "Optimized"]:
+      for x in accuracies[c]:
+       print("\t".join([d, c, str(x[0])]), file=outTSV)
+    univ_pairs = process([x[0] for x in accuracies["Universals"]])
     bas_pairs = process([x[0] for x in accuracies["Baseline"]])
     bas_full = process([x[1] for x in accuracies["Baseline"]])
     bas_full_types = process([x[3] for x in accuracies["Baseline"]])
@@ -50,8 +55,8 @@ with open("output/accuracies.tex", "w") as outFile:
     if total == 0:
        total = 0.0000001 
     # if the noun portion is over, print htis:  \hline
-    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)}  [{round(lower,2)}, {round(higher, 2)}]  & {round(betterThan_u/total_u,2)}  [{round(lower_u,2)}, {round(higher_u, 2)}]  \\\\", file=outFile)                
-    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)}  [{round(lower,2)}, {round(higher, 2)}]  & {round(betterThan_u/total_u,2)}  [{round(lower_u,2)}, {round(higher_u, 2)}]  \\\\")                
+    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)}  [{round(lower,2)}, {round(higher, 2)}]  & {univ_pairs} &  {round(betterThan_u/total_u,2)}  [{round(lower_u,2)}, {round(higher_u, 2)}]  \\\\", file=outFile)                
+    print(f"{firstColumn} & {rowName} & {opt_pairs} & {bas_pairs} & {round(betterThan/total,2)}  [{round(lower,2)}, {round(higher, 2)}]  & {univ_pairs} &  {round(betterThan_u/total_u,2)}  [{round(lower_u,2)}, {round(higher_u, 2)}]  \\\\")                
     if dCount == 2:
       print("\\hline", file=outFile)
 #    print(f" & {d.replace('_', ' ')} & {opt_pairs} & {bas_pairs} & {opt_full} & {bas_full} & {opt_full_types} & {bas_full_types} \\\\")                
