@@ -23,9 +23,22 @@ with open("output/accuracies.tex", "w") as outFile:
         with open(path+"/"+f, "r") as inFile:
             resu = inFile.read().strip().split("\n")
             accuracies["Baseline" if "RANDOM" in f else ("Universals" if "UNIV" in f else "Optimized")].append([float(x) for x in resu[:4]])
+    pos = "Nouns" if "noun" in d else "Verbs"
+    rowName = d[:d.index("_")] if "_" in d else d
+    rowName = rowName[0].upper() + rowName[1:]
+    if "prefi" in d:
+      rowName += " (P)"
+    elif "suffi" in d:
+      rowName += " (S)"
+
+    language = rowName
     for c in ["Universals", "Baseline", "Optimized"]:
+      if c == "Baseline":
+         c1 = "Random"
+      else:
+        c1 = c
       for x in accuracies[c]:
-       print("\t".join([d, c, str(x[0])]), file=outTSV)
+       print("\t".join([pos, language, c1, str(x[0])]), file=outTSV)
     univ_pairs = process([x[0] for x in accuracies["Universals"]])
     bas_pairs = process([x[0] for x in accuracies["Baseline"]])
     bas_full = process([x[1] for x in accuracies["Baseline"]])
@@ -46,12 +59,6 @@ with open("output/accuracies.tex", "w") as outFile:
        firstColumn = "\multirow{7}{*}{Verbs}"
     else:
        firstColumn = ""
-    rowName = d[:d.index("_")] if "_" in d else d
-    rowName = rowName[0].upper() + rowName[1:]
-    if "prefi" in d:
-      rowName += " (P)"
-    elif "suffi" in d:
-      rowName += " (S)"
     if total == 0:
        total = 0.0000001 
     # if the noun portion is over, print htis:  \hline
