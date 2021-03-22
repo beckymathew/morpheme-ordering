@@ -93,6 +93,10 @@ itos_ = itos[::]
 shuffle(itos_)
 if args.model == "RANDOM": # Construct a random ordering of the morphemes
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+elif args.model == "UNIV":
+  import compatible
+  weights = compatible.sampleCompatibleOrdering(itos_)
+  print(weights)
 else:
   weights = {}
   weights = {}

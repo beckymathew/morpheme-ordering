@@ -287,8 +287,13 @@ itos_ = itos[::]
 shuffle(itos_)
 if args.model == "RANDOM": # Construct a random ordering of the morphemes
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-elif args.model in ["REAL", "REVERSE"]:
+elif args.model in ["REAL", "REVERSE"]: # Measure tradeoff for real or reverse ordering of suffixes.
   weights = None
+elif args.model == "UNIV":
+  import compatible
+  weights = compatible.sampleCompatibleOrdering(itos_)
+  print(weights)
+#  quit()
 else:
   weights = {}
   weights = {}
@@ -341,7 +346,7 @@ def calculateTradeoffForWeights(weights):
     model = args.model
     if "/" in model:
         model = model[model.rfind("_"):-4]+"-OPTIM"
-    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model == "RANDOM" else model)+".txt"
+    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model in ["RANDOM", "UNIV"] else model)+".txt"
     print(outpath)
     with open(outpath, "w") as outFile:
        print(str(args), file=outFile)
