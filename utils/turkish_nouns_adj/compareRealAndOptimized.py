@@ -32,14 +32,14 @@ with open("visualize/comparison.tex", "w") as outFile:
    print("            minimum height=0.65cm, inner sep=0},", file=outFile)
    print("% common options for the circles:", file=outFile)
    print("ball/.style = {circle, draw, align=center, anchor=north, inner sep=0}]", file=outFile)
-   print("\\node[rectangle,text width=1.2cm,anchor=base] (A0) at (1,-0.3) {Real};", file=outFile)
-   print("\\node[rectangle,text width=0.9cm,anchor=base] (B0) at (4,-0.3) {Optimized};", file=outFile)
+   print("\\node[rectangle,text width=1.7cm,anchor=base] (A0) at (1,-0.3) {Real};", file=outFile)
+   print("\\node[rectangle,text width=1.7cm,anchor=base] (B0) at (4,-0.3) {Optimized};", file=outFile)
    for i in range(len(real)):
        color = universal_colors.get(getName(real[i]), None)
-       print("\\node[rectangle,text width=1.2cm,anchor=base"+(", fill="+color+"!20" if color is not None else "") + "] (A"+str(i+1)+") at (1,"+str(-i/2.0-1)+") {"+getName(real[i])+"};", file=outFile)
+       print("\\node[rectangle,text width=1.7cm,anchor=base"+(", fill="+color+"!20" if color is not None else "") + "] (A"+str(i+1)+") at (1,"+str(-i/2.0-1)+") {"+getName(real[i])+"};", file=outFile)
    for i in range(len(optimized)):
        color = universal_colors.get(getName(optimized[i]), None)
-       print("\\node[rectangle,text width=1.2cm,anchor=base"+(", fill="+color+"!20" if color is not None else "") + "] (B"+str(i+1)+") at (4,"+str(-i/2.0-1)+") {"+getName(optimized[i])+"};", file=outFile)
+       print("\\node[rectangle,text width=1.7cm,anchor=base"+(", fill="+color+"!20" if color is not None else "") + "] (B"+str(i+1)+") at (4,"+str(-i/2.0-1)+") {"+getName(optimized[i])+"};", file=outFile)
    for i in range(len(optimized)):
        print("\\draw[->] (A"+str(i+1)+".east) to (B"+str(ioptim[real[i]]+1)+".west);", file=outFile)
    print("\end{tikzpicture}", file=outFile)
