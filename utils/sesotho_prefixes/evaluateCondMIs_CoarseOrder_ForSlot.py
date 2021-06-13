@@ -7,7 +7,7 @@ import random
 import sys
 from corpus import CORPUS
 from estimateTradeoffHeldout_Pairs import calculateMemorySurprisalTradeoff
-from math import log, exp
+from math import log, exp, sqrt
 from random import shuffle, randint, Random, choice
 
 
@@ -444,6 +444,9 @@ pmis_coarse = defaultdict(list)
 for x, y in pmis:
    pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
 
+def sd(x):
+   return sqrt(mean([y**2 for y in x]) - mean(x)**2)
+
 with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
  for x1, x2 in sorted(list(pmis_coarse)):
    if "PAD" in [x1, x2]:
@@ -454,5 +457,5 @@ with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]
      continue
    if len(pmis_coarse[(x1,x2)]) == 1:
      continue
-   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
+   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)]), sd(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
 

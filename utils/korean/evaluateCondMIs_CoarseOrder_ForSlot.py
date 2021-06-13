@@ -6,7 +6,7 @@
 import random
 import sys
 from estimateTradeoffHeldout_Pairs import calculateMemorySurprisalTradeoff
-from math import log, exp
+from math import log, exp, sqrt
 from corpusIterator_V import CorpusIterator_V
 from random import shuffle, randint, Random, choice
 from frozendict import frozendict
@@ -246,7 +246,9 @@ def calculateTradeoffForWeights(weights):
          else: # Order based on weights
             affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
 
-
+         verb[0] = {x : y for x, y in verb[0].items()}
+         verb[0]["coarse"] = "ROOT"
+         
          for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
             processed.append(getSurprisalRepresentation(ch))
          processed.append("EOS") # Indicate end-of-sequence
@@ -275,6 +277,9 @@ pmis_coarse = defaultdict(list)
 for x, y in pmis:
    pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
 
+def sd(x):
+   return sqrt(mean([y**2 for y in x]) - mean(x)**2)
+
 with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
  for x1, x2 in sorted(list(pmis_coarse)):
    if "PAD" in [x1, x2]:
@@ -285,5 +290,5 @@ with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]
      continue
    if len(pmis_coarse[(x1,x2)]) == 1:
      continue
-   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
+   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)]), sd(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
 
