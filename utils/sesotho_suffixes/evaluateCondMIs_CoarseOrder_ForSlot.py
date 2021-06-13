@@ -6,7 +6,7 @@
 import random
 import sys
 from corpus import CORPUS
-from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
+from estimateTradeoffHeldout_Pairs import calculateMemorySurprisalTradeoff
 from math import log, exp
 from random import shuffle, randint, Random, choice
 
@@ -25,7 +25,9 @@ parser.add_argument("--model", dest="model", type=str)
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=12)
+
+# An identifier for this run of this script.
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 
 
@@ -168,11 +170,15 @@ with open("/u/scr/mhahn/CODE/acqdiv-database/csv/morphemes5.csv", "r") as inFile
 
 
 
+# Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    return names[lemma[header["lemma"]][:2]]
 
 def getSurprisalRepresentation(lemma):
-   return lemma[header["lemma"]]
+   if "ROOT" in lemma[header["lemma"]]:
+      return lemma[header["lemma"]]
+   else:
+      return names.get(lemma[header["lemma"]][:2], "<OOV>")+"@"+lemma[header["lemma"]]
 
 
 from math import log, exp
@@ -193,7 +199,7 @@ data_dev = words[:int(0.05*len(words))]
 #data = words
 
                                                                          
-names = {'ng' : "Negation", 'om' : "Object", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective"}
+names = {'ng' : "Negation", 'om' : "Object/reflexive", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective", "if" : "Infinitive", "rf" : "Object/reflexive"}
 
 def getSlot(x):
    if x == "sm":
@@ -331,8 +337,9 @@ def calculateTradeoffForWeights(weights):
          else: # Order based on weights
             suffixes = sorted(suffixes, key=lambda x:weights.get(getRepresentation(x), 0))
 
+#         print(v, header["lemma"])
+         v[0][header["lemma"]] = "ROOT@"+v[0][header["lemma"]]
          ordered = prefixes + v + suffixes
- 
 
          for ch in ordered:
             processed.append(getSurprisalRepresentation(ch))
@@ -342,19 +349,35 @@ def calculateTradeoffForWeights(weights):
          processed.append("SOS") # start-of-sequence for the next verb form
     
     # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-
-
-    # Write results to a file
-    model = args.model
-    if "/" in model:
-        model = model[model.rfind("_"):-4]+"-OPTIM"
-    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model in ["RANDOM", "UNIV"] else model)+".txt"
-    print(outpath)
-    with open(outpath, "w") as outFile:
-       print(str(args), file=outFile)
-       print(" ".join(map(str,devSurprisalTable)), file=outFile)
-    return auc
+    auc, devSurprisalTable, pmis = calculateMemorySurprisalTradeoff(train, dev, args)
+    return pmis
    
-auc = calculateTradeoffForWeights(weights)
-print("AUC: ", auc)
+pmis = calculateTradeoffForWeights(weights)
+
+def mean(x):
+  return sum(x)/len(x)
+
+def coarse(x):
+   if "@" in x:
+     return x[:x.index("@")]
+   if x in ["EOS", "SOS", "PAD"]:
+     return x
+   assert False, x
+from collections import defaultdict
+
+pmis_coarse = defaultdict(list)
+for x, y in pmis:
+   pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
+
+with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
+ for x1, x2 in sorted(list(pmis_coarse)):
+   if "PAD" in [x1, x2]:
+     continue
+   if "SOS" in [x1, x2]:
+     continue
+   if "EOS" in [x1, x2]:
+     continue
+   if len(pmis_coarse[(x1,x2)]) == 1:
+     continue
+   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
+
