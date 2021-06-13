@@ -154,6 +154,7 @@ elif args.model != "REAL": # Load the ordering from a file
 
 
 def calculateTradeoffForWeights(weights):
+    # Order the datasets based on the given weights
     train = []
     dev = []
     # Iterate through the verb forms in the two data partitions, and linearize as a sequence of underlying morphemes

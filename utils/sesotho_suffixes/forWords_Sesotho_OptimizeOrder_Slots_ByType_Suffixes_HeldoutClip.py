@@ -68,13 +68,13 @@ def getSegmentedForms(word): # return a list , preprocessing
     word2[0] = "_"
     if lemmas[0] == "t^pf" and lemmas[1] == "m^in": # ~360 cases, mostly -e-. TODO think about the order of the morphemes in the allegedly merged morpheme.
       _ = 0
-    elif word[header["analysis"]] == "REVERS.CAUS": # os (Doke and Mokofeng, section 345)
+    elif word[header["analysis"]] == "REVERS.CAUS": # os (Doke and Mofokeng, section 345)
       _ = 0
-    elif word[header["analysis"]] == "APPL.PRF": # ets (cf. Doke and Mokofeng, section 313?). Both APPL and PRF have relatively frequent suffix morphs of the form -ets- in the corpus.
+    elif word[header["analysis"]] == "APPL.PRF": # ets (cf. Doke and Mofokeng, section 313?). Both APPL and PRF have relatively frequent suffix morphs of the form -ets- in the corpus.
       _ = 0
-    elif word[header["analysis"]] == "PRF.CAUS": # dits. Also consider Doke and Mokofeng, section 369, rule 4.
+    elif word[header["analysis"]] == "PRF.CAUS": # dits. Also consider Doke and Mofokeng, section 369, rule 4.
       _ = 0
-    elif word[header["analysis"]] == "DEP.PRF": #  e. DEP = participial mood (Doke and Mokofeng, section 431).
+    elif word[header["analysis"]] == "DEP.PRF": #  e. DEP = participial mood (Doke and Mofokeng, section 431).
       _ = 0
     elif word[header["analysis"]] in ["PRF.PASS", "PRS.APPL", "cl.PRF", "IND.PRS", "PRF.REVERS", "NEG.PRF"]: # rare, together 10 data points
       _ = 0
@@ -238,6 +238,9 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
          suffixesResult.append(x)
     if suffixesResult is None: # remove this datapoint (affects <20 datapoints)
        continue
+    if "wh" in [x[1] for x in suffixesResult]: # This is not a suffix, but a cliticized version of an independent word, according to Doke&Mofokeng.
+#       print(suffixesResult)
+       suffixesResult = [x for x in suffixesResult if x[1] != "wh"]
     splitTense = [i for i in suffixesResult if "sfx" in i and "SPLIT" in i[-1] and "t^" in i[1]] # It can happen that a tense suffix is marked as fused with the stem, but belongs further back as a morpheme.
     if len(splitTense) > 0 and len([x for x in suffixesResult if "sfx" in x]) > 2:
        j = suffixesResult.index(splitTense[0])

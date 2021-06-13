@@ -71,7 +71,7 @@ def processVerb(verb, data_):
       labels = vb["morph"]
       morphs = turkish_segmenter_coarse.get_abstract_morphemes(labels)
       fine = turkish_segmenter.get_abstract_morphemes(labels)
-      morphs[0] = vb["lemma"] # replace "ROOT" w actual root
+      morphs[0] = vb["lemma"] # replace "ROOT" with actual root
       fine[0] = vb["lemma"] # replace "ROOT" w actual root
       assert len(morphs) == len(fine)
       lst_dict = []

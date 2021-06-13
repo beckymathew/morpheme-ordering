@@ -195,13 +195,13 @@ for verbWithAff in data_train:
     slot = getRepresentation(affix)
     affixFrequencies[slot] = affixFrequencies.get(slot, 0) + 1
 
-itos = set()
+itos = set() # set of affixes
 for data_ in [data_train, data_dev]:
   for verbWithAff in data_:
     for affix in verbWithAff[1:]:
       itos.add(getRepresentation(affix))
-itos = sorted(list(itos))
-stoi = dict(list(zip(itos, range(len(itos)))))
+itos = sorted(list(itos)) # sorted list of verb affixes
+stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
 
 itos_ = itos[::]
 shuffle(itos_)
