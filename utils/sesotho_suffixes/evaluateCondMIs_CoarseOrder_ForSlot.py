@@ -1,10 +1,13 @@
-# based on yWithMorphologySequentialStreamDropoutDev_Ngrams_Log.py
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Estimate memory-surprisal tradeoff 
 
 import random
 import sys
 from corpus import CORPUS
-from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
-from math import log, exp
+from estimateTradeoffHeldout_Pairs import calculateMemorySurprisalTradeoff
+from math import log, exp, sqrt
 from random import shuffle, randint, Random, choice
 
 
@@ -16,10 +19,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--language", dest="language", type=str, default=CORPUS)
 
 # May be REAL, RANDOM, REVERSE, or a pointer to a file containing an ordering grammar.
+parser.add_argument("--model", dest="model", type=str)
+
+# parameters for n-gram smoothing. See also estimateTradeoffHeldout.py
 parser.add_argument("--alpha", dest="alpha", type=float, default=1.0)
 parser.add_argument("--gamma", dest="gamma", type=int, default=1)
 parser.add_argument("--delta", dest="delta", type=float, default=1.0)
-parser.add_argument("--cutoff", dest="cutoff", type=int, default=4)
+parser.add_argument("--cutoff", dest="cutoff", type=int, default=12)
+
+# An identifier for this run of this script.
 parser.add_argument("--idForProcess", dest="idForProcess", type=int, default=random.randint(0,10000000))
 
 
@@ -94,7 +102,7 @@ def getNormalizedForm(word): # for prediction
 myID = args.idForProcess
 
 
-TARGET_DIR = "results/"+__file__.replace(".py", "")
+TARGET_DIR = "estimates/"
 
 words = []
 
@@ -162,15 +170,19 @@ with open("/u/scr/mhahn/CODE/acqdiv-database/csv/morphemes5.csv", "r") as inFile
 
 
 
+# Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    return names[lemma[header["lemma"]][:2]]
 
 def getSurprisalRepresentation(lemma):
-   return lemma[header["lemma"]]
+   if "ROOT" in lemma[header["lemma"]]:
+      return lemma[header["lemma"]]
+   else:
+      return names.get(lemma[header["lemma"]][:2], "<OOV>")+"@"+lemma[header["lemma"]]
 
 
 from math import log, exp
-from random import shuffle, randint, Random, choice
+from random import random, shuffle, randint, Random, choice
 
 
 
@@ -187,7 +199,7 @@ data_dev = words[:int(0.05*len(words))]
 #data = words
 
                                                                          
-names = {'ng' : "Negation", 'om' : "Object", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective"}
+names = {'ng' : "Negation", 'om' : "Object/reflexive", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective", "if" : "Infinitive", "rf" : "Object/reflexive"}
 
 def getSlot(x):
    if x == "sm":
@@ -231,30 +243,14 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
          suffixesResult += segmented
       elif x[header["type1"]] == "v":
          segmented = getSegmentedFormsVerb(x)
-         for i, l in enumerate(segmented):
-            l.append(f"SPLIT_{i}")
          suffixesResult += segmented
       else:
          suffixesResult.append(x)
-    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)
+    if suffixesResult is None: # remove this datapoint (affects <20 datapoints)i
        continue
     if "wh" in [x[1] for x in suffixesResult]: # This is not a suffix, but a cliticized version of an independent word, according to Doke&Mofokeng.
 #       print(suffixesResult)
        suffixesResult = [x for x in suffixesResult if x[1] != "wh"]
-    splitTense = [i for i in suffixesResult if "sfx" in i and "SPLIT" in i[-1] and "t^" in i[1]] # It can happen that a tense suffix is marked as fused with the stem, but belongs further back as a morpheme.
-    if len(splitTense) > 0 and len([x for x in suffixesResult if "sfx" in x]) > 2:
-       j = suffixesResult.index(splitTense[0])
-       nextMorpheme = suffixesResult[j+1]
-       if nextMorpheme[1].startswith("m^"):
-            pass
-       else: #if nextMorpheme[1].startswith("p"): In almost all cases where this happens, the next morpheme is a passive suffix
-         suffixesResult[j], suffixesResult[j+1] = suffixesResult[j+1], suffixesResult[j]
-    tense = [i for i in range(len(suffixesResult)) if "sfx" in suffixesResult[i] and "t^" in suffixesResult[i][1]]
-    voice = [i for i in range(len(suffixesResult)) if "sfx" in suffixesResult[i] and "p" in suffixesResult[i][1]]
-    if len(tense) > 0 and len(voice) > 0:
-       if tense[0] < voice[0]:
-           print(suffixesResult)
-
     dataChosen.append(suffixesResult)
     for affix in suffixesResult:
       affixLemma = getSlot(getKey(affix)) #[header[RELEVANT_KEY]]
@@ -296,6 +292,30 @@ affixFrequencies = suffixFrequency
 
 
 
+itos_ = itos[::]
+shuffle(itos_)
+if args.model == "RANDOM": # Construct a random ordering of the morphemes
+  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
+elif args.model in ["REAL", "REVERSE"]: # Measure tradeoff for real or reverse ordering of suffixes.
+  weights = None
+elif args.model == "UNIV":
+  import compatible
+  weights = compatible.sampleCompatibleOrdering(itos_)
+  print(weights)
+#  quit()
+else:
+  weights = {}
+  weights = {}
+  files = args.model
+  with open(files, "r") as inFile:
+     next(inFile)
+     for line in inFile:
+        if "extract" in files:
+           morpheme, weight, _ = line.strip().split("\t")
+        else:
+           morpheme, weight = line.strip().split(" ")
+        weights[morpheme] = int(weight)
+
 def calculateTradeoffForWeights(weights):
     # Order the datasets based on the given weights
     train = []
@@ -308,10 +328,18 @@ def calculateTradeoffForWeights(weights):
          suffixes = [x for x in verb if x[header["type1"]] == "sfx"]
          v = [x for x in verb if x[header["type1"]] == "v"]
          assert len(prefixes)+len(v)+len(suffixes)==len(verb)
-  
-         suffixes.sort(key=lambda x:weights[getRepresentation(x)])
-         ordered = prefixes + v + suffixes
  
+
+         if args.model == "REAL": # Real ordering
+            _ = 0
+         elif args.model == "REVERSE": # Reverse suffixes
+            suffixes = suffixes[::-1]
+         else: # Order based on weights
+            suffixes = sorted(suffixes, key=lambda x:weights.get(getRepresentation(x), 0))
+
+#         print(v, header["lemma"])
+         v[0][header["lemma"]] = "ROOT@"+v[0][header["lemma"]]
+         ordered = prefixes + v + suffixes
 
          for ch in ordered:
             processed.append(getSurprisalRepresentation(ch))
@@ -321,62 +349,38 @@ def calculateTradeoffForWeights(weights):
          processed.append("SOS") # start-of-sequence for the next verb form
     
     # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-    return auc, devSurprisalTable
+    auc, devSurprisalTable, pmis = calculateMemorySurprisalTradeoff(train, dev, args)
+    return pmis
    
+pmis = calculateTradeoffForWeights(weights)
 
-import os
+def mean(x):
+  return sum(x)/len(x)
 
-mostCorrect = 1e100
-for iteration in range(10000):
-  # Randomly select a morpheme whose position to update
-  coordinate=choice(itos)
+def coarse(x):
+   if "@" in x:
+     return x[:x.index("@")]
+   if x in ["EOS", "SOS", "PAD"]:
+     return x
+   assert False, x
+from collections import defaultdict
 
-  # Stochastically filter out rare morphemes
-  while affixFrequencies.get(coordinate, 0) < 50 and iteration < 200:
-     coordinate = choice(itos)
-  while affixFrequencies.get(coordinate, 0) < 5:
-     coordinate = choice(itos)
+pmis_coarse = defaultdict(list)
+for x, y in pmis:
+   pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
 
-  mostCorrectCoordinate = weights[coordinate]
+def sd(x):
+   return sqrt(mean([y**2 for y in x]) - mean(x)**2)
 
-  # Iterate over possible new positions
-  for newValue in [random.choice([-1] + [2*x+1 for x in range(len(itos))])]:
-
-     print(newValue, mostCorrect, coordinate, affixFrequencies.get(coordinate,0))
-     # Updated weights, assuming the selected morpheme is moved to the position indicated by `newValue`.
-     weights_ = {x : y if x != coordinate else newValue for x, y in weights.items()}
-
-     # Calculate AOC for this updated assignment
-     resultingAOC, _ = calculateTradeoffForWeights(weights_)
-
-     # Update variables if AOC is smaller than minimum AOC found so far
-  if resultingAOC < mostCorrect:
-     print("Accept", coordinate, newValue)
-     weights[coordinate] = newValue
-     mostCorrect = resultingAOC
-  else:
-     print("Reject")
-  assert mostCorrect < 1e99
-  print(iteration, mostCorrect)
-  itos_ = sorted(itos, key=lambda x:weights[x])
-  weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
-  for x in itos_:
-     if affixFrequencies.get(x,0) < 10:
-       continue
-     print("\t".join([str(y) for y in [x, weights[x], affixFrequencies.get(x,0)]]))
-  if (iteration + 1) % 50 == 0:
-     _, surprisals = calculateTradeoffForWeights(weights_)
-
-     if os.path.exists(TARGET_DIR):
-       pass
-     else:
-       os.makedirs(TARGET_DIR)
-     with open(TARGET_DIR+"/optimized_"+__file__+"_"+str(myID)+".tsv", "w") as outFile:
-        print(iteration, mostCorrect, str(args), surprisals, file=outFile)
-        for key in itos_:
-          print(key, weights[key], file=outFile)
-  
-
-
+with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
+ for x1, x2 in sorted(list(pmis_coarse)):
+   if "PAD" in [x1, x2]:
+     continue
+   if "SOS" in [x1, x2]:
+     continue
+   if "EOS" in [x1, x2]:
+     continue
+   if len(pmis_coarse[(x1,x2)]) == 1:
+     continue
+   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)]), sd(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
 

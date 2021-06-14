@@ -6,8 +6,8 @@
 import random
 import sys
 from corpus import CORPUS
-from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
-from math import log, exp
+from estimateTradeoffHeldout_Pairs import calculateMemorySurprisalTradeoff
+from math import log, exp, sqrt
 from corpusIterator_V import CorpusIterator_V
 from random import shuffle, randint, Random, choice
 
@@ -48,14 +48,14 @@ myID = args.idForProcess
 TARGET_DIR = "estimates/"
 
 
-
-
-
+# Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    return lemma["coarse"]
 
 def getSurprisalRepresentation(lemma):
-   return lemma["fine"]
+   #print(lemma)
+   #quit()
+   return lemma["coarse"]+"@"+lemma["fine"]
 
 from math import log, exp
 from random import random, shuffle, randint, Random, choice
@@ -73,7 +73,7 @@ def processVerb(verb, data_):
         print([x["word"] for x in verb])
       morphs = [japanese_segmenter_coarse.get_abstract_morphemes(x["lemma"]) for x in verb]
       fine = [japanese_segmenter.get_abstract_morphemes(x["lemma"]) for x in verb]
-      morphs[0] = verb[0]["lemma"]
+      morphs[0] = "ROOT" #verb[0]["lemma"]
       fine[0] = verb[0]["lemma"]
       assert len(morphs) == len(fine)
       lst_dict = []
@@ -177,19 +177,38 @@ def calculateTradeoffForWeights(weights):
          processed.append("SOS") # start-of-sequence for the next verb form
     
     # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-
-
-    # Write results to a file
-    model = args.model
-    if "/" in model:
-        model = model[model.rfind("_"):-4]+"-OPTIM"
-    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model in ["RANDOM", "UNIV"] else model)+".txt"
-    print(outpath)
-    with open(outpath, "w") as outFile:
-       print(str(args), file=outFile)
-       print(" ".join(map(str,devSurprisalTable)), file=outFile)
-    return auc
+    auc, devSurprisalTable, pmis = calculateMemorySurprisalTradeoff(train, dev, args)
+    return pmis
    
-auc = calculateTradeoffForWeights(weights)
-print("AUC: ", auc)
+pmis = calculateTradeoffForWeights(weights)
+
+def mean(x):
+  return sum(x)/len(x)
+
+def coarse(x):
+   if "@" in x:
+     return x[:x.index("@")]
+   if x in ["EOS", "SOS", "PAD"]:
+     return x
+   assert False, x
+from collections import defaultdict
+
+pmis_coarse = defaultdict(list)
+for x, y in pmis:
+   pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
+
+def sd(x):
+   return sqrt(mean([y**2 for y in x]) - mean(x)**2)
+
+with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
+ for x1, x2 in sorted(list(pmis_coarse)):
+   if "PAD" in [x1, x2]:
+     continue
+   if "SOS" in [x1, x2]:
+     continue
+   if "EOS" in [x1, x2]:
+     continue
+   if len(pmis_coarse[(x1,x2)]) == 1:
+     continue
+   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)]), sd(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
+

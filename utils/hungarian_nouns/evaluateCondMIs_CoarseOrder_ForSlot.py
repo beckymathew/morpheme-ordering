@@ -6,8 +6,8 @@
 import random
 import sys
 from corpus import CORPUS
-from estimateTradeoffHeldout import calculateMemorySurprisalTradeoff
-from math import log, exp
+from estimateTradeoffHeldout_Pairs import calculateMemorySurprisalTradeoff
+from math import log, exp, sqrt
 from corpusIterator_V import CorpusIterator_V
 from random import shuffle, randint, Random, choice
 
@@ -47,34 +47,26 @@ myID = args.idForProcess
 
 TARGET_DIR = "estimates/"
 
+import hungarian_noun_segmenter_coarse
+import hungarian_noun_segmenter
 
-
-
-
+# Translate a verb into an underlying morpheme
 def getRepresentation(lemma):
    return lemma["coarse"]
 
 def getSurprisalRepresentation(lemma):
-   return lemma["fine"]
+   #print(lemma)
+   #quit()
+   return lemma["coarse"]+"@"+lemma["fine"]
 
-from math import log, exp
-from random import random, shuffle, randint, Random, choice
-
-
-from corpusIterator_V import CorpusIterator_V
-
-
-
-import japanese_segmenter_coarse
-import japanese_segmenter
 def processVerb(verb, data_):
-    if len(verb) > 0:
-      if "VERB" in [x["posUni"] for x in verb[1:]]:
-        print([x["word"] for x in verb])
-      morphs = [japanese_segmenter_coarse.get_abstract_morphemes(x["lemma"]) for x in verb]
-      fine = [japanese_segmenter.get_abstract_morphemes(x["lemma"]) for x in verb]
-      morphs[0] = verb[0]["lemma"]
-      fine[0] = verb[0]["lemma"]
+    # assumption that each verb is a single word
+   for vb in verb:
+      labels = vb["morph"]
+      morphs = hungarian_noun_segmenter_coarse.get_abstract_morphemes(labels)
+      fine = hungarian_noun_segmenter.get_abstract_morphemes(labels)
+#      morphs[0] = vb["lemma"] # replace "ROOT" with actual root
+      fine[0] = vb["lemma"] # replace "ROOT" w actual root
       assert len(morphs) == len(fine)
       lst_dict = []
       for i in range(len(fine)):
@@ -94,21 +86,8 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
   for sentence in corpus:
     verb = []
     for line in sentence:
-       if line["posUni"] == "PUNCT":
-          processVerb(verb, data_)
-          verb = []
-          continue
-       elif line["posUni"] == "VERB":
-          processVerb(verb, data_)
-          verb = []
+       if line["posUni"] == "NOUN":
           verb.append(line)
-       elif line["posUni"] == "AUX" and len(verb) > 0:
-          verb.append(line)
-       elif line["posUni"] == "SCONJ" and line["word"] == 'て':
-          verb.append(line)
-          processVerb(verb, data_)
-          verb = []
-       else:
           processVerb(verb, data_)
           verb = []
 
@@ -116,11 +95,10 @@ words = []
 
 # Collect morphemes into itos and stoi. These morphemes will be used to parameterize ordering (for Korean, we could use underlying morphemes or the coarse-grained labels provided in Kaist like ef, etm, etc.)
 affixFrequencies = {}
-for data_ in [data_train, data_dev]:
-  for verbWithAff in data_:
-    for affix in verbWithAff[1:]:
-      affixLemma = getRepresentation(affix)
-      affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
+for verbWithAff in data_train:
+  for affix in verbWithAff[1:]:
+    affixLemma = getRepresentation(affix)
+    affixFrequencies[affixLemma] = affixFrequencies.get(affixLemma, 0) + 1
 
 itos = set() # set of affixes
 for data_ in [data_train, data_dev]:
@@ -152,7 +130,6 @@ elif args.model != "REAL": # Load the ordering from a file
         morpheme, weight = line.strip().split(" ")
         weights[morpheme] = int(weight)
 
-
 def calculateTradeoffForWeights(weights):
     # Order the datasets based on the given weights
     train = []
@@ -168,28 +145,49 @@ def calculateTradeoffForWeights(weights):
          else: # Order based on weights
             affixes = sorted(affixes, key=lambda x:weights.get(getRepresentation(x), 0))
 
-
+  #       print([verb[0]] + affixes)
          for ch in [verb[0]] + affixes: # Express as a sequence of underlying morphemes (could also instead be a sequence of phonemes if we can phonemize the Korean input)
             processed.append(getSurprisalRepresentation(ch))
+ #        print(processed[-5:])
+#         quit()
          processed.append("EOS") # Indicate end-of-sequence
          for _ in range(args.cutoff+2): # Interpose a padding symbol between each pair of successive verb forms. There is no relation between successive verb forms, and adding padding prevents the n-gram models from "trying to learn" any spurious relations between successive verb forms.
            processed.append("PAD")
          processed.append("SOS") # start-of-sequence for the next verb form
     
     # Calculate AUC and the surprisals over distances (see estimateTradeoffHeldout.py for further documentation)
-    auc, devSurprisalTable = calculateMemorySurprisalTradeoff(train, dev, args)
-
-
-    # Write results to a file
-    model = args.model
-    if "/" in model:
-        model = model[model.rfind("_"):-4]+"-OPTIM"
-    outpath = TARGET_DIR+args.language+"_"+__file__+"_model_"+(str(myID)+"-"+model if model in ["RANDOM", "UNIV"] else model)+".txt"
-    print(outpath)
-    with open(outpath, "w") as outFile:
-       print(str(args), file=outFile)
-       print(" ".join(map(str,devSurprisalTable)), file=outFile)
-    return auc
+    auc, devSurprisalTable, pmis = calculateMemorySurprisalTradeoff(train, dev, args)
+    return pmis
    
-auc = calculateTradeoffForWeights(weights)
-print("AUC: ", auc)
+pmis = calculateTradeoffForWeights(weights)
+
+def mean(x):
+  return sum(x)/len(x)
+
+def coarse(x):
+   if "@" in x:
+     return x[:x.index("@")]
+   if x in ["EOS", "SOS", "PAD"]:
+     return x
+   assert False, x
+from collections import defaultdict
+
+pmis_coarse = defaultdict(list)
+for x, y in pmis:
+   pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
+
+def sd(x):
+   return sqrt(mean([y**2 for y in x]) - mean(x)**2)
+
+with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
+ for x1, x2 in sorted(list(pmis_coarse)):
+   if "PAD" in [x1, x2]:
+     continue
+   if "SOS" in [x1, x2]:
+     continue
+   if "EOS" in [x1, x2]:
+     continue
+   if len(pmis_coarse[(x1,x2)]) == 1:
+     continue
+   print("\t".join([str(q) for q in [x2, x1, len(pmis_coarse[(x1,x2)]), mean(pmis_coarse[(x1,x2)]), sd(pmis_coarse[(x1,x2)])]]), file=outFile) # Note that x2 x1 are reversed because the text is reversed when calculating the PMIs
+
