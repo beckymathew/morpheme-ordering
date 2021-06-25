@@ -32,10 +32,18 @@ def get_abstract_morphemes(labels):
         assert mood in ["Ind", None], label_dict
         morphs.append(tense)
     elif mood not in ["Ind", None]: 
-        morphs.append(mood)
+        if mood == "Imp" and person == "2" and number == "Sing":
+           pass
+        else:
+           morphs.append(mood)
 
     if person and number:
-        morphs.append(person + "." + number)
+        if mood == "Imp" and ((person == "3" and number == "Sing")): # Special form: tulkoon
+            morphs.append("3.Sing.Imp")
+        elif mood == "Imp" and ((person == "2")): # No agreement suffix
+            pass
+        else:
+            morphs.append(person + "." + number)
     elif voice == "Pass":
         morphs.append("Impersonal")
     
