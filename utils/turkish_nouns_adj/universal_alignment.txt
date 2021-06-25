@@ -1,0 +1,3 @@
+Person[psor].Number[psor]	Possessor
+Number	Number
+Case	Case
