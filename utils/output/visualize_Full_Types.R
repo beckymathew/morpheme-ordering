@@ -4,7 +4,7 @@ library(dplyr)
 
 data = read.csv("accuracies.tsv", sep="\t")
 names(data) <- c("POS", "Language", "Type", "Accuracy_Pairs", "Accuracy_Full", "Accuracy_Full_Types")
-data$Accuracy = data$Accuracy_Full
+data$Accuracy = data$Accuracy_Full_Types
 
 optimized = data %>% filter(Type=="Optimized") %>% group_by(Language, POS) %>% summarise(AccuracyOpt=mean(Accuracy))
 
