@@ -179,7 +179,11 @@ for x, y in pmis:
    pmis_coarse[(coarse(x), coarse(y))] += pmis[(x,y)]
 
 def sd(x):
-   return sqrt(mean([y**2 for y in x]) - mean(x)**2)
+   inner = mean([y**2 for y in x]) - mean(x)**2
+   if inner < 0:
+    print("???? ", x)
+   assert inner > -0.001, x
+   return sqrt(max(0,inner))
 
 with open(f"cond_mi_bySlot/{__file__}_{args.language}_{args.model.split('_')[-1]}", "w") as outFile:
  for x1, x2 in sorted(list(pmis_coarse)):
