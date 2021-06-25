@@ -5,6 +5,7 @@ script = "forWords_Finnish_OptimizeOrder_Coarse_FineSurprisal"
 
 with open("universal_alignment.txt", "r") as inFile:
     alignment = [x.split("\t") for x in inFile.read().strip().split("\n")]
+frequencies = {x[0] : int(x[2]) for x in alignment}
 alignment = {x[0] : x[3] for x in alignment}
 print(alignment)
 
@@ -17,7 +18,8 @@ with open("slot-names.txt", "r") as inFile:
 slotNames = {x[0] : x[3] for x in slotNames}
 print(slotNames)
 
-with open("output/"+os.listdir("output/")[0], "r") as inFile:
+import glob
+with open(glob.glob("output/extracted_*tsv")[0], "r") as inFile:
     real = [x.split("\t")[0] for x in inFile.read().strip().split("\n")]
 with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
     optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:]]

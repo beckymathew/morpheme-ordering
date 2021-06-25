@@ -181,7 +181,7 @@ for iteration in range(1000):
      if affixFrequencies.get(x,0) < 10:
        continue
      print("\t".join([str(y) for y in [x, weights[x], affixFrequencies.get(x,0)]]))
-  if (iteration + 1) % 50 == 0:
+  if (iteration + 1) % 20 == 0:
      _, surprisals = calculateTradeoffForWeights(weights_)
 
      if os.path.exists(TARGET_DIR):
