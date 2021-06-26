@@ -1,5 +1,5 @@
 import statsmodels.stats.proportion
-directories = ["finnish_nouns_adj", "turkish_nouns_adj", "hungarian_nouns", "finnish_verbs","hungarian_verbs", "turkish_verbs", "korean", "japanese", "sesotho_prefixes", "sesotho_suffixes"]
+directories = ["finnish_nouns_adj", "turkish_nouns_adj", "hungarian_nouns", "finnish_verbs_joint","hungarian_verbs", "turkish_verbs", "korean", "japanese", "sesotho_prefixes", "sesotho_suffixes"]
 import os
 import math
 def mean(x):
@@ -38,7 +38,7 @@ with open("output/accuracies.tex", "w") as outFile:
       else:
         c1 = c
       for x in accuracies[c]:
-       print("\t".join([pos, language, c1, str(x[0])]), file=outTSV)
+       print("\t".join([pos, language, c1, str(x[0]), str(x[1]), str(x[3])]), file=outTSV)
     univ_pairs = process([x[0] for x in accuracies["Universals"]])
     bas_pairs = process([x[0] for x in accuracies["Baseline"]])
     bas_full = process([x[1] for x in accuracies["Baseline"]])
