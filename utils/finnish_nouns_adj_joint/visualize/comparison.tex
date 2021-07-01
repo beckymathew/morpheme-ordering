@@ -12,10 +12,10 @@ ball/.style = {circle, draw, align=center, anchor=north, inner sep=0}]
 \node[rectangle,text width=1.7cm,anchor=base] (A4) at (1,-2.5) {Possessor};
 \node[rectangle,text width=1.7cm,anchor=base] (B1) at (4,-1.0) {Derivation};
 \node[rectangle,text width=1.7cm,anchor=base, fill=orange!20] (B2) at (4,-1.5) {Number};
-\node[rectangle,text width=1.7cm,anchor=base, fill=blue!20] (B3) at (4,-2.0) {Case};
-\node[rectangle,text width=1.7cm,anchor=base] (B4) at (4,-2.5) {Possessor};
+\node[rectangle,text width=1.7cm,anchor=base] (B3) at (4,-2.0) {Possessor};
+\node[rectangle,text width=1.7cm,anchor=base, fill=blue!20] (B4) at (4,-2.5) {Case};
 \draw[->] (A1.east) to (B1.west);
 \draw[->] (A2.east) to (B2.west);
-\draw[->] (A3.east) to (B3.west);
-\draw[->] (A4.east) to (B4.west);
+\draw[->] (A3.east) to (B4.west);
+\draw[->] (A4.east) to (B3.west);
 \end{tikzpicture}
