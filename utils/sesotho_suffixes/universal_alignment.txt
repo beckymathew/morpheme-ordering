@@ -2,10 +2,10 @@ Other_possessive	0	3	NA
 Derivation	2	232	NA
 Valence	4	4543	Valence
 Other_copula	6	1	NA
-Tense/aspect	8	5618	TAM
+Tense/Aspect	8	5618	TAM
 Voice	10	1371	Voice
 Mood	12	37828	NA
 Other_perfective	14	1	NA
 Other_locative	16	2	NA
-Int/Rel	18	3063	NA
+Relative	18	3063	NA
 Other_mi	20	1	NA
