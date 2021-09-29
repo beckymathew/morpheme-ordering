@@ -1,4 +1,4 @@
-99 16.31068594972225 Namespace(alpha=1.0, cutoff=4, delta=1.0, gamma=1, idForProcess=5374022, language='Sesotho_Acqdiv') [4.828924910162593, 2.391041528300597, 2.2989159802536303, 2.2989159802536303]
+1399 16.310354980787636 Namespace(alpha=1.0, cutoff=4, delta=1.0, gamma=1, idForProcess=5374022, language='Sesotho_Acqdiv') [4.828924910162593, 2.3899798049475844, 2.298004666844093, 2.298004666844093]
 Other_6 0
 Other_2a 2
 Infinitive 4
@@ -12,13 +12,13 @@ Subject 18
 Other_f^ 20
 Other_2 22
 Tense/aspect 24
-Int/Rel 26
-Other_av 28
-Negation 30
-Other_9 32
+Other_av 26
+Negation 28
+Other_9 30
+Object/reflexive 32
 Other_3 34
 Other_17 36
 Other_10 38
-Other_7 40
-Other_pr 42
-Object/reflexive 44
+Int/Rel 40
+Other_7 42
+Other_pr 44
