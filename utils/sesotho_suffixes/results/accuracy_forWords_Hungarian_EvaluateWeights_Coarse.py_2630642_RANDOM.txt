@@ -1,9 +1,0 @@
-0.4318265343623668
-0.3718120805369127
-0.44733796296296297
-0.3713862120088955
-Tense/aspect Mood 852
-Voice Mood 370
-Valence Mood 265
-Tense/aspect Voice 52
-Valence Voice 7

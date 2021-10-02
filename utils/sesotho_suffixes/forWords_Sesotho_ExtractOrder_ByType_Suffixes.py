@@ -180,7 +180,7 @@ data_dev = words[:int(0.05*len(words))]
 #data = words
 
                                                                          
-names = {'ng' : "Negation", 'om' : "Object", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Int/Rel", 'rl' : "Int/Rel", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective"}
+names = {'ng' : "Negation", 'om' : "Object", 'sm' : "Subject", 'sr' : "Subject", 't^' : "Tense/Aspect", 'ap' : "Valence", 'c' : "Valence", 'nt' : "Valence", 'rv' : "Derivation", 'rc' : "Valence", 'p' : "Voice", 'm^' : "Mood", 'wh' : "Interrogative", 'rl' : "Relative", "cl" : "Valence", "lc" : "Other_locative", "ps" : "Other_possessive", "mi" : "Other_mi", "cp" : "Other_copula", "pf" : "Other_perfective"}
 
 def getSlot(x):
    if x == "sm":
@@ -231,6 +231,9 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
          suffixesResult.append(x)
     if suffixesResult is None: # remove this datapoint (affects <20 datapoints)
        continue
+    if "wh" in [x[1] for x in suffixesResult]: # This is not a suffix, but a cliticized version of an independent word, according to Doke&Mofokeng.
+#       print(suffixesResult)
+       suffixesResult = [x for x in suffixesResult if x[1] != "wh"]
     splitTense = [i for i in suffixesResult if "sfx" in i and "SPLIT" in i[-1] and "t^" in i[1]] # It can happen that a tense suffix is marked as fused with the stem, but belongs further back as a morpheme.
     if len(splitTense) > 0 and len([x for x in suffixesResult if "sfx" in x]) > 2:
        j = suffixesResult.index(splitTense[0])
@@ -355,6 +358,8 @@ for iteration in range(1000):
   weights = dict(list(zip(itos_, [2*x for x in range(len(itos_))])))
   #assert getCorrectOrderCount(weights, None, None) == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
   #assert mostCorrect == getCorrectOrderCount(weights, None, None), (mostCorrect, getCorrectOrderCount(weights, None, None))
+  if mostCorrect > 0.99:
+    break
   if iteration % 5 == 0:
      print(errors)
      for x in itos_:

@@ -146,7 +146,7 @@ sq	288	0	NA
 Other_2a	290	2	NA
 Int/Rel	292	17	NA
 Infinitive	294	1015	Nominal
-Object/reflexive	296	10529	Valence
+Object/reflexive	296	10529	Voice
 ch	298	0	NA
 ti	300	0	NA
 re	302	0	NA
