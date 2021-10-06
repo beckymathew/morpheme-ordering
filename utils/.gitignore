@@ -2,4 +2,8 @@ paths.py
 estimates/
 accuracy_forWords*EvaluateWeights*.py_*.txt
 results/accuracy*.txt
-
+Rplots.pdf
+*/analyze/Rplots.pdf
+ARCHIVE
+*.png
+*.swp

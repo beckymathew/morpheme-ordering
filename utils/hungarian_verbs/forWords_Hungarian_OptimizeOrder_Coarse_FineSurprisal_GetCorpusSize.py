@@ -95,4 +95,9 @@ for corpus, data_ in [(corpusTrain, data_train), (corpusDev, data_dev)]:
 
 with open("output/corpusSize.txt", "w") as outFile:
   print(len(data_train) + len(data_dev), file=outFile)
+  print(len(set(["-".join([x["fine"] for x in y]) for y in data_train + data_dev])), file=outFile)
+  print(len(data_train), file=outFile)
+  print(len(set(["-".join([x["fine"] for x in y]) for y in data_train])), file=outFile)
+  print(len(data_dev), file=outFile)
+  print(len(set(["-".join([x["fine"] for x in y]) for y in data_dev])), file=outFile)
 

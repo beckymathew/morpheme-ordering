@@ -15,7 +15,7 @@ def pretty(x):
    return f"{language}\t{pos}"
 
 with open(f"visualize/{__file__}.tsv", "w") as outFile:
- for language in ["finnish_nouns_adj", "finnish_verbs", "hungarian_nouns", "hungarian_verbs", "japanese", "korean", "sesotho_prefixes", "sesotho_suffixes", "turkish_nouns_adj", "turkish_verbs"]:
+ for language in ["finnish_nouns_adj_joint", "finnish_verbs_joint", "hungarian_nouns", "hungarian_verbs", "japanese", "korean", "sesotho_prefixes", "sesotho_suffixes", "turkish_nouns_adj", "turkish_verbs"]:
   print(language)
   try:
     with open(f"{language}/universal_alignment.txt", "r") as inFile:

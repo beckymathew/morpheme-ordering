@@ -1,9 +1,0 @@
-0.11028151774785802
-0.0966497769038796
-0.13796366389099168
-0.12090558766859345
-Number Case 8151
-Derivation Case 4270
-Derivation Number 1433
-Number Possessor 487
-Derivation Possessor 197

@@ -1,4 +1,0 @@
-Voice	0	1722	Voice
-TAM	2	10951	TAM
-Person.Number	6	9458	Agreement
-Clitic	8	280	Clitic

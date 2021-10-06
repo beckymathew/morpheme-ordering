@@ -1,2 +1,0 @@
-ef_아라 ef_어라 are allormophs. 	ef	7	[('아라', 'ef')]	SLOT VI. Allomorph of 어라
-

@@ -1,8 +1,0 @@
-VERBS
-
-
-NOUNS
-- determiner, number, case
-
-
-

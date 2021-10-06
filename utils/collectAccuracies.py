@@ -1,5 +1,5 @@
 import statsmodels.stats.proportion
-directories = ["finnish_nouns_adj", "turkish_nouns_adj", "hungarian_nouns", "finnish_verbs_joint","hungarian_verbs", "turkish_verbs", "korean", "japanese", "sesotho_prefixes", "sesotho_suffixes"]
+directories = ["finnish_nouns_adj_joint", "turkish_nouns_adj", "hungarian_nouns", "finnish_verbs_joint","hungarian_verbs", "turkish_verbs", "korean", "japanese", "sesotho_prefixes", "sesotho_suffixes"]
 import os
 import math
 def mean(x):

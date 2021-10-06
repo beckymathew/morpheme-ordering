@@ -1,9 +1,0 @@
-0.8931206038771659
-0.9157828509796873
-0.8062130177514792
-0.8512494106553512
-Mood Person.Number 700
-Person.Number Clitic 241
-Tense Clitic 228
-Mood Clitic 48
-Voice Clitic 29
