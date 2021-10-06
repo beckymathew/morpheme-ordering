@@ -241,6 +241,8 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
     if "wh" in [x[1] for x in suffixesResult]: # This is not a suffix, but a cliticized version of an independent word, according to Doke&Mofokeng.
 #       print(suffixesResult)
        suffixesResult = [x for x in suffixesResult if x[1] != "wh"]
+
+    # split tense (addition beyond PsychReview paper, accounts for some fused morphemes)
     splitTense = [i for i in suffixesResult if "sfx" in i and "SPLIT" in i[-1] and "t^" in i[1]] # It can happen that a tense suffix is marked as fused with the stem, but belongs further back as a morpheme.
     if len(splitTense) > 0 and len([x for x in suffixesResult if "sfx" in x]) > 2:
        j = suffixesResult.index(splitTense[0])
@@ -254,6 +256,7 @@ for data_, dataChosen in [(data_train, dataChosen_train), (data_dev, dataChosen_
     if len(tense) > 0 and len(voice) > 0:
        if tense[0] < voice[0]:
            print(suffixesResult)
+    # end 
 
     dataChosen.append(suffixesResult)
     for affix in suffixesResult:
