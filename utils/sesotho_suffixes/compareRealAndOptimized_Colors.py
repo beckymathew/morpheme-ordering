@@ -16,11 +16,14 @@ with open("output/"+os.listdir("output/")[0], "r") as inFile:
 with open(f"results/{script}/"+os.listdir(f"results/{script}/")[0], "r") as inFile:
     optimized = [x.split(" ")[0] for x in inFile.read().strip().split("\n")[1:] if "Other" not in x]
 
+print(real)
+print(optimized)
+
 slotNames = {"Object/reflexive" : "Object", "Int/Rel" : "Relative", "Tense/aspect" : "Tense/Aspect"}
 real = [slotNames.get(x,x) for x in real]
 optimized = [slotNames.get(x,x) for x in optimized]
 real = [x for x in real if x != "NA"]
-optimized = [x for x in real if x != "NA"]
+optimized = [x for x in optimized if x != "NA"]
 
 print(real)
 print(optimized)
