@@ -8,10 +8,8 @@ ball/.style = {circle, draw, align=center, anchor=north, inner sep=0}]
 \node[rectangle,text width=0.9cm,anchor=base] (B0) at (1,-0.3) {Optimized};
 \node[rectangle,text width=1.2cm,anchor=base] (A1) at (4,-1.0) {Valence};
 \node[rectangle,text width=1.2cm,anchor=base] (A2) at (4,-1.5) {Voice};
-\node[rectangle,text width=1.2cm,anchor=base] (A3) at (4,-2.0) {Aspect};
-\node[rectangle,text width=1.2cm,anchor=base] (A4) at (4,-2.5) {Tense};
-\node[rectangle,text width=1.2cm,anchor=base] (A5) at (4,-3.0) {Mood};
-\node[rectangle,text width=1.2cm,anchor=base] (A6) at (4,-3.5) {Agreement};
+\node[rectangle,text width=1.2cm,anchor=base] (A3) at (4,-2.0) {TAM};
+\node[rectangle,text width=1.2cm,anchor=base] (A4) at (4,-2.5) {Agreement};
 \node[rectangle,text width=1.2cm,anchor=base] (B1) at (1,-1.0) {Derivation};
 \node[rectangle,text width=1.2cm,anchor=base] (B2) at (1,-1.5) {Tense/Aspect};
 \node[rectangle,text width=1.2cm,anchor=base] (B3) at (1,-2.0) {Politeness};
@@ -22,7 +20,6 @@ ball/.style = {circle, draw, align=center, anchor=north, inner sep=0}]
 \node[rectangle,text width=1.2cm,anchor=base] (B8) at (1,-4.5) {Connector};
 \node[rectangle,text width=1.2cm,anchor=base] (B9) at (1,-5.0) {Nominal};
 \draw[-] (A3.west) to (B2.east);
-\draw[-] (A4.west) to (B2.east);
-\draw[-] (A5.west) to (B6.east);
-\draw[-] (A5.west) to (B7.east);
+\draw[-] (A3.west) to (B6.east);
+\draw[-] (A3.west) to (B7.east);
 \end{tikzpicture}

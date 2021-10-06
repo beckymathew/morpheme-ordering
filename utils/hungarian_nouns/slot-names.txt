@@ -1,0 +1,4 @@
+Possessed	0	3	NA
+Number	2	892	Number
+Possessor	4	1238	Possessor
+Case	6	2200	Case

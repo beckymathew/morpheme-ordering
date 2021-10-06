@@ -1,12 +1,12 @@
 VAL	0	467	Valence
 VOICE	2	777	Voice
 POLAR	4	778	Polarity
-POLITE	6	23	Politeness
+POLITE	6	23	NA
 MOOD	8	260	Mood
 TAM1	10	3381	TAM 1
 3PL	12	220	3Pl
 TAM2	14	304	TAM 2
 Vnoun	16	908	Nominal
 Agr	18	1095	Agreement
-Gen	20	90	Genitive
+Gen	20	90	NA
 NUMPERS	22	281	Possessor
