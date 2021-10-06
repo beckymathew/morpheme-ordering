@@ -13,10 +13,10 @@ with open("analyze/results_auc_optimized.tsv", "w") as outFile:
  print("\t".join([str(x) for x in ["Script", "Run", "Model", "AUC"]]), file=outFile)
  for f in files:
   with open(PATH+"/"+f, "r") as inFile:
+     print(f)
      args, surps = inFile 
      args = args.strip()
      print(args)
-     print(f)
      surps = [float(x) for x in surps.strip().split(" ")]
      script = f[f.index("forWords"):f.index("_model")]
      runAndModel = f[f.rfind("_")+1:-4]
@@ -39,7 +39,7 @@ with open("analyze/results_auc_optimized.tsv", "w") as outFile:
         surprisals.append(surprisals[-1]-mis[i])
         memories.append(memories[-1] + tmis[i])
         auc += tmis[i] * surprisals[i]
-     auc += (10-tmis[-1]) * surprisals[-1]
+     auc += (10-memories[-1]) * surprisals[-1]
      print(surprisals)
      print(memories)
      print("\t".join([str(x) for x in [script, run, model, auc]]), file=outFile)

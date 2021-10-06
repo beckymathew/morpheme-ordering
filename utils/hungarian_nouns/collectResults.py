@@ -9,11 +9,9 @@ files = sorted([x for x in os.listdir(PATH)])
 def find_second_last(text, pattern):
    return text.rfind(pattern, 0, text.rfind(pattern))
 
-with open("analyze/results_auc_optimized.tsv", "w") as outFile:
- print("\t".join([str(x) for x in ["Script", "Run", "Model", "AUC"]]), file=outFile)
+with open("analyze/results.tsv", "w") as outFile:
+ print("\t".join([str(x) for x in ["Script", "Run", "Model", "Distance", "Surprisal", "MI", "Memory", "UnigramCE", "Type"]]), file=outFile)
  for f in files:
-  if f == "ARCHIVE":
-      continue
   with open(PATH+"/"+f, "r") as inFile:
      args, surps = inFile 
      args = args.strip()
@@ -31,17 +29,19 @@ with open("analyze/results_auc_optimized.tsv", "w") as outFile:
         surps[i] = min(surps[:i+1])
      print(script, model, surps)
      mis = [surps[i] - surps[i+1] for i in range(len(surps)-1)]
+     for i in range(len(mis), 12):
+        mis.append(0)
      print(mis)
      tmis = [mis[i] * (i+1) for i in range(len(mis))]
      print(tmis)
      surprisals = [surps[0]]
      memories = [0]
-     auc = 0
      for i in range(len(mis)):
         surprisals.append(surprisals[-1]-mis[i])
         memories.append(memories[-1] + tmis[i])
-        auc += tmis[i] * surprisals[i]
-     auc += (10-memories[-1]) * surprisals[-1]
+     print("...")
+     print(surps)
      print(surprisals)
      print(memories)
-     print("\t".join([str(x) for x in [script, run, model, auc]]), file=outFile)
+     for i in range(len(mis)):
+       print("\t".join([str(x) for x in [script, run, model, i, surprisals[i], mis[i], memories[i], surprisals[0], model if model in ["REAL", "RANDOM", "REVERSE"] else "OPTIM"]]), file=outFile)

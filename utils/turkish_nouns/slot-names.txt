@@ -1,3 +1,0 @@
-Number	0	1509	Number
-Person[psor].Number[psor]	2	3304	Possessor
-Case	4	4701	Case
