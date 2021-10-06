@@ -28,7 +28,7 @@ meanAUCs = data %>% filter(Type == "Real") %>% group_by(Type) %>% summarise(AUC 
 
 barWidth = (max(data$AUC) - min(data$AUC))/30
 
-data_[data_$Type == "Optimized",]$AUC=NA
+data_[data_$Type == "Optimized",]$AUC = NA
 
 plot = ggplot(data_, aes(x=AUC, color=Type))
 plot = plot + theme_classic()
