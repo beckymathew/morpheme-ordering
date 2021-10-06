@@ -8,17 +8,15 @@ ball/.style = {circle, draw, align=center, anchor=north, inner sep=0}]
 \node[rectangle,text width=0.9cm,anchor=base] (B0) at (1,-0.3) {Optimized};
 \node[rectangle,text width=1.2cm,anchor=base] (A1) at (4,-1.0) {Valence};
 \node[rectangle,text width=1.2cm,anchor=base] (A2) at (4,-1.5) {Voice};
-\node[rectangle,text width=1.2cm,anchor=base] (A3) at (4,-2.0) {Aspect};
-\node[rectangle,text width=1.2cm,anchor=base] (A4) at (4,-2.5) {Tense};
-\node[rectangle,text width=1.2cm,anchor=base] (A5) at (4,-3.0) {Mood};
-\node[rectangle,text width=1.2cm,anchor=base] (A6) at (4,-3.5) {Agreement};
+\node[rectangle,text width=1.2cm,anchor=base] (A3) at (4,-2.0) {TAM};
+\node[rectangle,text width=1.2cm,anchor=base] (A4) at (4,-2.5) {Agreement};
 \node[rectangle,text width=1.2cm,anchor=base] (B1) at (1,-1.0) {Valence};
 \node[rectangle,text width=1.2cm,anchor=base] (B2) at (1,-1.5) {Tense};
 \node[rectangle,text width=1.2cm,anchor=base] (B3) at (1,-2.0) {Mood};
 \node[rectangle,text width=1.2cm,anchor=base] (B4) at (1,-2.5) {Agreement};
 \node[rectangle,text width=1.2cm,anchor=base] (B5) at (1,-3.0) {Nominal};
 \draw[-] (A1.west) to (B1.east);
-\draw[-] (A4.west) to (B2.east);
-\draw[-] (A5.west) to (B3.east);
-\draw[-] (A6.west) to (B4.east);
+\draw[-] (A3.west) to (B2.east);
+\draw[-] (A3.west) to (B3.east);
+\draw[-] (A4.west) to (B4.east);
 \end{tikzpicture}
