@@ -33,37 +33,40 @@ for(i in (1:nrow(byWords))) {
 }
 byWords$MI = MIs
 
-plot = ggplot(byWords %>% filter(Slot %in% c("Derivation", "Valence", "Voice", "Tense/Aspect", "Mood", "Relative")), aes(x=Distance, y=MI, color=Ordering, group=Ordering)) + geom_line() + facet_wrap(~Slot) + theme_bw() + ylab("Conditional Mutual Information")
+plot = ggplot(byWords %>% filter(Slot %in% c("Derivation", "Valence", "Voice", "Tense/Aspect", "Mood", "Relative")), aes(x=Distance, y=MI, color=Ordering, group=Ordering)) + geom_line() + facet_wrap(~Slot) + theme_classic() + ylab("Conditional Mutual Information")
 ggsave(plot, file="miBySlot_Real-Reverse.pdf", height=3, width=5)
 
-slotCounts = read.csv("slotCounts.tsv", sep="\t") %>% filter(Slot %in% c("Derivation", "Valence", "Voice", "Tense/Aspect", "Mood", "Relative", "EOS"))
+slotCounts = read.csv("slotCounts.tsv", sep="\t") %>% filter(Slot %in% c("Derivation", "Valence", "Voice", "Tense/Aspect", "Mood", "Relative", "EOS", "ROOT"))
 slotCounts$Count = slotCounts$Count / sum(slotCounts$Count)
 byWords = merge(byWords, slotCounts, by=c("Slot"))
 
 overallMI = byWords %>% group_by(Distance, Ordering) %>% summarise(MI = sum(MI*Count, na.rm=TRUE), Surprisal=sum(Surprisal*Count, na.rm=TRUE))
 
-plot = ggplot(overallMI, aes(x=Distance, y=MI, color=Ordering, group=Ordering)) + geom_line() + theme_bw() + ylab("Conditional Mutual Information")
+plot = ggplot(overallMI %>% filter(Distance>0), aes(x=Distance, y=MI, color=Ordering, group=Ordering)) + geom_line() + theme_classic() + ylab("Conditional Mutual Information")
 ggsave(plot, file="miAvg_Real-Reverse.pdf", height=3, width=4)
 
-
-Memory = c()
-Surprisal = c()
-for(i in (1:nrow(overallMI))) {
-  ordering = overallMI$Ordering[[i]]
-  distance  = overallMI$Distance[[i]]
-    relevantMIs = (overallMI %>% filter(Distance<=distance, Ordering==ordering))
-    surprisal = min(relevantMIs$Surprisal, na.rm=TRUE)
-    memory = sum(relevantMIs$MI * relevantMIs$Distance, na.rm=TRUE)
-    Memory = c(Memory, memory)
-    Surprisal = c(Surprisal, surprisal)
-}
-overallMI$Memory = Memory
-overallMI$Surprisal = Surprisal
-
-plot = ggplot(overallMI, aes(x=Memory, y=Surprisal, color=Ordering, group=Ordering)) + geom_line() + theme_bw() + ylab("Surprisal") + xlab("Memory")
-ggsave(plot, file="tradeoff_Real-Reverse.pdf", height=3, width=4)
-
-
+#
+#Memory = c()
+#Surprisal = c()
+#for(i in (1:nrow(overallMI))) {
+#  ordering = overallMI$Ordering[[i]]
+#  distance  = overallMI$Distance[[i]]
+#    relevantMIs = (overallMI %>% filter(Distance<=distance, Ordering==ordering))
+#    surprisal = min(relevantMIs$Surprisal, na.rm=TRUE)
+#    memory = sum(relevantMIs$MI * relevantMIs$Distance, na.rm=TRUE)
+#    Memory = c(Memory, memory)
+#    Surprisal = c(Surprisal, surprisal)
+#}
+#overallMI$Memory = Memory
+#overallMI$Surprisal = Surprisal
+#
+#minimum = as.data.frame(overallMI %>% group_by(Ordering) %>% summarise(Surprisal=min(Surprisal, na.rm=TRUE)) %>% mutate(Memory = 7, Distance=10, MI=0) %>% group_by())
+#overallMI = rbind(as.data.frame(overallMI), minimum)
+#
+#plot = ggplot(overallMI, aes(x=Memory, y=Surprisal, color=Ordering, group=Ordering)) + geom_line() + theme_bw() + ylab("Surprisal") + xlab("Memory")
+#ggsave(plot, file="tradeoff_Real-Reverse.pdf", height=3, width=4)
+#
+#
 
 
 
@@ -81,24 +84,22 @@ data$Type = ifelse(data$Model %in% c("UNIV"), "Universals", as.character(data$Ty
 
 data_ = data %>% filter(Type %in% c("Real", "Random", "Optimized", "Reverse", "Universals"))
 
-randomAUCs = data %>% filter(Type == "Random")
-meanAUCs = data %>% filter(Type == "Real") %>% group_by(Type) %>% summarise(AUC = mean(AUC)) %>% mutate(Quantile = round(mean(AUC < randomAUCs$AUC), 2), ConfIntLower = round((binom.test(sum(AUC<randomAUCs$AUC), nrow(randomAUCs))$conf.int[[1]]),2), ConfIntUpper = round((binom.test(sum(AUC<randomAUCs$AUC), nrow(randomAUCs))$conf.int[[2]]),2))
+#randomAUCs = data %>% filter(Type == "Random")
+#meanAUCs = data %>% filter(Type == "Real") %>% group_by(Type) %>% summarise(AUC = mean(AUC)) %>% mutate(Quantile = round(mean(AUC < randomAUCs$AUC), 2), ConfIntLower = round((binom.test(sum(AUC<randomAUCs$AUC), nrow(randomAUCs))$conf.int[[1]]),2), ConfIntUpper = round((binom.test(sum(AUC<randomAUCs$AUC), nrow(randomAUCs))$conf.int[[2]]),2))
 
-barWidth = (max(data$AUC) - min(data$AUC))/30
+#barWidth = (max(data$AUC) - min(data$AUC))/30
 
-plot = ggplot(data_ %>% group_by(Distance, Type) %>% summarise(MI=mean(MI)), aes(x=Distance, y=MI, color=Type, group=Type)) + geom_line()
+#plot = ggplot(data_ %>% group_by(Distance, Type) %>% summarise(MI=mean(MI)), aes(x=Distance, y=MI, color=Type, group=Type)) + geom_line()
+
+data__ = data_ %>% group_by(Script, Type, Run, Model, UnigramCE) %>% summarise(Surprisal=min(Surprisal)) %>% mutate(Memory=10, MI=0, Distance=20)
+
+data_ = rbind(as.data.frame(data_), as.data.frame(data__))
 
 plot = ggplot(data_ %>% filter(Type %in% c("Real", "Reverse")) %>% group_by(Memory, Type) %>% summarise(Surprisal=mean(Surprisal)), aes(x=Memory, y=Surprisal, color=Type, group=Type)) + geom_line()
-
-
 plot = plot + theme_classic()
-plot = plot + xlab("Area under Curve") + ylab("Density")
-plot = plot + theme(text=element_text(size=30))
-plot = plot + geom_density(data= data_%>%filter(Type %in% c("Universals", "Random")), aes(y=..scaled..), size=2) 
-plot = plot + geom_bar(data = data_ %>% filter(!(Type %in% c("Universals", "Random"))) %>% group_by(Type) %>% summarise(AUC=mean(AUC)) %>% mutate(y=1),  aes(y=y, group=Type, fill=Type), width=barWidth, stat="identity", position = position_dodge()) # + scale_colour_manual(values=SCALE) + scale_fill_manual(values=SCALE)
-#plot = plot + geom_label(data=meanAUCs, aes(x=AUC, y=1, label=paste(Quantile, " [", ConfIntLower, ", ", ConfIntUpper, "]"), group=Type), color="black", fill="white")
+#plot = plot + theme(text=element_text(size=30))
 plot = plot  + theme (legend.position = "none")
-#ggsave(plot, file=paste("suffixes-byMorphemes-auc-hist-heldout-Coarse-FineSurprisal-optimized.pdf", sep=""), height=4, width=8)
+ggsave(plot, file="tradeoff_Real-Reverse.pdf", height=3, width=4)
 
 
 
