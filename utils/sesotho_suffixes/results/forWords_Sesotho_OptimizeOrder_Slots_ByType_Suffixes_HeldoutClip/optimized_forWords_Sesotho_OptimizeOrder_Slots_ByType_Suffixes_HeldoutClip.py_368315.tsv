@@ -1,6 +1,6 @@
-149 16.126899294755912 Namespace(alpha=1.0, cutoff=4, delta=1.0, gamma=1, idForProcess=368315, language='Sesotho_Acqdiv') [4.80615598585405, 2.390174863032762, 2.261903837414423, 2.261903837414423]
-Valence 0
-Other_perfective 2
+349 16.126841501873944 Namespace(alpha=1.0, cutoff=4, delta=1.0, gamma=1, idForProcess=368315, language='Sesotho_Acqdiv') [4.80615598585405, 2.3881507747960735, 2.259339209334897, 2.259339209334897]
+Other_perfective 0
+Valence 2
 Derivation 4
 Voice 6
 Tense/Aspect 8
