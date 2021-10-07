@@ -17,8 +17,8 @@ with open("analyze/results_auc_optimized.tsv", "w") as outFile:
   with open(PATH+"/"+f, "r") as inFile:
      args, surps = inFile 
      args = args.strip()
-     print(args)
-     print(f)
+#     print(args)
+ #    print(f)
      surps = [float(x) for x in surps.strip().split(" ")]
      script = f[f.index("forWords"):f.index("_model")]
      runAndModel = f[f.rfind("_")+1:-4]
@@ -27,21 +27,25 @@ with open("analyze/results_auc_optimized.tsv", "w") as outFile:
          model = run.split("-")[1]
      else:
          model = run
+#     if model not in ["REAL", "OPTIM"]:
+ #      continue
      for i in range(len(surps)):
         surps[i] = min(surps[:i+1])
+     print("-------------------")
      print(script, model, surps)
      mis = [surps[i] - surps[i+1] for i in range(len(surps)-1)]
-     print(mis)
+     print("MIs", mis)
      tmis = [mis[i] * (i+1) for i in range(len(mis))]
-     print(tmis)
+     print("tMIs", tmis)
      surprisals = [surps[0]]
      memories = [0]
      auc = 0
      for i in range(len(mis)):
         surprisals.append(surprisals[-1]-mis[i])
         memories.append(memories[-1] + tmis[i])
-        auc += tmis[i] * surprisals[i]
+        auc += tmis[i] * 0.5 * (surprisals[i] + surprisals[i+1])
      auc += (10-memories[-1]) * surprisals[-1]
-     print(surprisals)
-     print(memories)
+     print("SURPRISALS", surprisals)
+     print("MEMORIES", memories)
+     print("OUTPUT", script, run, model, auc)
      print("\t".join([str(x) for x in [script, run, model, auc]]), file=outFile)

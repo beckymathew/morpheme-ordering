@@ -38,7 +38,7 @@ with open("analyze/results_auc_optimized.tsv", "w") as outFile:
      for i in range(len(mis)):
         surprisals.append(surprisals[-1]-mis[i])
         memories.append(memories[-1] + tmis[i])
-        auc += tmis[i] * surprisals[i]
+        auc += tmis[i] * 0.5 * (surprisals[i] + surprisals[i+1])
      auc += (10-memories[-1]) * surprisals[-1]
      print(surprisals)
      print(memories)
