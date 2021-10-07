@@ -29,10 +29,10 @@ with open("visualize/comparison.tex", "w") as outFile:
    print("\\node[rectangle,text width=1.7cm,anchor=base] (A0) at (1,-0.3) {Real};", file=outFile)
    print("\\node[rectangle,text width=1.7cm,anchor=base] (B0) at (4,-0.3) {Optimized};", file=outFile)
    for i in range(len(real)):
-       color = {"Valence" : "orange", "Voice" : "green", "TAM" : "blue", "Agreement" : "purple", "NA" : None}[alignment[real[i]]]
+       color = {"Valence" : "orange", "Voice" : "green", "TAM" : "blue", "Agreement" : "purple", "NA" : None, "Derivation" : None}[alignment[real[i]]]
        print("\\node[rectangle,text width=1.7cm,anchor=base"+(", fill="+color+"!20" if color is not None else "") + "] (A"+str(i+1)+") at (1,"+str(-i/2.0-1)+") {"+real[i]+"};", file=outFile)
    for i in range(len(optimized)):
-       color = {"Valence" : "orange", "Voice" : "green", "TAM" : "blue", "Agreement" : "purple", "NA" : None}[alignment[optimized[i]]]
+       color = {"Valence" : "orange", "Voice" : "green", "TAM" : "blue", "Agreement" : "purple", "NA" : None, "Derivation" : None}[alignment[optimized[i]]]
        print("\\node[rectangle,text width=1.7cm,anchor=base"+(", fill="+color+"!20" if color is not None else "") + "] (B"+str(i+1)+") at (4,"+str(-i/2.0-1)+") {"+optimized[i]+"};", file=outFile)
    for i in range(len(optimized)):
        print("\\draw[->] (A"+str(i+1)+".east) to (B"+str(ioptim[real[i]]+1)+".west);", file=outFile)
