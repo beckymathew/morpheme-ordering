@@ -81,7 +81,7 @@ words = []
 itos = set() # set of affixes
 for data_ in [data_train, data_heldout]:
   for verbWithAff in data_:
-    for affix in verbWithAff[1:]:
+    for affix in verbWithAff: #used to say [1:], removed
       itos.add(extractRepresentationForOrdering(affix))
 itos = sorted(list(itos)) # sorted list of verb affixes
 stoi = dict(list(zip(itos, range(len(itos))))) # assigning each affix and ID
